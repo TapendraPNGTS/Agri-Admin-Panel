@@ -1,4 +1,4 @@
-// ===========================|| DASHBOARD - TOTAL GROWTH BAR CHART ||=========================== //
+// ==============================|| DASHBOARD - TOTAL GROWTH BAR CHART ||============================== //
 
 const chartData = {
     height: 480,
@@ -38,7 +38,6 @@ const chartData = {
         },
         legend: {
             show: true,
-            fontSize: '14px',
             fontFamily: `'Roboto', sans-serif`,
             position: 'bottom',
             offsetX: 20,

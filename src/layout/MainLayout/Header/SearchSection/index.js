@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
-import { Avatar, Box, ButtonBase, Card, Grid, InputAdornment, OutlinedInput, Popper } from '@mui/material';
+import { Avatar, Box, Card, Grid, InputAdornment, OutlinedInput, Popper } from '@mui/material';
 
 // third-party
 import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
@@ -41,18 +41,18 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
     [theme.breakpoints.down('md')]: {
         width: '100%',
         marginLeft: 4,
-        background: '#fff'
+        background: theme.palette.mode === 'dark' ? theme.palette.dark[800] : '#fff'
     }
 }));
 
 const HeaderAvatarStyle = styled(Avatar, { shouldForwardProp })(({ theme }) => ({
     ...theme.typography.commonAvatar,
     ...theme.typography.mediumAvatar,
-    background: theme.palette.secondary.light,
-    color: theme.palette.secondary.dark,
+    background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.secondary.light,
+    color: theme.palette.mode === 'dark' ? theme.palette.secondary.main : theme.palette.secondary.dark,
     '&:hover': {
-        background: theme.palette.secondary.dark,
-        color: theme.palette.secondary.light
+        background: theme.palette.mode === 'dark' ? theme.palette.secondary.main : theme.palette.secondary.dark,
+        color: theme.palette.mode === 'dark' ? theme.palette.secondary.light : theme.palette.secondary.light
     }
 }));
 
@@ -69,35 +69,31 @@ const MobileSearch = ({ value, setValue, popupState }) => {
             placeholder="Search"
             startAdornment={
                 <InputAdornment position="start">
-                    <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
+                    <IconSearch stroke={1.5} size="16px" color={theme.palette.grey[500]} />
                 </InputAdornment>
             }
             endAdornment={
                 <InputAdornment position="end">
-                    <ButtonBase sx={{ borderRadius: '12px' }}>
-                        <HeaderAvatarStyle variant="rounded">
-                            <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
-                        </HeaderAvatarStyle>
-                    </ButtonBase>
+                    <HeaderAvatarStyle variant="rounded">
+                        <IconAdjustmentsHorizontal stroke={1.5} size="20px" />
+                    </HeaderAvatarStyle>
                     <Box sx={{ ml: 2 }}>
-                        <ButtonBase sx={{ borderRadius: '12px' }}>
-                            <Avatar
-                                variant="rounded"
-                                sx={{
-                                    ...theme.typography.commonAvatar,
-                                    ...theme.typography.mediumAvatar,
-                                    background: theme.palette.orange.light,
-                                    color: theme.palette.orange.dark,
-                                    '&:hover': {
-                                        background: theme.palette.orange.dark,
-                                        color: theme.palette.orange.light
-                                    }
-                                }}
-                                {...bindToggle(popupState)}
-                            >
-                                <IconX stroke={1.5} size="1.3rem" />
-                            </Avatar>
-                        </ButtonBase>
+                        <Avatar
+                            variant="rounded"
+                            sx={{
+                                ...theme.typography.commonAvatar,
+                                ...theme.typography.mediumAvatar,
+                                background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.orange.light,
+                                color: theme.palette.orange.dark,
+                                '&:hover': {
+                                    background: theme.palette.orange.dark,
+                                    color: theme.palette.orange.light
+                                }
+                            }}
+                            {...bindToggle(popupState)}
+                        >
+                            <IconX stroke={1.5} size="20px" />
+                        </Avatar>
                     </Box>
                 </InputAdornment>
             }
@@ -126,11 +122,9 @@ const SearchSection = () => {
                     {(popupState) => (
                         <>
                             <Box sx={{ ml: 2 }}>
-                                <ButtonBase sx={{ borderRadius: '12px' }}>
-                                    <HeaderAvatarStyle variant="rounded" {...bindToggle(popupState)}>
-                                        <IconSearch stroke={1.5} size="1.2rem" />
-                                    </HeaderAvatarStyle>
-                                </ButtonBase>
+                                <HeaderAvatarStyle variant="rounded" {...bindToggle(popupState)}>
+                                    <IconSearch stroke={1.5} size="19px" />
+                                </HeaderAvatarStyle>
                             </Box>
                             <PopperStyle {...bindPopper(popupState)} transition>
                                 {({ TransitionProps }) => (
@@ -138,7 +132,7 @@ const SearchSection = () => {
                                         <Transitions type="zoom" {...TransitionProps} sx={{ transformOrigin: 'center left' }}>
                                             <Card
                                                 sx={{
-                                                    background: '#fff',
+                                                    background: theme.palette.mode === 'dark' ? theme.palette.dark[900] : '#fff',
                                                     [theme.breakpoints.down('sm')]: {
                                                         border: 0,
                                                         boxShadow: 'none'
@@ -169,16 +163,14 @@ const SearchSection = () => {
                     placeholder="Search"
                     startAdornment={
                         <InputAdornment position="start">
-                            <IconSearch stroke={1.5} size="1rem" color={theme.palette.grey[500]} />
+                            <IconSearch stroke={1.5} size="16px" color={theme.palette.grey[500]} />
                         </InputAdornment>
                     }
                     endAdornment={
                         <InputAdornment position="end">
-                            <ButtonBase sx={{ borderRadius: '12px' }}>
-                                <HeaderAvatarStyle variant="rounded">
-                                    <IconAdjustmentsHorizontal stroke={1.5} size="1.3rem" />
-                                </HeaderAvatarStyle>
-                            </ButtonBase>
+                            <HeaderAvatarStyle variant="rounded">
+                                <IconAdjustmentsHorizontal stroke={1.5} size="20px" />
+                            </HeaderAvatarStyle>
                         </InputAdornment>
                     }
                     aria-describedby="search-helper-text"

@@ -1,199 +1,187 @@
-import { lazy } from "react";
+import { lazy } from 'react';
 // project imports
-import MainLayout from "layout/MainLayout";
-import Loadable from "ui-component/Loadable";
+import MainLayout from 'layout/MainLayout';
+import Loadable from 'ui-component/Loadable';
+import PurchaseHistory from 'views/utilities/PurchaseHistory/PurchaseHistory';
+import ViewPurchaseHistory from 'views/utilities/PurchaseHistory/ViewPurchaseHistory';
+
 // dashboard routing
-const Dashboard = Loadable(lazy(() => import("views/dashboard/Default")));
+const Dashboard = Loadable(lazy(() => import('views/dashboard/Default')));
 
-//Product Route
-const Product = Loadable(lazy(() => import("views/utilities/pruduct/product")));
-const AddProduct = Loadable(
-  lazy(() => import("views/utilities/pruduct/add-product"))
-);
-const EditProduct = Loadable(
-  lazy(() => import("views/utilities/pruduct/edit-product"))
-);
+// utilities routing
+const Users = Loadable(lazy(() => import('views/utilities/users/users')));
+const ViewUsers = Loadable(lazy(() => import('views/utilities/users/view-user')));
 
-//News Route
-const News = Loadable(lazy(() => import("views/utilities/news/news")));
-const AddNews = Loadable(lazy(() => import("views/utilities/news/add-news")));
-const EditNews = Loadable(lazy(() => import("views/utilities/news/edit-news")));
+// banner routing
+const Banner = Loadable(lazy(() => import('views/utilities/Banner/banner')));
+const AddBanner = Loadable(lazy(() => import('views/utilities/Banner/add-banner')));
+const EditBanner = Loadable(lazy(() => import('views/utilities/Banner/edit-banner')));
 
-//Map Route
-const Map = Loadable(lazy(() => import("views/utilities/maps/map")));
-const EditMap = Loadable(lazy(() => import("views/utilities/maps/edit-map")));
+// category routing
+const Category = Loadable(lazy(() => import('views/utilities/category/category')));
+const AddCategory = Loadable(lazy(() => import('views/utilities/category/add-category')));
+const EditCategory = Loadable(lazy(() => import('views/utilities/category/edit-category')));
+const ViewCategory = Loadable(lazy(() => import('views/utilities/category/view-category')));
 
-//Post Route
-const Post = Loadable(lazy(() => import("views/utilities/post/post")));
-const AddPost = Loadable(lazy(() => import("views/utilities/post/add-post")));
-const EditPost = Loadable(lazy(() => import("views/utilities/post/edit-post")));
+// product Routes
+const Product = Loadable(lazy(() => import('views/utilities/product/Product')));
+const ViewProduct = Loadable(lazy(() => import('views/utilities/product/view-product')));
+const AddProduct = Loadable(lazy(() => import('views/utilities/product/add-product')));
+const EditProduct = Loadable(lazy(() => import('views/utilities/product/edit-product')));
 
-//User Route
-const User = Loadable(lazy(() => import("views/utilities/users/user")));
-const AddUser = Loadable(lazy(() => import("views/utilities/users/add-user")));
-const EditUser = Loadable(
-  lazy(() => import("views/utilities/users/edit-user"))
-);
+// HRM Router
+const Attenance = Loadable(lazy(() => import('views/utilities/HRM/attendance/attendence')));
+const Holiday = Loadable(lazy(() => import('views/utilities/HRM/holiday/holiday')));
+const AddHoliday = Loadable(lazy(() => import('views/utilities/HRM/holiday/add-holiday')));
 
-//Task Route
-const Task = Loadable(
-  lazy(() => import("views/utilities/task-management/task"))
-);
-const AddTask = Loadable(
-  lazy(() => import("views/utilities/task-management/add-task"))
-);
-const EditTask = Loadable(
-  lazy(() => import("views/utilities/task-management/edit-task"))
-);
+// staff routes
+const StaffManagement = Loadable(lazy(() => import('views/utilities/Staff Management/StaffManagement')));
+const Rolls = Loadable(lazy(() => import('views/utilities/Staff Management/Rolls')));
+const Permission = Loadable(lazy(() => import('views/utilities/Staff Management/Permission')));
+const CreateUser = Loadable(lazy(() => import('views/utilities/Staff Management/CreateUser')));
+const AddRoles = Loadable(lazy(() => import('views/utilities/Staff Management/AddRoles')));
 
-//VoterList Route
-const FamilyList = Loadable(
-  lazy(() => import("views/utilities/voter-list/family-list"))
-);
-const AddFamily = Loadable(
-  lazy(() => import("views/utilities/voter-list/add-family-list"))
-);
-
-const EditFamily = Loadable(
-  lazy(() => import("views/utilities/voter-list/edit-family-list"))
-);
-
-const MembersList = Loadable(
-  lazy(() => import("views/utilities/voter-list/member-list"))
-);
-
-const AddMember = Loadable(
-  lazy(() => import("views/utilities/voter-list/add-member-list"))
-);
+// sample page routing
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
-  path: "/",
-  element: <MainLayout />,
-  children: [
-    {
-      path: "/dashboard",
-      element: <Dashboard />,
-    },
-    {
-      children: [
+    path: '/',
+    element: <MainLayout />,
+    children: [
         {
-          path: "product",
-          element: <Product />,
+            path: '/dashboard',
+            element: <Dashboard />
         },
         {
-          path: "add-product",
-          element: <AddProduct />,
-        },
-        ,
-        {
-          path: "edit-product/:id",
-          element: <EditProduct />,
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          path: "news",
-          element: <News />,
-        },
-        {
-          path: "add-news",
-          element: <AddNews />,
-        },
-        ,
-        {
-          path: "edit-news/:id",
-          element: <EditNews />,
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          path: "maps",
-          element: <Map />,
+            children: [
+                {
+                    path: 'banner',
+                    element: <Banner />
+                },
+                {
+                    path: 'add-banner',
+                    element: <AddBanner />
+                },
+                {
+                    path: 'edit-banner/:id',
+                    element: <EditBanner />
+                }
+            ]
         },
         {
-          path: "edit-map/:id",
-          element: <EditMap />,
+            children: [
+                {
+                    path: 'staff-users',
+                    element: <StaffManagement />
+                },
+                {
+                    path: 'role',
+                    element: <Rolls />
+                },
+                {
+                    path: 'permission',
+                    element: <Permission />
+                },
+                {
+                    path: 'create-user',
+                    element: <CreateUser />
+                },
+                {
+                    path: 'add-roles',
+                    element: <AddRoles />
+                }
+            ]
         },
-      ],
-    },
-    {
-      children: [
+
         {
-          path: "family-list",
-          element: <FamilyList />,
-        },
-        {
-          path: "add-family",
-          element: <AddFamily />,
-        },
-        {
-          path: "edit-family/:id",
-          element: <EditFamily />,
-        },
-        {
-          path: "member-list",
-          element: <MembersList />,
-        },
-        {
-          path: "add-member/:id",
-          element: <AddMember />,
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          path: "post",
-          element: <Post />,
-        },
-        {
-          path: "add-post",
-          element: <AddPost />,
+            children: [
+                {
+                    path: 'purchase-history',
+                    element: <PurchaseHistory />
+                },
+                {
+                    path: 'view-purchase-history/:id',
+                    element: <ViewPurchaseHistory />
+                }
+            ]
         },
         {
-          path: "edit-post/:id",
-          element: <EditPost />,
-        },
-      ],
-    },
-    {
-      children: [
-        {
-          path: "task",
-          element: <Task />,
-        },
-        {
-          path: "add-task",
-          element: <AddTask />,
+            children: [
+                {
+                    path: 'users',
+                    element: <Users />
+                },
+                {
+                    path: 'view-user/:id',
+                    element: <ViewUsers />
+                }
+            ]
         },
         {
-          path: "edit-task/:id",
-          element: <EditTask />,
+            children: [
+                {
+                    path: 'category',
+                    element: <Category />
+                },
+                {
+                    path: 'add-category',
+                    element: <AddCategory />
+                },
+                {
+                    path: 'edit-category/:id',
+                    element: <EditCategory />
+                },
+                {
+                    path: 'view-category/:id',
+                    element: <ViewCategory />
+                }
+            ]
         },
-      ],
-    },
-    {
-      children: [
         {
-          path: "user",
-          element: <User />,
+            children: [
+                {
+                    path: 'product',
+                    element: <Product />
+                },
+                {
+                    path: 'add-product',
+                    element: <AddProduct />
+                },
+                {
+                    path: 'edit-product/:id',
+                    element: <EditProduct />
+                },
+                {
+                    path: 'view-product/:id',
+                    element: <ViewProduct />
+                }
+            ]
         },
         {
-          path: "add-user",
-          element: <AddUser />,
+            children: [
+                {
+                    path: 'attedance',
+                    element: <Attenance />
+                }
+            ]
         },
         {
-          path: "edit-user/:id",
-          element: <EditUser />,
-        },
-      ],
-    },
-  ],
+            children: [
+                {
+                    path: 'holidays',
+                    element: <Holiday />
+                },
+                {
+                    path: 'add-holiday',
+                    element: <AddHoliday />
+                },
+                {
+                    path: 'edit-holiday/:id',
+                    element: <Holiday />
+                }
+            ]
+        }
+    ]
 };
 
 export default MainRoutes;

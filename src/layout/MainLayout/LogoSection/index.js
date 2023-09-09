@@ -1,30 +1,17 @@
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-
+import { Link as RouterLink } from 'react-router-dom';
 // material-ui
-import { ButtonBase } from "@mui/material";
-import Logo1 from "../../../assets/images/icons/logo.png";
+import { Link } from '@mui/material';
+import Logo from '../../../assets/images/MY_AGRI_INPUT 2.svg';
 // project imports
-import config from "config";
-import { MENU_OPEN } from "store/actions";
+
 // ==============================|| MAIN LOGO ||============================== //
 
-const LogoSection = () => {
-  const defaultId = useSelector((state) => state.customization.defaultId);
-  const dispatch = useDispatch();
-  return (
+const LogoSection = () => (
     <center>
-      {" "}
-      <ButtonBase
-        disableRipple
-        onClick={() => dispatch({ type: MENU_OPEN, id: defaultId })}
-        component={Link}
-        to={config.defaultPath}
-      >
-        <img src={Logo1} width={100} height={50} />
-      </ButtonBase>
+        <Link to="dashboard">
+            <img src={Logo} alt="image" />
+        </Link>
     </center>
-  );
-};
+);
 
 export default LogoSection;

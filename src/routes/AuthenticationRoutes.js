@@ -11,7 +11,7 @@ const AuthLogin3 = Loadable(lazy(() => import('views/pages/authentication/authen
 const AuthenticationRoutes = {
     path: '/',
     element: <AuthLogin3 />,
-    
+   
 };
 
 export default AuthenticationRoutes;

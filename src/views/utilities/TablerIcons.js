@@ -1,3 +1,4 @@
+// material-ui
 import { styled } from '@mui/material/styles';
 import { Card } from '@mui/material';
 
@@ -12,7 +13,7 @@ import LinkIcon from '@mui/icons-material/Link';
 const IFrameWrapper = styled('iframe')(({ theme }) => ({
     height: 'calc(100vh - 210px)',
     border: '1px solid',
-    borderColor: theme.palette.primary.light
+    borderColor: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.primary.light
 }));
 
 // =============================|| TABLER ICONS ||============================= //

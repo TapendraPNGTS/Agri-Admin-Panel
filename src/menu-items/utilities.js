@@ -1,152 +1,140 @@
 // assets
-import {
-  IconArticle,
-  IconMap2,
-  IconBrandBlogger,
-  IconListNumbers,
-  IconUsers,
-  IconChecklist,
-  IconHandFinger,
-} from "@tabler/icons";
-
+import { IconReport, IconUsers, IconFileText, IconQuestionMark, IconFolder, IconBooks } from '@tabler/icons';
 // constant
 const icons = {
-  IconMap2,
-  IconArticle,
-  IconBrandBlogger,
-  IconListNumbers,
-  IconUsers,
-  IconChecklist,
-  IconHandFinger,
+    IconReport,
+    IconUsers,
+    IconFileText,
+    IconQuestionMark,
+    IconFolder,
+    IconBooks
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
 
 const utilities = {
-  id: "utilities",
-  title: "Utilities",
-  type: "group",
-  children: [
-    {
-      id: "banner",
-      title: "Banner",
-      type: "item",
-      url: "/banner",
-      icon: icons.IconListNumbers,
-      breadcrumbs: true,
-    },
-    {
-      id: "category",
-      title: "Category",
-      icon: icons.IconListNumbers,
-      type: "collapse",
-      children: [
+    id: 'utilities',
+    title: 'Utilities',
+    type: 'group',
+    children: [
         {
-          id: "category-list",
-          title: "Category List",
-          type: "item",
-          url: "/category-list",
-          breadcrumbs: true,
+            id: 'banner',
+            title: 'Banner',
+            type: 'item',
+            url: '/banner',
+            icon: icons.IconFileText
         },
         {
-          id: "add-category",
-          title: "Add Category",
-          type: "item",
-          url: "/add-category",
-          breadcrumbs: true,
-        },
-      ],
-    },
-    {
-      id: "product-List",
-      title: "Product List",
-      icon: icons.IconHandFinger,
-      type: "collapse",
-      children: [
-        {
-          id: "product-list",
-          title: "Product List",
-          type: "item",
-          url: "/product-list",
-          breadcrumbs: true,
-        },
-      ],
-    },
-    {
-      id: "staffmanagement",
-      title: "STAFF MANAGEMENT",
-      type: "collapse",
-      icon: icons.IconUsers,
-      children: [
-        {
-          id: "role",
-          title: "ROLES",
-          type: "item",
-          url: "/role",
-          breadcrumbs: false,
+            id: 'category',
+            title: 'Category',
+            type: 'item',
+            url: '/category',
+            icon: icons.IconReport
         },
         {
-          id: "permission",
-          title: "PermissionHistory",
-          type: "item",
-          url: "/permission-history",
-          breadcrumbs: false,
+            id: 'product',
+            title: 'Product',
+            type: 'item',
+            url: '/product',
+            icon: icons.IconFileText
         },
         {
-          id: "staff-users",
-          title: "STAFF USERS",
-          type: "item",
-          url: "/staff-users",
-          breadcrumbs: false,
+            id: 'staffmanagement',
+            title: 'Staff Management',
+            type: 'collapse',
+            icon: icons.IconUsers,
+            children: [
+                {
+                    id: 'role',
+                    title: 'Roles',
+                    type: 'item',
+                    url: '/role',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'permission',
+                    title: 'Permission',
+                    type: 'item',
+                    url: '/permission',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'staff-users',
+                    title: 'Staff Users',
+                    type: 'item',
+                    url: '/staff-users',
+                    breadcrumbs: false
+                },
+                {
+                    id: 'add-staff',
+                    title: 'Add Staff',
+                    type: 'item',
+                    url: '/add-staff',
+                    breadcrumbs: false
+                }
+            ]
         },
-      ],
-    },
-    {
-      id: "hrm",
-      title: "HRM",
-      icon: icons.IconBrandBlogger,
-      type: "collapse",
-      children: [
+        // {
+        //     id: 'hrm',
+        //     title: 'HRM',
+        //     type: 'collapse',
+        //     icon: icons.IconUsers,
+        //     breadcrumbs: false,
+        //     children: [
+        //         {
+        //             id: 'attedance',
+        //             title: 'Attedance',
+        //             type: 'item',
+        //             url: '/attedance',
+        //             breadcrumbs: false
+        //         },
+        //         {
+        //             id: 'leave',
+        //             title: 'Leaves',
+        //             type: 'item',
+        //             url: '/leave',
+        //             breadcrumbs: false
+        //         },
+        //         {
+        //             id: 'holidays',
+        //             title: 'Holidays',
+        //             type: 'item',
+        //             url: '/holidays',
+        //             breadcrumbs: false
+        //         },
+        //         {
+        //             id: 'appreciations',
+        //             title: 'Appreciations',
+        //             type: 'item',
+        //             url: '/appreciations',
+        //             breadcrumbs: false
+        //         }
+        //     ]
+        // },
         {
-          id: "attenance",
-          title: "Attenance",
-          type: "item",
-          url: "/attenance",
-          breadcrumbs: true,
+            id: 'purchase',
+            title: 'Purchase History',
+            type: 'item',
+            url: '/purchase-history',
+            icon: icons.IconFileText
         },
         {
-          id: "leave",
-          title: "Leaves",
-          type: "item",
-          url: "/leave",
-          breadcrumbs: true,
-        },
-      ],
-    },
-    {
-      id: "purchase-history",
-      title: "Purchase History",
-      icon: icons.IconMap2,
-      type: "item",
-      url: "/purchase-history",
-      breadcrumbs: true,
-    },
-    {
-      id: "users",
-      title: "Manage User",
-      icon: icons.IconUsers,
-      type: "collapse",
-      children: [
-        {
-          id: "user-list",
-          title: "User List",
-          type: "item",
-          url: "/user",
-          breadcrumbs: true,
-        },
-      ],
-    },
-  ],
+            id: 'users',
+            title: 'Users',
+            type: 'collapse',
+            icon: icons.IconUsers,
+            breadcrumbs: false,
+            children: [
+                {
+                    id: 'all-users',
+                    title: 'All Users',
+                    type: 'item',
+                    url: '/users',
+                    breadcrumbs: false
+                }
+            ]
+        }
+    ]
 };
 
 export default utilities;

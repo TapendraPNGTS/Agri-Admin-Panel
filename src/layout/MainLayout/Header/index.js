@@ -1,22 +1,34 @@
-import PropTypes from 'prop-types';
-
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Box, ButtonBase } from '@mui/material';
+import { Avatar, Box, useMediaQuery } from '@mui/material';
 
 // project imports
+import LAYOUT_CONST from 'constant';
+import useConfig from 'hooks/useConfig';
 import LogoSection from '../LogoSection';
 import SearchSection from './SearchSection';
+import MobileSection from './MobileSection';
 import ProfileSection from './ProfileSection';
+import LocalizationSection from './LocalizationSection';
+import MegaMenuSection from './MegaMenuSection';
 import NotificationSection from './NotificationSection';
+
+import { useDispatch, useSelector } from 'store';
+import { openDrawer } from 'store/slices/menu';
 
 // assets
 import { IconMenu2 } from '@tabler/icons';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
-const Header = ({ handleLeftDrawerToggle }) => {
+const Header = () => {
     const theme = useTheme();
+
+    const dispatch = useDispatch();
+    const { drawerOpen } = useSelector((state) => state.menu);
+
+    const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
+    const { layout } = useConfig();
 
     return (
         <>
@@ -33,40 +45,55 @@ const Header = ({ handleLeftDrawerToggle }) => {
                 <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
                     <LogoSection />
                 </Box>
-                <ButtonBase sx={{ borderRadius: '12px', overflow: 'hidden' }}>
+
+                {layout === LAYOUT_CONST.VERTICAL_LAYOUT || (layout === LAYOUT_CONST.HORIZONTAL_LAYOUT && matchDownMd) ? (
                     <Avatar
                         variant="rounded"
                         sx={{
                             ...theme.typography.commonAvatar,
                             ...theme.typography.mediumAvatar,
+                            overflow: 'hidden',
                             transition: 'all .2s ease-in-out',
-                            background: theme.palette.secondary.light,
-                            color: theme.palette.secondary.dark,
+                            background: theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.secondary.light,
+                            color: theme.palette.mode === 'dark' ? theme.palette.secondary.main : theme.palette.secondary.dark,
                             '&:hover': {
-                                background: theme.palette.secondary.dark,
-                                color: theme.palette.secondary.light
+                                background: theme.palette.mode === 'dark' ? theme.palette.secondary.main : theme.palette.secondary.dark,
+                                color: theme.palette.mode === 'dark' ? theme.palette.secondary.light : theme.palette.secondary.light
                             }
                         }}
-                        onClick={handleLeftDrawerToggle}
+                        onClick={() => dispatch(openDrawer(!drawerOpen))}
                         color="inherit"
                     >
-                        <IconMenu2 stroke={1.5} size="1.3rem" />
+                        <IconMenu2 stroke={1.5} size="20px" />
                     </Avatar>
-                </ButtonBase>
+                ) : null}
             </Box>
 
             {/* header search */}
+            {/* <SearchSection /> */}
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ flexGrow: 1 }} />
+
+            {/* mega-menu */}
+            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                {/* <MegaMenuSection /> */}
+            </Box>
+
+            {/* live customization & localization */}
+            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                {/* <LocalizationSection /> */}
+            </Box>
 
             {/* notification & profile */}
+            <NotificationSection />
             <ProfileSection />
+
+            {/* mobile header */}
+            <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+                <MobileSection />
+            </Box>
         </>
     );
-};
-
-Header.propTypes = {
-    handleLeftDrawerToggle: PropTypes.func
 };
 
 export default Header;

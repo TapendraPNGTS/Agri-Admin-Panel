@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import React from 'react';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -20,7 +20,7 @@ import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const CardWrapper = styled(MainCard)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: theme.palette.mode === 'dark' ? theme.palette.dark.dark : theme.palette.primary.dark,
     color: '#fff',
     overflow: 'hidden',
     position: 'relative',
@@ -33,7 +33,10 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
         position: 'absolute',
         width: 210,
         height: 210,
-        background: theme.palette.primary[800],
+        background:
+            theme.palette.mode === 'dark'
+                ? `linear-gradient(210.04deg, ${theme.palette.primary.dark} -50.94%, rgba(144, 202, 249, 0) 95.49%)`
+                : theme.palette.primary[800],
         borderRadius: '50%',
         zIndex: 1,
         top: -85,
@@ -49,7 +52,10 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
         zIndex: 1,
         width: 210,
         height: 210,
-        background: theme.palette.primary[800],
+        background:
+            theme.palette.mode === 'dark'
+                ? `linear-gradient(140.9deg, ${theme.palette.primary.dark} -14.02%, rgba(144, 202, 249, 0) 82.50%)`
+                : theme.palette.primary[800],
         borderRadius: '50%',
         top: -125,
         right: -15,
@@ -66,7 +72,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 const TotalOrderLineChartCard = ({ isLoading }) => {
     const theme = useTheme();
 
-    const [timeValue, setTimeValue] = useState(false);
+    const [timeValue, setTimeValue] = React.useState(false);
     const handleChangeTime = (event, newValue) => {
         setTimeValue(newValue);
     };
@@ -87,7 +93,8 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                                             sx={{
                                                 ...theme.typography.commonAvatar,
                                                 ...theme.typography.largeAvatar,
-                                                backgroundColor: theme.palette.primary[800],
+                                                backgroundColor:
+                                                    theme.palette.mode === 'dark' ? theme.palette.dark.main : theme.palette.primary[800],
                                                 color: '#fff',
                                                 mt: 1
                                             }}
@@ -149,7 +156,10 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
                                                     sx={{
                                                         fontSize: '1rem',
                                                         fontWeight: 500,
-                                                        color: theme.palette.primary[200]
+                                                        color:
+                                                            theme.palette.mode === 'dark'
+                                                                ? theme.palette.text.secondary
+                                                                : theme.palette.primary[200]
                                                     }}
                                                 >
                                                     Total Order

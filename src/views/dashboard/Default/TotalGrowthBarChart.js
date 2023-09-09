@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -11,6 +10,7 @@ import ApexCharts from 'apexcharts';
 import Chart from 'react-apexcharts';
 
 // project imports
+import useConfig from 'hooks/useConfig';
 import SkeletonTotalGrowthBarChart from 'ui-component/cards/Skeleton/TotalGrowthBarChart';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
@@ -36,11 +36,10 @@ const status = [
 // ==============================|| DASHBOARD DEFAULT - TOTAL GROWTH BAR CHART ||============================== //
 
 const TotalGrowthBarChart = ({ isLoading }) => {
-    const [value, setValue] = useState('today');
+    const [value, setValue] = React.useState('today');
     const theme = useTheme();
-    const customization = useSelector((state) => state.customization);
+    const { navType, rtlLayout } = useConfig();
 
-    const { navType } = customization;
     const { primary } = theme.palette.text;
     const darkLight = theme.palette.dark.light;
     const grey200 = theme.palette.grey[200];
@@ -51,7 +50,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
     const secondaryMain = theme.palette.secondary.main;
     const secondaryLight = theme.palette.secondary.light;
 
-    useEffect(() => {
+    React.useEffect(() => {
         const newChartData = {
             ...chartData.options,
             colors: [primary200, primaryDark, secondaryMain, secondaryLight],
@@ -70,10 +69,10 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                 }
             },
             grid: {
-                borderColor: grey200
+                borderColor: navType === 'dark' ? darkLight + 20 : grey200
             },
             tooltip: {
-                theme: 'light'
+                theme: navType === 'dark' ? 'dark' : 'light'
             },
             legend: {
                 labels: {
@@ -123,7 +122,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sx={{ '& .apexcharts-legend-text': { marginLeft: rtlLayout ? '8px' : 'initial' } }}>
                             <Chart {...chartData} />
                         </Grid>
                     </Grid>

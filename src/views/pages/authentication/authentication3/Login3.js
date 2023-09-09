@@ -1,88 +1,76 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
+
 // material-ui
-import { useTheme } from "@mui/material/styles";
-import { Divider, Grid, Stack, Typography, useMediaQuery } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
+import { Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
+
 // project imports
-import AuthWrapper1 from "../AuthWrapper1";
-import AuthCardWrapper from "../AuthCardWrapper";
-import AuthLogin from "../auth-forms/AuthLogin";
-import Logo from "../../../../assets/images/icons/logo.png";
+import AuthWrapper1 from '../AuthWrapper1';
+import AuthCardWrapper from '../AuthCardWrapper';
+import AuthLogin from '../auth-forms/AuthLogin';
+import Logo from '../../../../assets/images/MY_AGRI_INPUT 2.svg';
+import AuthFooter from 'ui-component/cards/AuthFooter';
+
 // assets
+
 // ================================|| AUTH3 - LOGIN ||================================ //
 
 const Login = () => {
-  const theme = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
+    const theme = useTheme();
+    const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
 
-  return (
-    <AuthWrapper1>
-      <Grid
-        container
-        direction="column"
-        justifyContent="flex-end"
-        sx={{ minHeight: "100vh" }}
-      >
-        <Grid item xs={12}>
-          <Grid
-            container
-            justifyContent="center"
-            alignItems="center"
-            sx={{ minHeight: "calc(100vh - 68px)" }}
-          >
-            <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
-              <AuthCardWrapper>
-                <Grid
-                  container
-                  spacing={2}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Grid item sx={{ mb: 3 }}>
-                    <Link to="#">
-                      <img src={Logo} width={150} height={120} />
-                    </Link>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Grid
-                      container
-                      direction={matchDownSM ? "column-reverse" : "row"}
-                      alignItems="center"
-                      justifyContent="center"
-                    >
-                      <Grid item>
-                        <Stack
-                          alignItems="center"
-                          justifyContent="center"
-                          spacing={1}
-                        >
-                          <Typography
-                            color={theme.palette.secondary.main}
-                            gutterBottom
-                            variant={matchDownSM ? "h3" : "h2"}
-                          >
-                            Hi, Welcome Back
-                          </Typography>
-                        </Stack>
-                      </Grid>
+    return (
+        <AuthWrapper1>
+            <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '100vh' }}>
+                <Grid item xs={12}>
+                    <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: 'calc(100vh - 68px)' }}>
+                        <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
+                            <AuthCardWrapper>
+                                <Grid container spacing={2} alignItems="center" justifyContent="center">
+                                    <Grid item sx={{ mb: 3 }}>
+                                        <Link to="#">
+                                            <img src={Logo} width={100} alt="image"/>
+                                        </Link>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Grid
+                                            container
+                                            direction={matchDownSM ? 'column-reverse' : 'row'}
+                                            alignItems="center"
+                                            justifyContent="center"
+                                        >
+                                            <Grid item>
+                                                <Stack alignItems="center" justifyContent="center" spacing={1}>
+                                                    <Typography
+                                                        color={theme.palette.secondary.main}
+                                                        gutterBottom
+                                                        variant={matchDownSM ? 'h3' : 'h2'}
+                                                    >
+                                                        Hi, Welcome Back
+                                                    </Typography>
+
+                                                </Stack>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <AuthLogin />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Divider />
+                                    </Grid>
+
+                                </Grid>
+                            </AuthCardWrapper>
+                        </Grid>
                     </Grid>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AuthLogin />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Divider />
-                  </Grid>
                 </Grid>
-              </AuthCardWrapper>
+                <Grid item xs={12} sx={{ m: 3, mt: 1 }}>
+                    <AuthFooter />
+                </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} sx={{ m: 3, mt: 1 }}>
-          {/* <AuthFooter /> */}
-        </Grid>
-      </Grid>
-    </AuthWrapper1>
-  );
+        </AuthWrapper1>
+    );
 };
 
 export default Login;

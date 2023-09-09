@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import React from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -22,7 +22,7 @@ import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDown
 const PopularCard = ({ isLoading }) => {
     const theme = useTheme();
 
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);

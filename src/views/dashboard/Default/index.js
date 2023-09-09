@@ -1,101 +1,95 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useState } from 'react';
 // material-ui
-import { Grid } from "@mui/material";
-
+import { Grid } from '@mui/material';
 // project imports
-import EarningCard from "./EarningCard";
-import { gridSpacing } from "store/constant";
+import EarningCard from './EarningCard';
+import { gridSpacing } from 'store/constant';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
-
 const Dashboard = () => {
-  const [isLoading, setLoading] = useState(true);
-  const [totalUser, setTotalUser] = useState(0);
-  const [activeProduct, setActiveProduct] = useState(0);
-  const [totalQr, setTotalQr] = useState(0);
-  const [totalQrRedeem, setTotalQrRedeem] = useState(0);
-  const [totalPendingQr, setTotalPendingQr] = useState(0);
+    const [isLoading, setLoading] = useState(true);
+    const [userData, setUserData] = useState(0);
+    const [proData, setProData] = useState(0);
+    const [cateData, setCateData] = useState(0);
+    const [preMonthAmount, setPreMonthAmount] = useState(0);
+    const [preMonthOrder, setPreMonthOrder] = useState(0);
+    const [currMonthAmount, setCurrMonthAmount] = useState(0);
+    const [currMonthOrder, setCurrMonthOrder] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [totalOrder, setTotalOrder] = useState(0);
 
-  function getdashboard() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append("token", localStorage.getItem("token"));
-    myHeaders.append("Content-Type", "application/json");
+    function getalldata() {
+        const myHeaders = new Headers();
+        myHeaders.append('authkey', process.env.REACT_APP_AUTH_KEY);
+        myHeaders.append('Authorization', 'Bearer ' +localStorage.getItem('token'));
+        myHeaders.append('Content-Type', 'application/json');
+        const raw = JSON.stringify({
+            adminId: localStorage.getItem('userId')
+        });
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+        fetch(`${process.env.REACT_APP_API_URL}dashboard`, requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+                setUserData(result.user);
+                setProData(result.product);
+                setCateData(result.category);
+                setPreMonthAmount(result.order.previous_month_amount);
+                setPreMonthOrder(result.order.previous_month_order);
+                setCurrMonthAmount(result.order.current_month_amount);
+                setCurrMonthOrder(result.order.current_month_order);
+                setTotalAmount(result.order.total_amount);
+                setTotalOrder(result.total_order);
+            })
+            .catch((error) => console.log('error', error));
+    }
 
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
+    useEffect(() => {
+        getalldata();
+        setLoading(false);
+    }, []);
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}dashboard`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code == 200) {
-          setTotalUser(result.data.user);
-          setActiveProduct(result.data.product);
-          setTotalQr(result.data.qrCount);
-          setTotalQrRedeem(result.data.qrApply);         
-          setTotalPendingQr(result.data.coupon);         
-        }
-      })
-      .catch((error) => {});
-  }
-  useEffect(() => {
-    setLoading(false);
-    getdashboard();
-  }, []);
-
-  return (
-    <Grid container spacing={gridSpacing}>
-      <Grid item xs={12}>
+    return (
         <Grid container spacing={gridSpacing}>
-          <Grid item lg={4} md={6} sm={6} xs={12}>
-            <EarningCard
-              isLoading={isLoading}
-              isCount={totalUser}
-              isTitle={`Total User`}
-            />
-          </Grid>
-          <Grid item lg={4} md={6} sm={6} xs={12}>
-            <EarningCard
-              isLoading={isLoading}
-              isCount={activeProduct}
-              isTitle={`Total Active Product`}
-            />
-          </Grid>
-          <Grid item lg={4} md={6} sm={6} xs={12}>
-            <EarningCard
-              isLoading={isLoading}
-              isCount={totalQr}
-              isTitle={`Total QR`}
-            />
-          </Grid>
+            <Grid item xs={12}>
+                <Grid container spacing={gridSpacing}>
+                    <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <EarningCard isLoading={isLoading} isCount={userData} isTitle="Total User" />
+                    </Grid>
+                    <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <EarningCard isLoading={isLoading} isCount={cateData} isTitle="Total Category" />
+                    </Grid>
+                    <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <EarningCard isLoading={isLoading} isCount={proData} isTitle="Total Product" />
+                    </Grid>
 
-          <Grid item lg={4} md={6} sm={6} xs={12}>
-            <EarningCard
-              isLoading={isLoading}
-              isCount={totalQrRedeem}
-              isTitle={`Total Redeem QR`}
-            />
-          </Grid>
-          <Grid item lg={4} md={6} sm={6} xs={12}>
-            <EarningCard
-              isLoading={isLoading}
-              isCount={totalPendingQr}
-              isTitle={`Total Coupon`}
-            />
-          </Grid>
+                    <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <EarningCard isLoading={isLoading} isCount={preMonthAmount} isTitle="Previous Month Amount" />
+                    </Grid>
+                    <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <EarningCard isLoading={isLoading} isCount={preMonthOrder} isTitle="Previous Month Order" />
+                    </Grid>
+
+                    <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <EarningCard isLoading={isLoading} isCount={currMonthAmount} isTitle="Current Month Amount" />
+                    </Grid>
+                    <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <EarningCard isLoading={isLoading} isCount={currMonthOrder} isTitle="Current Month Order" />
+                    </Grid>
+                    <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <EarningCard isLoading={isLoading} isCount={totalAmount} isTitle="Total Amount" />
+                    </Grid>
+                    <Grid item lg={4} md={6} sm={6} xs={12}>
+                        <EarningCard isLoading={isLoading} isCount={totalOrder} isTitle="Total Order" />
+                    </Grid>
+                </Grid>
+            </Grid>
         </Grid>
-      </Grid>
-    </Grid>
-  );
+    );
 };
 
 export default Dashboard;
