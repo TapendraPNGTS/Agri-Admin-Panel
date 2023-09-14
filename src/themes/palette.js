@@ -1,6 +1,5 @@
 // material-ui
 import { createTheme } from '@mui/material/styles';
-
 // assets
 import defaultColor from 'assets/scss/_themes-vars.module.scss';
 import theme1 from 'assets/scss/_theme1.module.scss';

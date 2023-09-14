@@ -1,6 +1,6 @@
 // material-ui
 import { useTheme } from '@mui/material/styles';
-import { Avatar, Box, useMediaQuery } from '@mui/material';
+import { Avatar, Box, useMediaQuery, Switch } from '@mui/material';
 
 // project imports
 import LAYOUT_CONST from 'constant';
@@ -82,6 +82,7 @@ const Header = () => {
             {/* live customization & localization */}
             <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
                 {/* <LocalizationSection /> */}
+                {/* <Switch onCh color="warning" /> */}
             </Box>
 
             {/* notification & profile */}

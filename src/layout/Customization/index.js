@@ -1,13 +1,10 @@
 import { useState } from 'react';
-
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import { Drawer, Fab, Grid, IconButton, Tooltip } from '@mui/material';
 import { IconSettings } from '@tabler/icons';
-
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
-
 // project imports
 import BorderRadius from './BorderRadius';
 import Layout from './Layout';
@@ -31,8 +28,8 @@ const Customization = () => {
 
     return (
         <>
-            {/* toggle button */}
-            <Tooltip title="Live Customize">
+            {/* toggle button fro changing live theme*/}
+            {/* <Tooltip title="Live Customize">
                 <Fab
                     component="div"
                     onClick={handleToggle}
@@ -58,7 +55,7 @@ const Customization = () => {
                         </IconButton>
                     </AnimateButton>
                 </Fab>
-            </Tooltip>
+            </Tooltip> */}
 
             <Drawer
                 anchor="right"

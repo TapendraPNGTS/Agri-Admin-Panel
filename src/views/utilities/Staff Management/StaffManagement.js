@@ -15,9 +15,12 @@ import MainCard from "ui-component/cards/MainCard";
 import TableBody from "@mui/material/TableBody";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import swal from "sweetalert";
+import { toast } from "react-toastify";
 import { IconButton, Stack, Tooltip, Typography, Chip } from "@mui/material";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , Link } from "react-router-dom";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const StaffManagement = () => {
   const navigate = useNavigate();
@@ -26,47 +29,13 @@ const StaffManagement = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState("");
 
-  // const exportToExcel = () => {
-  //   const workbook = new ExcelJS.Workbook();
-  //   const worksheet = workbook.addWorksheet('Sheet 1');
-  //   // Get the table data
-  //   const table = document.getElementById('my-table');
-  //   const rows = table.getElementsByTagName('tr');
-  //   worksheet.addRow([
-  //     'S.No',
-  //     'Category ID',
-  //     'Category Name',
-  //     'Status'
-  //   ]
-  //   );
-
-  //   // Iterate over the rows and cells of the table
-  //   for (let i = 0; i < rows.length; i++) {
-  //     const cells = rows[i].getElementsByTagName('td');
-  //     const rowData = [];
-
-  //     for (let j = 0; j < cells.length; j++) {
-  //       if (j !== 2) {
-  //         rowData.push(cells[j].innerText);
-  //       }
-  //     }
-  //     worksheet.addRow(rowData);
-  //   }
-  //   // Create a buffer and save the workbook
-  //   workbook.xlsx.writeBuffer().then((buffer) => {
-  //     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  //     const url = URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = 'category.xlsx';
-  //     a.click();
-  //   });
-  // };
-
   function getAllStaff() {
     var myHeaders = new Headers();
     myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append("token", localStorage.getItem("token"));
+    myHeaders.append(
+      "Authorization",
+      "Bearer " + localStorage.getItem("token")
+    );
     myHeaders.append("Content-Type", "application/json");
     var raw = JSON.stringify({
       adminId: localStorage.getItem("userId"),
@@ -88,85 +57,55 @@ const StaffManagement = () => {
     getAllStaff();
   }, []);
 
-  // useEffect(() => {
-  // }, [rows]);
+  const DeleteCategory = (str) => () => {
+    swal({
+      title: "Are you sure want to delete?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        toast.success("Deleted Successfully", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        var myHeaders = new Headers();
+        myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
+        myHeaders.append(
+          "Authorization",
+          "Bearer " + localStorage.getItem("token")
+        );
+        myHeaders.append("Content-Type", "application/json");
 
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
+        var raw = JSON.stringify({
+          adminId: localStorage.getItem("userId"),
+          roleId: str,
+        });
 
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(+event.target.value);
-  //   setPage(0);
-  // };
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow",
+        };
 
-  // // const style = {
-  // //   position: "absolute",
-  // //   top: "50%",
-  // //   left: "50%",
-  // //   transform: "translate(-50%, -50%)",
-  // //   width: 400,
-  // //   bgcolor: "background.paper",
-  // //   border: "2px solid #000",
-  // //   boxShadow: 24,
-  // //   p: 2,
-  // // };
-
-  // const DeleteCategory = (str) => () => {
-  //   swal({
-  //     title: "Are you sure want to delete?",
-  //     icon: "warning",
-  //     buttons: true,
-  //     dangerMode: true,
-  //   }).then((willDelete) => {
-  //     if (willDelete) {
-  //       toast.success("Deleted Successfully", {
-  //         position: toast.POSITION.TOP_CENTER,
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true
-  //       });
-  //       var myHeaders = new Headers();
-  //       myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  //       myHeaders.append("token", localStorage.getItem("token"));
-  //       myHeaders.append("Content-Type", "application/json");
-
-  //       var raw = JSON.stringify({
-  //         adminId: localStorage.getItem("userId"),
-  //         categoryId: str,
-  //       });
-
-  //       var requestOptions = {
-  //         method: "POST",
-  //         headers: myHeaders,
-  //         body: raw,
-  //         redirect: "follow",
-  //       };
-
-  //       fetch(`${process.env.REACT_APP_API_URL}deleteCategory`, requestOptions
-  //       )
-  //         .then((response) => response.text())
-  //         .then((result) => {
-  //           getalldata();
-  //         })
-  //         .catch((error) => console.log("error", error));
-  //     } else {
-  //     }
-  //   });
-  // };
+        fetch(`${process.env.REACT_APP_API_URL}deleteRole`, requestOptions)
+          .then((response) => response.text())
+          .then((result) => {
+            getAllStaff();
+          })
+          .catch((error) => console.log("error", error));
+      } else {
+      }
+    });
+  };
 
   return (
     <>
-      <TextField
-        id="outlined-search"
-        label="Search field"
-        type="search"
-        onChange={(e) => {
-          setSearch(e.target.value);
-        }}
-      />
       <MainCard
         title={
           <Grid
@@ -175,6 +114,16 @@ const StaffManagement = () => {
             justifyContent="space-between"
             spacing={gridSpacing}
           >
+            <Grid item xs={12} md={12}>
+              <TextField
+                id="outlined-search"
+                label="Search field"
+                type="search"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+              />
+            </Grid>
             <Grid item>
               <Typography variant="h3">Manage User</Typography>
             </Grid>
@@ -211,11 +160,12 @@ const StaffManagement = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>ID</TableCell>
-                      <TableCell>Status </TableCell>
+                      {/* <TableCell>Status </TableCell> */}
                       <TableCell>Roll ID</TableCell>
                       <TableCell>Name</TableCell>
                       <TableCell>Email</TableCell>
                       <TableCell>Phone</TableCell>
+                      <TableCell>Type</TableCell>
                       <TableCell align="center" sx={{ pr: 3 }}>
                         Actions
                       </TableCell>
@@ -245,26 +195,11 @@ const StaffManagement = () => {
                             <TableCell sx={{ pl: 3 }} align="start">
                               {index + 1}
                             </TableCell>
-
-                            <TableCell align="start">
-                              {row.RoleID.IsActive ? (
-                                <Chip
-                                  label="Active"
-                                  color="success"
-                                  size="small"
-                                />
-                              ) : (
-                                <Chip
-                                  label="Inactive"
-                                  chipcolor="orange"
-                                  size="small"
-                                />
-                              )}
-                            </TableCell>
-                            <TableCell>{row.RoleID.RoleID}</TableCell>
+                            <TableCell>{row.RoleID}</TableCell>
                             <TableCell>{row.UserName}</TableCell>
                             <TableCell align="start">{row.Email}</TableCell>
                             <TableCell align="start">{row.Contact}</TableCell>
+                            <TableCell align="start">{row.Type}</TableCell>
                             <TableCell align="center" sx={{ pr: 3 }}>
                               <Stack
                                 direction="row"
@@ -274,9 +209,9 @@ const StaffManagement = () => {
                                 <Tooltip
                                   placement="top"
                                   title="Edit"
-                                  // onClick={(e)=>{
-                                  //   navigate(`/edit-category/${row.CategoryID}`)
-                                  // }}
+                                  onClick={(e)=>{
+                                    navigate(`/edit-user/${row.StaffID}`)
+                                  }}
                                   data-target={`#`}
                                 >
                                   <IconButton
@@ -287,11 +222,22 @@ const StaffManagement = () => {
                                     <EditIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
                                 </Tooltip>
-
+                                <Link to={`/view-staff/${row.StaffID}`}>
+                                  <IconButton
+                                    color="primary"
+                                    title="view Product"
+                                    aria-label="view"
+                                    size="large"
+                                  >
+                                    <VisibilityIcon
+                                      sx={{ fontSize: "1.1rem" }}
+                                    />
+                                  </IconButton>
+                                </Link>
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  // onClick={DeleteCategory(`${row.CategoryID}`)}
+                                  onClick={DeleteCategory(`${row.StaffID}`)}
                                 >
                                   <IconButton
                                     color="primary"

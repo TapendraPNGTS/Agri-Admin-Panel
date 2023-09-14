@@ -37,7 +37,7 @@ import useAuth from 'hooks/useAuth';
 import User1 from 'assets/images/users/user-round.svg';
 
 // assets
-import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
+import { IconLogout, IconLock, IconSearch, IconSettings, IconUser } from '@tabler/icons';
 import useConfig from 'hooks/useConfig';
 
 // ==============================|| PROFILE MENU ||============================== //
@@ -87,6 +87,46 @@ const ProfileSection = () => {
 
         prevOpen.current = open;
     }, [open]);
+
+    const [name , setName] = useState('');
+    const [email , setEmail] = useState('');
+
+    function staffDetail() {
+        var myHeaders = new Headers();
+        myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
+        myHeaders.append(
+            "Authorization",
+            "Bearer " + localStorage.getItem("token")
+          );
+        myHeaders.append("Content-Type", "application/json");
+    
+        var raw = JSON.stringify({
+          adminId: localStorage.getItem("userId"),
+        });
+    
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow",
+        };
+    
+        fetch(`${process.env.REACT_APP_API_URL}staffDetail`, requestOptions)
+          .then((response) => response.json())
+          .then((result) => {
+            if (result.code == 200) {
+              setName(result.data.UserName);
+              setEmail(result.data.Email);
+            }else if(result.code == 201 &&result.status == 'accessDenied'){
+                localStorage.clear()
+                navigate('/')
+            }
+          })
+          .catch((error) => {});
+      }
+      useEffect(() => {
+        staffDetail();
+      }, []);
 
     return (
         <>
@@ -160,27 +200,11 @@ const ProfileSection = () => {
                                                 <Stack direction="row" spacing={0.5} alignItems="center">
                                                     <Typography variant="h4">Good Morning,</Typography>
                                                     <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                                                        {user?.name}
+                                                        {name}
                                                     </Typography>
                                                 </Stack>
-                                                <Typography variant="subtitle2">Project Admin</Typography>
+                                                <Typography variant="subtitle2">Email:- {email}</Typography>
                                             </Stack>
-                                            <OutlinedInput
-                                                sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
-                                                id="input-search-profile"
-                                                value={value}
-                                                onChange={(e) => setValue(e.target.value)}
-                                                placeholder="Search profile options"
-                                                startAdornment={
-                                                    <InputAdornment position="start">
-                                                        <IconSearch stroke={1.5} size="16px" color={theme.palette.grey[500]} />
-                                                    </InputAdornment>
-                                                }
-                                                aria-describedby="search-helper-text"
-                                                inputProps={{
-                                                    'aria-label': 'weight'
-                                                }}
-                                            />
                                             <Divider />
                                         </Box>
                                         <PerfectScrollbar
@@ -191,7 +215,6 @@ const ProfileSection = () => {
                                             }}
                                         >
                                             <Box sx={{ p: 2, pt: 0 }}>
-                                                <UpgradePlanCard />
                                                 <Divider />
                                                 <Card
                                                     sx={{
@@ -202,41 +225,6 @@ const ProfileSection = () => {
                                                         my: 2
                                                     }}
                                                 >
-                                                    <CardContent>
-                                                        <Grid container spacing={3} direction="column">
-                                                            <Grid item>
-                                                                <Grid item container alignItems="center" justifyContent="space-between">
-                                                                    <Grid item>
-                                                                        <Typography variant="subtitle1">Start DND Mode</Typography>
-                                                                    </Grid>
-                                                                    <Grid item>
-                                                                        <Switch
-                                                                            color="primary"
-                                                                            checked={sdm}
-                                                                            onChange={(e) => setSdm(e.target.checked)}
-                                                                            name="sdm"
-                                                                            size="small"
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-                                                            </Grid>
-                                                            <Grid item>
-                                                                <Grid item container alignItems="center" justifyContent="space-between">
-                                                                    <Grid item>
-                                                                        <Typography variant="subtitle1">Allow Notifications</Typography>
-                                                                    </Grid>
-                                                                    <Grid item>
-                                                                        <Switch
-                                                                            checked={notification}
-                                                                            onChange={(e) => setNotification(e.target.checked)}
-                                                                            name="sdm"
-                                                                            size="small"
-                                                                        />
-                                                                    </Grid>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
                                                 </Card>
                                                 <Divider />
                                                 <List
@@ -316,6 +304,22 @@ const ProfileSection = () => {
                                                             primary={
                                                                 <Typography variant="body2">
                                                                     <FormattedMessage id="logout" />
+                                                                </Typography>
+                                                            }
+                                                        />
+                                                    </ListItemButton>
+                                                    <ListItemButton
+                                                        sx={{ borderRadius: `${borderRadius}px` }}
+                                                        selected={selectedIndex === 4}
+                                                        onClick={(event) => handleListItemClick(event, 0, '/change-passwrd')}
+                                                        >
+                                                        <ListItemIcon>
+                                                            <IconLock stroke={1.5} size="20px" />
+                                                        </ListItemIcon>
+                                                        <ListItemText
+                                                            primary={
+                                                                <Typography variant="body2">
+                                                                    <FormattedMessage id="Change Password" />
                                                                 </Typography>
                                                             }
                                                         />

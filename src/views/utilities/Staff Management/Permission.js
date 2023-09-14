@@ -48,7 +48,7 @@ const Permission = () => {
 
   var myHeaders = new Headers();
   myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("token", localStorage.getItem("token"));
+  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
   myHeaders.append("Content-Type", "application/json");
 
   function getAllRole() {
@@ -76,8 +76,8 @@ const Permission = () => {
     event.preventDefault();
     var raw = JSON.stringify({
       adminId: localStorage.getItem("userId"),
-      RoleId: role,
-      Permission: [
+      roleId: role,
+      permission: [
         {
           Module: "Management",
           Create: isChecked,
@@ -119,11 +119,6 @@ const Permission = () => {
       .then((response) => response.json())
       .then((result) => {
         if (result.code === 200) {
-          // setRoleId(result.data);
-          // setIsChecked(result.data.Create);
-          // setReadManage(result.data.Read);
-          // setUpdateManage(result.data.Update);
-          // deleteManage(result.data.Delete);
         } else {
         }
       })

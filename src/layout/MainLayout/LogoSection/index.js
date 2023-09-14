@@ -1,7 +1,7 @@
 import { Link as RouterLink } from 'react-router-dom';
 // material-ui
 import { Link } from '@mui/material';
-import Logo from '../../../assets/images/MY_AGRI_INPUT 2.svg';
+import Logo from '../../../assets/images/MY_AGRI_INPUT2.svg';
 // project imports
 
 // ==============================|| MAIN LOGO ||============================== //

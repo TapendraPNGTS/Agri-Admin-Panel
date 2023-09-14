@@ -27,14 +27,14 @@ div.switcher label input + span small {
   display: block;
   width: 50%;
   height: 100%;
-  background: #fff;
+  background: rgb(13, 14, 13);
   border-radius: 50%;
   transition: all 0.3s ease-in-out;
   left: 0;
 }
 div.switcher label input:checked + span {
-  background: var(--bs-blue);
-  border-color: var(--bs-blue);
+  background: rgb(52, 236, 150) !important;
+  border-color: rgb(231, 12, 12) !important;
 }
 div.switcher label input:checked + span small {
   left: 50%;

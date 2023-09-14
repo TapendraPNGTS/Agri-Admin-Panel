@@ -149,7 +149,7 @@ const NotificationSection = () => {
                                                             <Typography variant="subtitle1">All Notification</Typography>
                                                             <Chip
                                                                 size="small"
-                                                                label="01"
+                                                                label="0"
                                                                 sx={{
                                                                     color: theme.palette.background.default,
                                                                     bgcolor: theme.palette.warning.dark
@@ -197,16 +197,16 @@ const NotificationSection = () => {
                                                             <Divider sx={{ my: 0 }} />
                                                         </Grid>
                                                     </Grid>
-                                                    <NotificationList />
+                                                    {/* <NotificationList /> */}
                                                 </PerfectScrollbar>
                                             </Grid>
                                         </Grid>
                                         <Divider />
-                                        <CardActions sx={{ p: 1.25, justifyContent: 'center' }}>
+                                        {/* <CardActions sx={{ p: 1.25, justifyContent: 'center' }}>
                                             <Button size="small" disableElevation>
                                                 View All
                                             </Button>
-                                        </CardActions>
+                                        </CardActions> */}
                                     </MainCard>
                                 )}
                             </Paper>

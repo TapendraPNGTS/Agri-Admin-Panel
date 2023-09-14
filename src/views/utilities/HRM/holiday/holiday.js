@@ -212,7 +212,7 @@ export default function DataTable() {
                             <TableCell sx={{ pl: 3 }} align="start">
                               {index + 1}
                             </TableCell>
-                            <TableCell>{row.Date}</TableCell>
+                            <TableCell>{formatDate(row.Date)}</TableCell>
                             <TableCell>{row.Occasion}</TableCell>
                             <TableCell align="start">
                               {row.IsActive ? (

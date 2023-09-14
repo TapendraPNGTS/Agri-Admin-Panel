@@ -19,8 +19,8 @@ import MainCard from "ui-component/cards/MainCard";
 import { toast } from "react-toastify";
 import { IconButton, Stack, Tooltip, Chip, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
+import { useNavigate , Link } from "react-router-dom";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const StaffManagement = () => {
   const navigate = useNavigate();
@@ -32,7 +32,10 @@ const StaffManagement = () => {
   function getAllRole() {
     var myHeaders = new Headers();
     myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append("token", localStorage.getItem("token"));
+    myHeaders.append(
+      "Authorization",
+      "Bearer " + localStorage.getItem("token")
+    );
     myHeaders.append("Content-Type", "application/json");
     var raw = JSON.stringify({
       adminId: localStorage.getItem("userId"),
@@ -56,15 +59,6 @@ const StaffManagement = () => {
 
   useEffect(() => {}, [rows]);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
   const DeleteCategory = (str) => () => {
     swal({
       title: "Are you sure want to delete?",
@@ -83,12 +77,15 @@ const StaffManagement = () => {
         });
         var myHeaders = new Headers();
         myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-        myHeaders.append("token", localStorage.getItem("token"));
+        myHeaders.append(
+          "Authorization",
+          "Bearer " + localStorage.getItem("token")
+        );
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify({
           adminId: localStorage.getItem("userId"),
-          categoryId: str,
+          roleId: str,
         });
         var requestOptions = {
           method: "POST",
@@ -96,16 +93,24 @@ const StaffManagement = () => {
           body: raw,
           redirect: "follow",
         };
-        fetch(`${process.env.REACT_APP_API_URL}deleteCategory`, requestOptions)
+        fetch(`${process.env.REACT_APP_API_URL}deleteRole`, requestOptions)
           .then((response) => response.text())
           .then((result) => {
-            // getalldata();
+            getAllRole();
           })
           .catch((error) => console.log("error", error));
       } else {
       }
     });
   };
+
+  function formatDate(date) {
+    return new Date(date).toLocaleString("en-us", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  }
 
   return (
     <>
@@ -161,10 +166,10 @@ const StaffManagement = () => {
                   <TableHead>
                     <TableRow>
                       <TableCell>S. No.</TableCell>
+                      <TableCell>Date</TableCell>
                       <TableCell>Roll ID</TableCell>
-                      <TableCell>Created At</TableCell>
-                      <TableCell>Status </TableCell>
-                      <TableCell>Name </TableCell>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Status</TableCell>
                       <TableCell align="center" sx={{ pr: 3 }}>
                         Actions
                       </TableCell>
@@ -175,7 +180,7 @@ const StaffManagement = () => {
                       .filter((row) =>
                         search === ""
                           ? row
-                          : row.Title.toLowerCase().includes(
+                          : row.Name.toLowerCase().includes(
                               search.toLowerCase()
                             )
                       )
@@ -194,11 +199,12 @@ const StaffManagement = () => {
                             <TableCell sx={{ pl: 3 }} align="start">
                               {index + 1}
                             </TableCell>
+                            <TableCell>{formatDate(row.createdAt)}</TableCell>
                             <TableCell sx={{ pl: 3 }} align="start">
                               {row.RoleID}
                             </TableCell>
-                            <TableCell>
-                              {format(new Date(row.CreatedAt), "E, MMM d yyyy")}
+                            <TableCell sx={{ pl: 3 }} align="start">
+                              {row.Name}
                             </TableCell>
                             <TableCell align="start">
                               {row.IsActive ? (
@@ -215,10 +221,6 @@ const StaffManagement = () => {
                                 />
                               )}
                             </TableCell>
-                            <TableCell sx={{ pl: 3 }} align="start">
-                              {row.Name}
-                            </TableCell>
-
                             <TableCell align="center" sx={{ pr: 3 }}>
                               <Stack
                                 direction="row"
@@ -229,9 +231,7 @@ const StaffManagement = () => {
                                   placement="top"
                                   title="Edit"
                                   onClick={(e) => {
-                                    navigate(
-                                      `/edit-category/${row.CategoryID}`
-                                    );
+                                    navigate(`/edit-roles/${row.RoleID}`);
                                   }}
                                   data-target={`#`}
                                 >
@@ -243,10 +243,22 @@ const StaffManagement = () => {
                                     <EditIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
                                 </Tooltip>
+                                <Link to={`/view-roles/${row.RoleID}`}>
+                                  <IconButton
+                                    color="primary"
+                                    title="view Product"
+                                    aria-label="view"
+                                    size="large"
+                                  >
+                                    <VisibilityIcon
+                                      sx={{ fontSize: "1.1rem" }}
+                                    />
+                                  </IconButton>
+                                </Link>
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={DeleteCategory(`${row.CategoryID}`)}
+                                  onClick={DeleteCategory(`${row.RoleID}`)}
                                 >
                                   <IconButton
                                     color="primary"

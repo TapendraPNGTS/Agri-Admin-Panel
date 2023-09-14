@@ -8,7 +8,7 @@ import { Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../auth-forms/AuthLogin';
-import Logo from '../../../../assets/images/MY_AGRI_INPUT 2.svg';
+import Logo from '../../../../assets/images/MY_AGRI_INPUT2.svg';
 import AuthFooter from 'ui-component/cards/AuthFooter';
 
 // assets
@@ -59,7 +59,6 @@ const Login = () => {
                                     <Grid item xs={12}>
                                         <Divider />
                                     </Grid>
-
                                 </Grid>
                             </AuthCardWrapper>
                         </Grid>
