@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
@@ -21,8 +21,10 @@ function App() {
   const [price, setPrice] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
   const [proImage, setProImage] = React.useState([]);
+  const [rows, setRows] = React.useState([]);
   const [active, setActive] = React.useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [category, setCategory] = useState("");
 
   var myHeaders = new Headers();
   myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
@@ -75,6 +77,7 @@ function App() {
     formdata.append("active", active);
     formdata.append("price", price);
     formdata.append("quantity", quantity);
+    formdata.append("categoryId", category);
     formdata.append("img", file);
 
     var requestOptions = {
@@ -103,6 +106,35 @@ function App() {
       })
       .catch((error) => {});
   }
+
+  function getAllCategory() {
+    var myHeaders = new Headers();
+    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
+    myHeaders.append(
+      "Authorization",
+      "Bearer " + localStorage.getItem("token")
+    );
+    myHeaders.append("Content-Type", "application/json");
+    var raw = JSON.stringify({
+      adminId: localStorage.getItem("userId"),
+    });
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    fetch(`${process.env.REACT_APP_API_URL}getAllCategory`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setRows(result.data);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  useEffect(() => {
+    getAllCategory();
+  }, []);
 
   return (
     <MainCard title="Edit Product">
@@ -160,6 +192,25 @@ function App() {
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="Enter Quantity"
               />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Choose Category</InputLabel>
+              <Select
+                id="active"
+                name="active"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {rows.map((row, i) => {
+                  return (
+                    <MenuItem key={i} value={row.CategoryID}>
+                      {row.Name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
             </Stack>
           </Grid>
           <Grid item xs={12} md={6}>
