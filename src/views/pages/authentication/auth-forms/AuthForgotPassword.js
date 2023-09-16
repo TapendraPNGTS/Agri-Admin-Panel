@@ -56,7 +56,7 @@ const AuthForgotPassword = ({ ...others }) => {
       .then((response) => response.json())
       .then((result) => {
         if (result.code === 200) {
-          navigate("/verify-otp");
+          navigate("/verify-otp/fmhmitSlQrp9ndE0h0rg");
           toast.success("Change Successfully", {
             position: toast.POSITION.TOP_CENTER,
             autoClose: 5000,

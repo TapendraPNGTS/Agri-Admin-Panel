@@ -23,6 +23,7 @@ function App() {
   const [active, setActive] = React.useState(true);
   const [rows, setRows] = useState([]);
   const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   React.useEffect(() => {}, []);
 
@@ -45,6 +46,7 @@ function App() {
     var formdata = new FormData();
     formdata.append("adminId", localStorage.getItem("userId"));
     formdata.append("name", name);
+    formdata.append("description", description);
     formdata.append("price", price);
     formdata.append("categoryId", category);
     formdata.append("quantity", quantity);
@@ -182,6 +184,19 @@ function App() {
                   );
                 })}
               </Select>
+            </Stack>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Stack>
+              <InputLabel required>Description</InputLabel>
+              <TextField
+                fullWidth
+                id="discription"
+                name="discription"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Add Description"
+              />
             </Stack>
           </Grid>
         </Grid>

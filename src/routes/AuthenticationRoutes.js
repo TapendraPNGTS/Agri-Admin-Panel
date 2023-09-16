@@ -33,7 +33,7 @@ const AuthenticationRoutes = {
         element: <AuthForgotPassword3 />
     },
     {
-        path: '/verify-otp',
+        path: '/verify-otp/:id',
         element: <VerifyOtp />
     },
   ],
