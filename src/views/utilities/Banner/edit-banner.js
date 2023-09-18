@@ -4,14 +4,13 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "react-bootstrap/Spinner";
 import {
   Button,
   Grid,
   MenuItem,
   Select,
   Stack,
-  TextField,
+  CircularProgress,
 } from "@mui/material";
 function App() {
   const params = useParams();
@@ -149,7 +148,7 @@ function App() {
         <br></br>
         <center>
           {isLoading ? (
-            <Spinner animation="grow" />
+            <CircularProgress />
           ) : (
             <Button variant="contained" type="submit">
               Update Banner

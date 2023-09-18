@@ -16,7 +16,7 @@ import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
-import { IconButton, Stack, Tooltip, Chip, Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -74,6 +74,7 @@ export default function DataTable() {
         id="outlined-search"
         label="Search field"
         type="search"
+        fullWidth
         onChange={(e) => {
           setSearch(e.target.value);
         }}
@@ -176,7 +177,9 @@ export default function DataTable() {
         ) : (
           <>
             <br></br>
-            <h5 className="text-center">Please Wait Data Loading...</h5>
+            <center>
+              <CircularProgress />
+            </center>
           </>
         )}
       </MainCard>

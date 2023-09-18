@@ -1,6 +1,6 @@
 import React from 'react';
 // material-ui
-import { Card, Grid, Typography, Chip, IconButton } from "@mui/material";
+import { Card, Grid, Typography, Chip, IconButton, CircularProgress } from "@mui/material";
 import Paper from "@mui/material/Paper";
 // project imports
 import MainCard from "ui-component/cards/MainCard";
@@ -72,6 +72,7 @@ export default function Users() {
         id="outlined-search"
         label="Search field"
         type="search"
+        fullWidth
         onChange={(e) => {
           setSearch(e.target.value);
         }}
@@ -214,7 +215,9 @@ export default function Users() {
             </Paper>
           </Card>
         ) : (
-          <h6>Loading...</h6>
+          <center>
+              <CircularProgress />
+            </center>
         )}
       </MainCard>
     </>

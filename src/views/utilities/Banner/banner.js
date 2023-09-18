@@ -18,7 +18,7 @@ import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
 import { toast } from "react-toastify";
-import { IconButton, Stack, Tooltip, Chip, Typography } from "@mui/material";
+import { IconButton, Stack, Tooltip, Typography , CircularProgress } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -119,6 +119,7 @@ export default function DataTable() {
   return (
     <>
       <TextField
+        fullWidth
         id="outlined-search"
         label="Search field"
         type="search"
@@ -126,7 +127,6 @@ export default function DataTable() {
           setSearch(e.target.value);
         }}
       />
-
       <MainCard
         title={
           <Grid
@@ -202,12 +202,15 @@ export default function DataTable() {
                               {index + 1}
                             </TableCell>
                             <TableCell align="start">
-                            <a href={`${process.env.REACT_APP_IMAGE_URL}${row.Image}`} target='_blank'>
-                              <Avatar
-                                alt="M21"
-                                src={`${process.env.REACT_APP_IMAGE_URL}${row.Image}`}
-                                sx={{ width: 50, height: 50 }}
-                              />
+                              <a
+                                href={`${process.env.REACT_APP_IMAGE_URL}${row.Image}`}
+                                target="_blank"
+                              >
+                                <Avatar
+                                  alt="M21"
+                                  src={`${process.env.REACT_APP_IMAGE_URL}${row.Image}`}
+                                  sx={{ width: 50, height: 50 }}
+                                />
                               </a>
                             </TableCell>
                             <TableCell align="center" sx={{ pr: 3 }}>
@@ -268,7 +271,9 @@ export default function DataTable() {
         ) : (
           <>
             <br></br>
-            <h5 className="text-center">Please Wait Data Loading...</h5>
+            <center>
+            <CircularProgress />
+            </center>
           </>
         )}
       </MainCard>

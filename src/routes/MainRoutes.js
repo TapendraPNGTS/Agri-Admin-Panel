@@ -98,8 +98,17 @@ const ViewStaff = Loadable(
 const FranchiseRequest = Loadable(
   lazy(() => import("views/utilities/Franchise/franchise-request"))
 );
+const FranchiseForm = Loadable(
+  lazy(() => import("views/utilities/Franchise/franchise-form"))
+);
+const Franchise = Loadable(
+  lazy(() => import("views/utilities/Franchise/franchise"))
+);
 const ViewFranchiseRequest = Loadable(
   lazy(() => import("views/utilities/Franchise/view-franchise-ruq"))
+);
+const EditFranchiseRequest = Loadable(
+  lazy(() => import("views/utilities/Franchise/edit-franchise"))
 );
 
 // password routes
@@ -107,6 +116,53 @@ const ChangePassword = Loadable(
   lazy(() => import("views/utilities/change-password/change-password"))
 );
 
+// Manage area routes
+const State = Loadable(
+  lazy(() => import("views/utilities/manage-area/state/state"))
+);
+
+// Manage area routes
+const EditState = Loadable(
+  lazy(() => import("views/utilities/manage-area/state/edit-state"))
+);
+const AddState = Loadable(
+  lazy(() => import("views/utilities/manage-area/state/add-state"))
+);
+
+// Manage area routes
+const District = Loadable(
+  lazy(() => import("views/utilities/manage-area/district/district"))
+);
+const EditDistrict = Loadable(
+  lazy(() => import("views/utilities/manage-area/district/edit-district"))
+);
+const AddDistrict = Loadable(
+  lazy(() => import("views/utilities/manage-area/district/add-district"))
+);
+
+// Manage area routes
+const PinCode = Loadable(
+  lazy(() => import("views/utilities/manage-area/pin-code/pin-code"))
+);
+const EditPinCode = Loadable(
+  lazy(() => import("views/utilities/manage-area/pin-code/edit-pin-code"))
+);
+const AddPinCode = Loadable(
+  lazy(() => import("views/utilities/manage-area/pin-code/add-pin-code"))
+);
+
+// commission routes
+const Commissiom = Loadable(
+  lazy(() => import("views/utilities/commission/commission"))
+);
+const AddCommissiom = Loadable(
+  lazy(() => import("views/utilities/commission/add-commission"))
+);
+const EditCommissiom = Loadable(
+  lazy(() => import("views/utilities/commission/edit-commission"))
+);
+
+// franchise route
 // sample page routing
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -121,6 +177,22 @@ const MainRoutes = {
     {
       path: "/inventory",
       element: <Inventory />,
+    },
+    {
+      children: [
+        {
+          path: "commission",
+          element: <Commissiom />,
+        },
+        {
+          path: "add-commission",
+          element: <AddCommissiom />,
+        },
+        {
+          path: "edit-commission/:id",
+          element: <EditCommissiom />,
+        },
+      ],
     },
     {
       children: [
@@ -189,12 +261,66 @@ const MainRoutes = {
     {
       children: [
         {
+          path: "franchise",
+          element: <Franchise />,
+        },
+        {
+          path: "franchise-request-form",
+          element: <FranchiseForm />,
+        },
+        {
           path: "franchise-request",
           element: <FranchiseRequest />,
         },
         {
           path: "view-franchise-request/:id",
           element: <ViewFranchiseRequest />,
+        },
+        {
+          path: "edit-franchise-request/:id",
+          element: <EditFranchiseRequest />,
+        },
+      ],
+    },
+    {
+      children: [
+        {
+          path: "state",
+          element: <State />,
+        },
+        {
+          path: "edit-state/:id",
+          element: <EditState />,
+        },
+        {
+          path: "add-state",
+          element: <AddState />,
+        },
+        // district
+        {
+          path: "district",
+          element: <District />,
+        },
+        {
+          path: "edit-district/:id",
+          element: <EditDistrict />,
+        },
+        {
+          path: "add-district",
+          element: <AddDistrict />,
+        },
+        // zip code
+        {
+          path: "pin-code",
+          element: <PinCode />,
+        },
+        {
+          path: "edit-pin-code/:id",
+          element: <EditPinCode />,
+        },
+        {
+          path: "add-pin-code",
+          element: <AddPinCode />,
         },
       ],
     },
@@ -286,3 +412,5 @@ const MainRoutes = {
 };
 
 export default MainRoutes;
+
+

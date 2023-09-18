@@ -4,12 +4,10 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "react-bootstrap/Spinner";
 import {
   Button,
   Grid,
-  MenuItem,
-  Select,
+  CircularProgress,
   Stack,
   TextField,
 } from "@mui/material";
@@ -96,7 +94,7 @@ function App() {
         <br></br>
         <center>
           {isLoading ? (
-            <Spinner animation="grow" />
+            <CircularProgress />
           ) : (
             <Button variant="contained" type="submit">
               Change Password

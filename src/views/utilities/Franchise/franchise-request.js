@@ -1,6 +1,14 @@
-import React from 'react';
+import React from "react";
 // material-ui
-import { Card, Grid, Typography, Chip, IconButton } from "@mui/material";
+import {
+  Card,
+  Grid,
+  Typography,
+  Chip,
+  IconButton,
+  Tooltip,
+  CircularProgress,
+} from "@mui/material";
 import Paper from "@mui/material/Paper";
 // project imports
 import MainCard from "ui-component/cards/MainCard";
@@ -16,10 +24,13 @@ import TextField from "@mui/material/TextField";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import EditIcon from "@mui/icons-material/Edit";
 // ===============================|| COLOR BOX ||=============================== //
 // ===============================|| UI COLOR ||=============================== //
 
 export default function Users() {
+  const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [rows, setRows] = React.useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -72,11 +83,11 @@ export default function Users() {
         id="outlined-search"
         label="Search field"
         type="search"
+        fullWidth
         onChange={(e) => {
           setSearch(e.target.value);
         }}
       />
-
       <MainCard
         title={
           <Grid
@@ -86,16 +97,8 @@ export default function Users() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Users</Typography>
+              <Typography variant="h3">Franchise Request</Typography>
             </Grid>
-            {/* <Grid item>
-              <Button
-                variant="outlined"
-                onClick={exportToExcel}
-              >
-                Export
-              </Button>
-            </Grid> */}
           </Grid>
         }
         content={false}
@@ -116,7 +119,9 @@ export default function Users() {
                       <TableCell>State</TableCell>
                       <TableCell>Pin Code</TableCell>
                       <TableCell>Status</TableCell>
-                      <TableCell align="center" sx={{ pr: 3 }}>Action</TableCell>
+                      <TableCell align="center" sx={{ pr: 3 }}>
+                        Action
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -169,24 +174,24 @@ export default function Users() {
                                   color="warning"
                                   size="small"
                                 />
-                              ) : row.Status === "Reject" ?(
+                              ) : row.Status === "Reject" ? (
                                 <Chip
                                   label="Reject"
                                   color="error"
                                   size="small"
                                 />
-                              )
-                            :(
-                              <Chip
-                              label="Accept"
-                              color="success"
-                              size="small"
-                            />
-                            )
-                            }
+                              ) : (
+                                <Chip
+                                  label="Accept"
+                                  color="success"
+                                  size="small"
+                                />
+                              )}
                             </TableCell>
                             <TableCell align="center" sx={{ pr: 3 }}>
-                              <Link to={`/view-franchise-request/${row.FrenchiseID}`}>
+                              <Link
+                                to={`/view-franchise-request/${row.FrenchiseID}`}
+                              >
                                 <IconButton
                                   color="primary"
                                   title="view User"
@@ -196,6 +201,24 @@ export default function Users() {
                                   <VisibilityIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
                               </Link>
+                              <Tooltip
+                                placement="top"
+                                title="Edit"
+                                onClick={(e) => {
+                                  navigate(
+                                    `/edit-franchise-request/${row.FrenchiseID}`
+                                  );
+                                }}
+                                data-target={`#`}
+                              >
+                                <IconButton
+                                  color="primary"
+                                  aria-label="edit"
+                                  size="large"
+                                >
+                                  <EditIcon sx={{ fontSize: "1.1rem" }} />
+                                </IconButton>
+                              </Tooltip>
                             </TableCell>
                           </TableRow>
                         );
@@ -215,7 +238,9 @@ export default function Users() {
             </Paper>
           </Card>
         ) : (
-          <h6>Loading...</h6>
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </MainCard>
     </>

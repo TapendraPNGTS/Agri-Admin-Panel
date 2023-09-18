@@ -4,7 +4,6 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "react-bootstrap/Spinner";
 import {
   Button,
   Grid,
@@ -12,6 +11,7 @@ import {
   Select,
   Stack,
   TextField,
+  CircularProgress
 } from "@mui/material";
 function App() {
   const params = useParams();
@@ -60,7 +60,10 @@ function App() {
     setIsLoading(true);
     var myHeaders = new Headers();
     myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append("token", localStorage.getItem("token"));
+    myHeaders.append(
+      "Authorization",
+      "Bearer " + localStorage.getItem("token")
+    );
     var formdata = new FormData();
     formdata.append("adminId", localStorage.getItem("userId"));
     formdata.append("categoryId", params.id);
@@ -166,7 +169,7 @@ function App() {
         <br></br>
         <center>
           {isloading ? (
-            <Spinner animation="grow" />
+            <CircularProgress />
           ) : (
             <Button variant="contained" type="submit">
               Update Category

@@ -18,9 +18,16 @@ import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
 import { toast } from "react-toastify";
-import { IconButton, Stack, Tooltip, Chip, Typography } from "@mui/material";
+import {
+  IconButton,
+  Stack,
+  Tooltip,
+  Chip,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { useState, useEffect } from "react";
-import { useNavigate , Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function DataTable() {
@@ -131,6 +138,7 @@ export default function DataTable() {
         id="outlined-search"
         label="Search field"
         type="search"
+        fullWidth
         onChange={(e) => {
           setSearch(e.target.value);
         }}
@@ -315,7 +323,9 @@ export default function DataTable() {
         ) : (
           <>
             <br></br>
-            <h5 className="text-center">Please Wait Data Is Loading...</h5>
+            <center>
+              <CircularProgress />
+            </center>
           </>
         )}
       </MainCard>

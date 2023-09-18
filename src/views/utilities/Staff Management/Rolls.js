@@ -118,6 +118,7 @@ const StaffManagement = () => {
         id="outlined-search"
         label="Search field"
         type="search"
+        fullWidth
         onChange={(e) => {
           setSearch(e.target.value);
         }}

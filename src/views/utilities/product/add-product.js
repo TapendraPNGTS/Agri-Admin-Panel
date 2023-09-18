@@ -4,7 +4,6 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "react-bootstrap/Spinner";
 import {
   Button,
   Grid,
@@ -12,11 +11,14 @@ import {
   Select,
   Stack,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 function App() {
   const navigate = useNavigate();
   const [file, setFile] = useState([]);
+  const [fileName, setFileName] = useState([]);
   const [file1, setFile1] = useState();
+  const [fileName1, setFileName1] = useState();
   const [name, setName] = React.useState("");
   const [price, setPrice] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
@@ -29,9 +31,11 @@ function App() {
 
   function handleChange(event) {
     setFile(event.target.files[0]);
+    setFileName(event.target.value);
   }
   function handleChange1(event) {
     setFile1(event.target.files[0]);
+    setFileName1(event.target.value);
   }
 
   function handleSubmit(event) {
@@ -120,6 +124,7 @@ function App() {
               <TextField
                 fullWidth
                 id="product"
+                inputProps={{ maxLength: 30 }}
                 name="product"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -134,6 +139,12 @@ function App() {
                 fullWidth
                 id="price"
                 name="price"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 6);
+                }}
+                type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="Enter product price"
@@ -147,6 +158,11 @@ function App() {
                 fullWidth
                 id="quantity"
                 name="quantity"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 3);
+                }}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="Enter quantity"
@@ -193,6 +209,7 @@ function App() {
                 fullWidth
                 id="discription"
                 name="discription"
+                inputProps={{ maxLength: 250 }}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Add Description"
@@ -212,10 +229,11 @@ function App() {
                   id="thumbnail"
                   accept="image/png, image/jpeg"
                   onChange={handleChange}
+                  value={fileName}
                   required
                 />
                 <label class="custom-file-label" for="thumbnail">
-                  Choose file
+                  {fileName}
                 </label>
               </div>
             </Stack>
@@ -231,10 +249,11 @@ function App() {
                   multiple
                   accept="image/png, image/jpeg"
                   onChange={handleChange1}
+                  value={fileName1}
                   required
                 />
                 <label class="custom-file-label" for="thumbnail">
-                  Choose file
+                  {fileName1}
                 </label>
               </div>
             </Stack>
@@ -243,7 +262,7 @@ function App() {
         <br></br>
         <center>
           {isLoading ? (
-            <Spinner animation="grow" />
+            <CircularProgress />
           ) : (
             <Button variant="contained" type="submit">
               Add Product

@@ -11,6 +11,8 @@ import {
   IconQuestionMark,
   IconFolder,
   IconBooks,
+  IconListDetails,
+  IconCash
 } from "@tabler/icons";
 // constant
 const icons = {
@@ -25,6 +27,8 @@ const icons = {
   IconQuestionMark,
   IconFolder,
   IconBooks,
+  IconListDetails,
+  IconCash
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -63,6 +67,35 @@ const utilities = {
       icon: icons.IconShoppingCart,
     },
     {
+      id: "manage area",
+      title: " Manage Area",
+      type: "collapse",
+      icon: icons.IconListDetails,
+      children: [
+        {
+          id: "state",
+          title: "State",
+          type: "item",
+          url: "/state",
+          breadcrumbs: false,
+        },
+        {
+          id: "district",
+          title: "District",
+          type: "item",
+          url: "/district",
+          breadcrumbs: false,
+        },
+        {
+          id: "pin-code",
+          title: "Pin Code",
+          type: "item",
+          url: "/pin-code",
+          breadcrumbs: false,
+        },
+      ],
+    },
+    {
       id: "staffmanagement",
       title: "Staff Management",
       type: "collapse",
@@ -91,56 +124,86 @@ const utilities = {
         },
       ],
     },
-    // {
-    //     id: 'hrm',
-    //     title: 'HRM',
-    //     type: 'collapse',
-    //     icon: icons.IconUsers,
-    //     breadcrumbs: false,
-    //     children: [
-    //         {
-    //             id: 'attedance',
-    //             title: 'Attedance',
-    //             type: 'item',
-    //             url: '/attedance',
-    //             breadcrumbs: false
-    //         },
-    //         {
-    //             id: 'leave',
-    //             title: 'Leaves',
-    //             type: 'item',
-    //             url: '/leave',
-    //             breadcrumbs: false
-    //         },
-    //         {
-    //             id: 'holidays',
-    //             title: 'Holidays',
-    //             type: 'item',
-    //             url: '/holidays',
-    //             breadcrumbs: false
-    //         },
-    //         {
-    //             id: 'appreciations',
-    //             title: 'Appreciations',
-    //             type: 'item',
-    //             url: '/appreciations',
-    //             breadcrumbs: false
-    //         }
-    //     ]
-    // },
+    {
+        id: 'hrm',
+        title: 'HRM',
+        type: 'collapse',
+        icon: icons.IconUsers,
+        breadcrumbs: false,
+        children: [
+            {
+                id: 'attedance',
+                title: 'Attedance',
+                type: 'item',
+                url: '/attedance',
+                breadcrumbs: false
+            },
+            {
+                id: 'holidays',
+                title: 'Holidays',
+                type: 'item',
+                url: '/holidays',
+                breadcrumbs: false
+            },
+            {
+                id: 'leave',
+                title: 'Leaves',
+                type: 'item',
+                url: '/leave',
+                breadcrumbs: false
+            },
+            {
+                id: 'appreciations',
+                title: 'Appreciations',
+                type: 'item',
+                url: '/appreciations',
+                breadcrumbs: false
+            }
+        ]
+    },
+    {
+      id: "franchise",
+      title: "Franchise",
+      type: "collapse",
+      icon: icons.IconBuildingSkyscraper,
+      breadcrumbs: false,
+      children: [
+        {
+            id: "franchise",
+            title: "Franchise",
+            type: "item",
+            url: "/franchise",
+            breadcrumbs: false,
+        },
+        {
+            id: "franchise-request",
+            title: "Franchise-Request",
+            type: "item",
+            url: "/franchise-request",
+            breadcrumbs: false,
+        },
+        {
+            id: "franchise-request-form",
+            title: "Franchise-Request-Form",
+            type: "item",
+            url: "/franchise-request-form",
+            breadcrumbs: false,
+        },
+      ]
+    },
+    {
+      id: "commission",
+      title: "Commission",
+      type: "item",
+      url: "/commission",
+      icon: icons.IconCash,
+    },
     {
       id: "purchase",
       title: "Purchase History",
       type: "item",
       url: "/purchase-history",
       icon: icons.IconFileText,
-    },
-    {
-      id: "franchise",
-      title: "Franchise Request",
-      type: "item",
-      url: "/franchise-request",
-      icon: icons.IconBuildingSkyscraper,
     },
     {
       id: "users",

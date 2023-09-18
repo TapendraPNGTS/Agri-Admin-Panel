@@ -15,7 +15,7 @@ import MainCard from "ui-component/cards/MainCard";
 import { toast } from "react-toastify";
 import { Link } from 'react-router-dom';
 import "react-toastify/dist/ReactToastify.css";
-import { IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { IconButton, Stack, Tooltip, Typography, CircularProgress } from "@mui/material";
 import { useState, useEffect } from "react";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { useParams } from 'react-router-dom';
@@ -478,7 +478,9 @@ const params = useParams();
       ) : (
         <>
           <br></br>
-          <h5 className="text-center">Please Wait Data Loading...</h5>
+          <center>
+              <CircularProgress />
+            </center>
         </>
       )}
     </MainCard>

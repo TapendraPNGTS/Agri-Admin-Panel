@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "react-bootstrap/Spinner";
-import { Button, Grid, Stack } from "@mui/material";
+import { Button, Grid, Stack , CircularProgress } from "@mui/material";
 function App() {
   const navigate = useNavigate();
   const [file, setFile] = useState();
+  const [fileName, setFileName] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   function handleChange(event) {
     setFile(event.target.files[0]);
+    setFileName(event.target.value)
   }
 
   function handleSubmit(event) {
@@ -69,10 +70,11 @@ function App() {
                   id="thumbnail"
                   accept="image/png, image/jpeg"
                   onChange={handleChange}
+                  value={fileName}
                   required
                 />
                 <label class="custom-file-label" for="thumbnail">
-                  Choose file
+                  {fileName}
                 </label>
               </div>
             </Stack>
@@ -81,7 +83,7 @@ function App() {
         <br></br>
         <center>
           {isLoading ? (
-            <Spinner animation="grow" />
+            <CircularProgress />
           ) : (
             <Button variant="contained" type="submit">
               Add Banner

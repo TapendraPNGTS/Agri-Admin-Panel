@@ -4,13 +4,19 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "react-bootstrap/Spinner";
-import { Button, Grid, MenuItem, Select, Stack } from "@mui/material";
+import {
+  Button,
+  Grid,
+  MenuItem,
+  Select,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
 
 function App() {
   const params = useParams();
   const navigate = useNavigate();
-  const [active, setActive] = React.useState(true);
+  const [active, setActive] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   var myHeaders = new Headers();
@@ -67,7 +73,7 @@ function App() {
                 value={active}
                 onChange={(e) => setActive(e.target.value)}
               >
-                <MenuItem value="Active">Accept</MenuItem>
+                <MenuItem value="Accept">Accept</MenuItem>
                 <MenuItem value="Reject">Reject</MenuItem>
               </Select>
             </Stack>
@@ -76,7 +82,7 @@ function App() {
         <br></br>
         <center>
           {isLoading ? (
-            <Spinner animation="grow" />
+            <CircularProgress />
           ) : (
             <Button variant="contained" type="submit">
               Update User

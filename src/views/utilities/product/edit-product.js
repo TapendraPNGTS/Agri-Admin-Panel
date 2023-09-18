@@ -4,7 +4,6 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Spinner from "react-bootstrap/Spinner";
 import {
   Button,
   Grid,
@@ -12,6 +11,7 @@ import {
   Select,
   Stack,
   TextField,
+  CircularProgress
 } from "@mui/material";
 function App() {
   const params = useParams();
@@ -147,6 +147,7 @@ function App() {
                 fullWidth
                 id="category"
                 name="category"
+                inputProps={{ maxLength: 30 }}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter category title"
@@ -175,6 +176,12 @@ function App() {
                 fullWidth
                 id="price"
                 name="price"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 6);
+                }}
+                type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="Enter Price"
@@ -188,6 +195,11 @@ function App() {
                 fullWidth
                 id="quantity"
                 name="quantity"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 3);
+                }}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="Enter Quantity"
@@ -255,7 +267,7 @@ function App() {
         <br></br>
         <center>
           {isLoading ? (
-            <Spinner animation="grow" />
+            <CircularProgress />
           ) : (
             <Button variant="contained" type="submit">
               Update Product
