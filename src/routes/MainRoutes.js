@@ -58,6 +58,9 @@ const Inventory = Loadable(
 const Attenance = Loadable(
   lazy(() => import("views/utilities/HRM/attendance/attendence"))
 );
+const ViewAttedance = Loadable(
+  lazy(() => import("views/utilities/HRM/attendance/view-attendence"))
+);
 const Holiday = Loadable(
   lazy(() => import("views/utilities/HRM/holiday/holiday"))
 );
@@ -89,6 +92,9 @@ const EditUser = Loadable(
 );
 const ViewRole = Loadable(
   lazy(() => import("views/utilities/Staff Management/view-role"))
+);
+const EditRole = Loadable(
+  lazy(() => import("views/utilities/Staff Management/EditRoles"))
 );
 const ViewStaff = Loadable(
   lazy(() => import("views/utilities/Staff Management/view-staff"))
@@ -162,7 +168,20 @@ const EditCommissiom = Loadable(
   lazy(() => import("views/utilities/commission/edit-commission"))
 );
 
-// franchise route
+// application e-commerce pages
+const AppECommProducts = Loadable(
+  lazy(() => import("views/utilities/e-commerce/Products"))
+);
+const AppECommProductDetails = Loadable(
+  lazy(() => import("views/utilities/e-commerce/ProductDetails"))
+);
+const AppECommProductList = Loadable(
+  lazy(() => import("views/utilities/e-commerce/ProductList"))
+);
+const AppECommCheckout = Loadable(
+  lazy(() => import("views/utilities/e-commerce/Checkout"))
+);
+
 // sample page routing
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -174,6 +193,24 @@ const MainRoutes = {
       path: "/dashboard",
       element: <Dashboard />,
     },
+
+    {
+      path: "/e-commerce/products",
+      element: <AppECommProducts />,
+    },
+    {
+      path: "/e-commerce/product-details/:id",
+      element: <AppECommProductDetails />,
+    },
+    {
+      path: "/e-commerce/product-list",
+      element: <AppECommProductList />,
+    },
+    {
+      path: "/e-commerce/checkout",
+      element: <AppECommCheckout />,
+    },
+
     {
       path: "/inventory",
       element: <Inventory />,
@@ -239,6 +276,10 @@ const MainRoutes = {
         {
           path: "view-roles/:id",
           element: <ViewRole />,
+        },
+        {
+          path: "edit-roles/:id",
+          element: <EditRole />,
         },
         {
           path: "view-staff/:id",
@@ -390,6 +431,10 @@ const MainRoutes = {
           path: "attedance",
           element: <Attenance />,
         },
+        {
+          path: "view-attendence",
+          element: <ViewAttedance />,
+        },
       ],
     },
     {
@@ -412,5 +457,3 @@ const MainRoutes = {
 };
 
 export default MainRoutes;
-
-

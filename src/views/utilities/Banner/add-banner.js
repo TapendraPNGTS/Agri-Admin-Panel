@@ -63,17 +63,17 @@ function App() {
           <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel>Choose Multiple Image</InputLabel>
-              <div class="custom-file">
+              <div className="custom-file">
                 <input
                   type="file"
-                  class="custom-file-input"
+                  className="custom-file-input"
                   id="thumbnail"
                   accept="image/png, image/jpeg"
                   onChange={handleChange}
                   value={fileName}
                   required
                 />
-                <label class="custom-file-label" for="thumbnail">
+                <label className="custom-file-label" for="thumbnail">
                   {fileName}
                 </label>
               </div>

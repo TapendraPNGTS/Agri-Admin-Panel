@@ -10,11 +10,17 @@ import TableRow from "@mui/material/TableRow";
 import Card from "@mui/material/Card";
 import AddIcon from "@mui/icons-material/Add";
 import TextField from "@mui/material/TextField";
-import { Button, Grid } from "@mui/material";
+import { IconButton, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
-import { Chip, Typography } from "@mui/material";
+import { Chip, Typography, CircularProgress } from "@mui/material";
 import { useState, useEffect } from "react";
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Link } from "react-router-dom";
 
 export default function Attenance() {
   const [page, setPage] = React.useState(0);
@@ -91,18 +97,6 @@ export default function Attenance() {
             <Grid item>
               <Typography variant="h3">Attendance List</Typography>
             </Grid>
-
-            {/* <Grid item>
-              <Button
-                variant="outlined"
-                onClick={(e) => {
-                  navigate("/add-product");
-                }}
-                startIcon={<AddIcon />}
-              >
-                Add Product
-              </Button>
-            </Grid> */}
           </Grid>
         }
         content={false}
@@ -128,6 +122,9 @@ export default function Attenance() {
                       <TableCell>Name</TableCell>
                       <TableCell>Email</TableCell>
                       <TableCell>Status </TableCell>
+                      <TableCell align="center" sx={{ pr: 3 }}>
+                        Action
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -157,15 +154,15 @@ export default function Attenance() {
                             </TableCell>
                             <TableCell>{formatDate(row.StartDate)}</TableCell>
                             <TableCell>{formatDate(row.EndDate)}</TableCell>
-                            <TableCell align="start">{row.StaffID.UserName}</TableCell>
-                            <TableCell align="start">{row.StaffID.Email}</TableCell>
+                            <TableCell align="start">
+                              {row.StaffID.UserName}
+                            </TableCell>
+                            <TableCell align="start">
+                              {row.StaffID.Email}
+                            </TableCell>
                             <TableCell align="start">
                               {row.Status ? (
-                                <Chip
-                                  label="ON"
-                                  color="success"
-                                  size="small"
-                                />
+                                <Chip label="ON" color="success" size="small" />
                               ) : (
                                 <Chip
                                   label="OFF"
@@ -173,6 +170,18 @@ export default function Attenance() {
                                   size="small"
                                 />
                               )}
+                            </TableCell>
+                            <TableCell align="center" sx={{ pr: 3 }}>
+                              <Link to={`/view-attendence`}>
+                                <IconButton
+                                  color="primary"
+                                  title="view User"
+                                  aria-label="view"
+                                  size="large"
+                                >
+                                  <VisibilityIcon sx={{ fontSize: "1.1rem" }} />
+                                </IconButton>
+                              </Link>
                             </TableCell>
                           </TableRow>
                         );
@@ -194,7 +203,9 @@ export default function Attenance() {
         ) : (
           <>
             <br></br>
-            <h5 className="text-center">Please Wait Data Loading...</h5>
+            <center>
+              <CircularProgress />
+            </center>
           </>
         )}
       </MainCard>

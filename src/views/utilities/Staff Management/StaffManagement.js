@@ -162,7 +162,7 @@ const StaffManagement = () => {
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>ID</TableCell>
                       {/* <TableCell>Status </TableCell> */}
-                      <TableCell>Roll ID</TableCell>
+                      <TableCell>Roll Name</TableCell>
                       <TableCell>Name</TableCell>
                       <TableCell>Email</TableCell>
                       <TableCell>Phone</TableCell>
@@ -196,7 +196,7 @@ const StaffManagement = () => {
                             <TableCell sx={{ pl: 3 }} align="start">
                               {index + 1}
                             </TableCell>
-                            <TableCell>{row.RoleID}</TableCell>
+                            <TableCell>{row.RoleID.Name}</TableCell>
                             <TableCell>{row.UserName}</TableCell>
                             <TableCell align="start">{row.Email}</TableCell>
                             <TableCell align="start">{row.Contact}</TableCell>

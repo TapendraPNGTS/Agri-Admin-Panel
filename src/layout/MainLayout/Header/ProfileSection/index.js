@@ -58,6 +58,7 @@ const ProfileSection = () => {
     const anchorRef = useRef(null);
     const handleLogout = async () => {
         localStorage.clear();
+        sessionStorage.clear();
         navigate("/");
       };
 
@@ -243,7 +244,7 @@ const ProfileSection = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <ListItemButton
+                                                    {/* <ListItemButton
                                                         sx={{ borderRadius: `${borderRadius}px` }}
                                                         selected={selectedIndex === 0}
                                                         onClick={(event) => handleListItemClick(event, 0, '/user/account-profile/profile1')}
@@ -258,8 +259,8 @@ const ProfileSection = () => {
                                                                 </Typography>
                                                             }
                                                         />
-                                                    </ListItemButton>
-                                                    <ListItemButton
+                                                    </ListItemButton> */}
+                                                    {/* <ListItemButton
                                                         sx={{ borderRadius: `${borderRadius}px` }}
                                                         selected={selectedIndex === 1}
                                                         onClick={(event) => handleListItemClick(event, 1, '/user/social-profile/posts')}
@@ -291,7 +292,7 @@ const ProfileSection = () => {
                                                                 </Grid>
                                                             }
                                                         />
-                                                    </ListItemButton>
+                                                    </ListItemButton> */}
                                                     <ListItemButton
                                                         sx={{ borderRadius: `${borderRadius}px` }}
                                                         selected={selectedIndex === 4}

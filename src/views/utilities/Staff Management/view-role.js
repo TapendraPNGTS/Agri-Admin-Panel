@@ -85,7 +85,7 @@ function App() {
               </TableCell>
               <TableCell align="start">
                 <div className="switcher">
-                  <label for="toggle-1">
+                  <label htmlFor="toggle-1">
                     <small>Create&nbsp;&nbsp;</small>
                     <input type="checkbox" id="toggle-1" checked={row.Create} />
                     <span>
@@ -96,7 +96,7 @@ function App() {
               </TableCell>
               <TableCell align="start">
                 <div className="switcher">
-                  <label for="toggle-7">
+                  <label htmlFor="toggle-7">
                     <small>Read&nbsp;&nbsp;</small>
                     <input type="checkbox" id="toggle-7" checked={row.Read} />
                     <span>
@@ -107,7 +107,7 @@ function App() {
               </TableCell>
               <TableCell align="start">
                 <div className="switcher">
-                  <label for="toggle-8">
+                  <label htmlFor="toggle-8">
                     <small>Update&nbsp;&nbsp;</small>
                     <input
                       type="checkbox"
@@ -122,7 +122,7 @@ function App() {
               </TableCell>
               <TableCell align="start">
                 <div className="switcher">
-                  <label for="toggle-9">
+                  <label htmlFor="toggle-9">
                     <span>
                       <small></small>
                     </span>
@@ -145,7 +145,7 @@ function App() {
           <TableCell align="start">Product</TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-2">
+              <label htmlFor="toggle-2">
                 <span>
                   <small></small>
                 </span>
@@ -159,7 +159,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-10">
+              <label htmlFor="toggle-10">
                 <span>
                   <small></small>
                 </span>
@@ -173,7 +173,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-11">
+              <label htmlFor="toggle-11">
                 <span>
                   <small></small>
                 </span>
@@ -187,7 +187,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-12">
+              <label htmlFor="toggle-12">
                 <span>
                   <small></small>
                 </span>
@@ -204,7 +204,7 @@ function App() {
           <TableCell align="start">Franchise</TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-3">
+              <label htmlFor="toggle-3">
                 <span>
                   <small></small>
                 </span>
@@ -218,7 +218,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-13">
+              <label htmlFor="toggle-13">
                 <span>
                   <small></small>
                 </span>
@@ -236,7 +236,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-14">
+              <label htmlFor="toggle-14">
                 <span>
                   <small></small>
                 </span>
@@ -254,7 +254,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-15">
+              <label htmlFor="toggle-15">
                 <span>
                   <small></small>
                 </span>
@@ -275,7 +275,7 @@ function App() {
           <TableCell align="start">Staff</TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-4">
+              <label htmlFor="toggle-4">
                 <span>
                   <small></small>
                 </span>
@@ -289,7 +289,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-16">
+              <label htmlFor="toggle-16">
                 <span>
                   <small></small>
                 </span>
@@ -303,7 +303,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-17">
+              <label htmlFor="toggle-17">
                 <span>
                   <small></small>
                 </span>
@@ -317,7 +317,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-18">
+              <label htmlFor="toggle-18">
                 <span>
                   <small></small>
                 </span>
@@ -334,7 +334,7 @@ function App() {
           <TableCell align="start">User</TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-4">
+              <label htmlFor="toggle-4">
                 <span>
                   <small></small>
                 </span>
@@ -355,7 +355,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-19">
+              <label htmlFor="toggle-19">
                 <span>
                   <small></small>
                 </span>
@@ -376,7 +376,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-20">
+              <label htmlFor="toggle-20">
                 <span>
                   <small></small>
                 </span>
@@ -397,7 +397,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-21">
+              <label htmlFor="toggle-21">
                 <span>
                   <small></small>
                 </span>
@@ -421,7 +421,7 @@ function App() {
           <TableCell align="start">Order</TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-4">
+              <label htmlFor="toggle-4">
                 <span>
                   <small></small>
                 </span>
@@ -442,7 +442,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-23">
+              <label htmlFor="toggle-23">
                 <span>
                   <small></small>
                 </span>
@@ -463,7 +463,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-24">
+              <label htmlFor="toggle-24">
                 <span>
                   <small></small>
                 </span>
@@ -484,7 +484,7 @@ function App() {
           </TableCell>
           <TableCell align="start">
             <div className="switcher">
-              <label for="toggle-25">
+              <label htmlFor="toggle-25">
                 <span>
                   <small></small>
                 </span>

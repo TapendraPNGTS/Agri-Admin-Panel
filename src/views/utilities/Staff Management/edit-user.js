@@ -17,7 +17,7 @@ function App() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState();
   const [password, setPassword] = useState("");
   const [data, setData] = React.useState([]);
   const [rows, setRows] = React.useState([]);
@@ -60,7 +60,7 @@ function App() {
       .then((response) => response.json())
       .then((result) => {
         setName(result.data.UserName);
-        setRole(result.data.RoleID.Name);
+        setRole(result.data.Type);
         setEmail(result.data.Email);
         setPhone(result.data.Contact);
         setPassword(result.data.Password);
@@ -121,6 +121,7 @@ function App() {
               <Select
                 id="role"
                 name="role"
+                defaultValue={role}
                 key={role}
                 onChange={(e) => setRole(e.target.value)}
               >

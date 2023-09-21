@@ -17,7 +17,7 @@ import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import { toast } from "react-toastify";
-import { IconButton, Stack, Tooltip, Chip, Typography } from "@mui/material";
+import { IconButton, Stack, Tooltip, Chip, Typography, CircularProgress } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate , Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -168,7 +168,6 @@ const StaffManagement = () => {
                     <TableRow>
                       <TableCell>S. No.</TableCell>
                       <TableCell>Date</TableCell>
-                      <TableCell>Roll ID</TableCell>
                       <TableCell>Name</TableCell>
                       <TableCell>Status</TableCell>
                       <TableCell align="center" sx={{ pr: 3 }}>
@@ -201,9 +200,6 @@ const StaffManagement = () => {
                               {index + 1}
                             </TableCell>
                             <TableCell>{formatDate(row.createdAt)}</TableCell>
-                            <TableCell sx={{ pl: 3 }} align="start">
-                              {row.RoleID}
-                            </TableCell>
                             <TableCell sx={{ pl: 3 }} align="start">
                               {row.Name}
                             </TableCell>
@@ -290,8 +286,10 @@ const StaffManagement = () => {
           </Card>
         ) : (
           <>
-            <br></br>
-            <h5 className="text-center">Please Wait Data Loading...</h5>
+             <br></br>
+            <center>
+              <CircularProgress />
+            </center>
           </>
         )}
       </MainCard>

@@ -96,6 +96,10 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                   if (result.code === 200) {
                     localStorage.setItem("token", result.data.token);
                     localStorage.setItem("userId", result.data.userId);
+                    localStorage.setItem(
+                      "permission",
+                      JSON.stringify(result.data.permission.RoleID.IsPermission)
+                    );
                     toast.success("Login Successfully", {
                       position: toast.POSITION.TOP_CENTER,
                       autoClose: 5000,
@@ -105,6 +109,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                       draggable: true,
                     });
                     navigate("/dashboard");
+                    // window.location.reload();
                   } else if (result.status === "notFound") {
                     toast.error("User not found", {
                       position: toast.POSITION.TOP_CENTER,

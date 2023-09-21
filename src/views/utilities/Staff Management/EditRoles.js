@@ -4,7 +4,7 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Grid, MenuItem, Select, Stack } from "@mui/material";
+import { Button, Grid, MenuItem, Select, Stack , TextField} from "@mui/material";
 
 function App() {
   const navigate = useNavigate();
@@ -60,21 +60,24 @@ function App() {
       })
       .catch((error) => {});
   }
+
   return (
     <MainCard title="Update Role">
       <form action="#" onSubmit={handleSubmit}>
         <Grid container spacing={gridSpacing}>
-          <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4}>
             <Stack>
-              <InputLabel required>Enter a Unique Role</InputLabel>
-              <TextField
-                fullWidth
-                id="title"
-                name="title"
+              <InputLabel required>Name</InputLabel>
+              <Select
+                id="name"
+                name="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enter Role"
-              />
+              >
+                <MenuItem value="user">User</MenuItem>
+                <MenuItem value="salesPerson">Sales Person</MenuItem>
+                <MenuItem value="manager">Manager</MenuItem>
+              </Select>
             </Stack>
           </Grid>
           <Grid item xs={12} md={4}>
@@ -95,7 +98,7 @@ function App() {
         <br />
         {/* <center> */}
         <Button variant="contained" type="submit">
-          Add Roles
+          Update Roles
         </Button>
         {/* </center> */}
       </form>

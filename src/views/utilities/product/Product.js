@@ -96,7 +96,7 @@ export default function DataTable() {
 
         var raw = JSON.stringify({
           adminId: localStorage.getItem("userId"),
-          categoryId: str,
+          productId: str,
         });
 
         var requestOptions = {
@@ -106,7 +106,7 @@ export default function DataTable() {
           redirect: "follow",
         };
 
-        fetch(`${process.env.REACT_APP_API_URL}deleteCategory`, requestOptions)
+        fetch(`${process.env.REACT_APP_API_URL}deleteProduct`, requestOptions)
           .then((response) => response.text())
           .then((result) => {
             getAllProduct();

@@ -104,7 +104,7 @@ function App() {
               </TableCell>
               <TableCell align="start">
                 <div className="switcher">
-                  <label for="toggle-1">
+                  <label htmlFor="toggle-1">
                     <small>Create&nbsp;&nbsp;</small>
                     <input type="checkbox" id="toggle-1" checked={row.Create} />
                     <span>
@@ -115,7 +115,7 @@ function App() {
               </TableCell>
               <TableCell align="start">
                 <div className="switcher">
-                  <label for="toggle-7">
+                  <label htmlFor="toggle-7">
                     <small>Read&nbsp;&nbsp;</small>
                     <input type="checkbox" id="toggle-7" checked={row.Read} />
                     <span>
@@ -126,7 +126,7 @@ function App() {
               </TableCell>
               <TableCell align="start">
                 <div className="switcher">
-                  <label for="toggle-8">
+                  <label htmlFor="toggle-8">
                     <small>Update&nbsp;&nbsp;</small>
                     <input type="checkbox" id="toggle-8" checked={row.Update} />
                     <span>
@@ -137,7 +137,7 @@ function App() {
               </TableCell>
               <TableCell align="start">
                 <div className="switcher">
-                  <label for="toggle-9">
+                  <label htmlFor="toggle-9">
                     <span>
                       <small></small>
                     </span>

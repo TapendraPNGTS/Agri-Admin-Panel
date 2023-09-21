@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
@@ -11,20 +11,29 @@ import {
   Select,
   Stack,
   TextField,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 function App() {
   const params = useParams();
   const navigate = useNavigate();
-  const [file, setFile] = useState();
+  const [file, setFile] = useState([]);
+  const [file1, setFile1] = useState([]);
   const [title, setTitle] = React.useState("");
   const [price, setPrice] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
-  const [proImage, setProImage] = React.useState([]);
   const [rows, setRows] = React.useState([]);
   const [active, setActive] = React.useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState();
+  const [franchisePrice, setFranchisePrice] = useState("");
+  const [bestSeller, setBestSeller] = React.useState(false);
+  const [newArrival, setNewArrival] = React.useState(false);
+  const [bestDeal, setBestDeal] = React.useState(false);
+  const [discount, setDiscount] = React.useState(false);
+  const [discountPrice, setDiscountPrice] = React.useState(0);
+  const [description, setDescription] = useState("");
+  const [fileName, setFileName] = useState([]);
+  const [fileName1, setFileName1] = useState();
 
   var myHeaders = new Headers();
   myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
@@ -45,11 +54,18 @@ function App() {
     fetch(`${process.env.REACT_APP_API_URL}getProductById`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        setCategoryId(result.data.CategoryID.CategoryID);
         setTitle(result.data.Name);
         setActive(result.data.IsActive);
         setPrice(result.data.Price);
-        setProImage(result.data.Images);
         setQuantity(result.data.Quantity);
+        setDiscount(result.data.Discount);
+        setFranchisePrice(result.data.FrenchisePrice);
+        setBestSeller(result.data.IsBestSeller);
+        setBestDeal(result.data.IsBestDeal);
+        setNewArrival(result.data.IsNewArrival);
+        setDiscountPrice(result.data.DiscountPrice);
+        setDescription(result.data.Description);
       })
       .catch((error) => console.log("error", error));
   }
@@ -59,6 +75,12 @@ function App() {
 
   function handleChange(event) {
     setFile(event.target.files[0]);
+    setFileName(event.target.value);
+  }
+
+  function handleChange1(event) {
+    setFile1(event.target.files);
+    setFileName1(event.target.value);
   }
 
   function handleSubmit(event) {
@@ -77,8 +99,18 @@ function App() {
     formdata.append("active", active);
     formdata.append("price", price);
     formdata.append("quantity", quantity);
-    formdata.append("categoryId", category);
+    formdata.append("description", description);
+    formdata.append("categoryId", categoryId);
     formdata.append("img", file);
+    for(const key of Object.keys(file1)){
+      formdata.append('images',file1[key]);
+    }
+    formdata.append("frenchisePrice", franchisePrice);
+    formdata.append("discount", discount);
+    formdata.append("discountPrice", discountPrice);
+    formdata.append("isNew", newArrival);
+    formdata.append("isBestSeller", bestSeller);
+    formdata.append("isBestDeal", bestDeal);
 
     var requestOptions = {
       method: "POST",
@@ -190,6 +222,25 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
+              <InputLabel required>Franchise Price</InputLabel>
+              <TextField
+                fullWidth
+                id="price"
+                name="price"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 6);
+                }}
+                type="number"
+                value={franchisePrice}
+                onChange={(e) => setFranchisePrice(e.target.value)}
+                placeholder="Enter product price"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
               <InputLabel required>Product Quantity</InputLabel>
               <TextField
                 fullWidth
@@ -212,8 +263,9 @@ function App() {
               <Select
                 id="active"
                 name="active"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                value={categoryId}
+                key={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
               >
                 {rows.map((row, i) => {
                   return (
@@ -225,44 +277,137 @@ function App() {
               </Select>
             </Stack>
           </Grid>
+          <Grid item xs={4} md={4}>
+            <Stack>
+              <InputLabel required>Best Seller</InputLabel>
+              <Select
+                id="best-seller"
+                name="best-seller"
+                value={bestSeller}
+                onChange={(e) => setBestSeller(e.target.value)}
+              >
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
+              </Select>
+            </Stack>
+          </Grid>
+          <Grid item xs={4} md={4}>
+            <Stack>
+              <InputLabel required>New Arrival</InputLabel>
+              <Select
+                id="new-arrival"
+                name="new-arrival"
+                value={newArrival}
+                onChange={(e) => setNewArrival(e.target.value)}
+              >
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
+              </Select>
+            </Stack>
+          </Grid>
+          <Grid item xs={4} md={4}>
+            <Stack>
+              <InputLabel required>Best Deal</InputLabel>
+              <Select
+                id="best-deal"
+                name="best-deal"
+                value={bestDeal}
+                onChange={(e) => setBestDeal(e.target.value)}
+              >
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
+              </Select>
+            </Stack>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Stack>
+              <InputLabel required>Description</InputLabel>
+              <TextField
+                fullWidth
+                id="discription"
+                name="discription"
+                inputProps={{ maxLength: 250 }}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Add Description"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Discount</InputLabel>
+              <Select
+                id="discount"
+                name="discount"
+                value={discount}
+                key={discount}
+                onChange={(e) => setDiscount(e.target.value)}
+              >
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
+              </Select>
+            </Stack>
+          </Grid>
+          {discount ? (
+            <Grid item xs={6} md={6}>
+              <Stack>
+                <InputLabel required>Discount Price</InputLabel>
+                <TextField
+                  fullWidth
+                  id="price"
+                  name="price"
+                  onInput={(e) => {
+                    e.target.value = Math.max(0, parseFloat(e.target.value))
+                      .toString()
+                      .slice(0, 6);
+                  }}
+                  type="number"
+                  value={discountPrice}
+                  onChange={(e) => setDiscountPrice(e.target.value)}
+                  placeholder="Enter product price"
+                />
+              </Stack>
+            </Grid>
+          ) : (
+            <></>
+          )}
           <Grid item xs={12} md={6}>
             <Stack>
-              <InputLabel>Choose ThumbnailImage</InputLabel>
-              <div class="custom-file">
+              <InputLabel>Cover Image</InputLabel>
+              <div className="custom-file">
                 <input
                   type="file"
-                  class="custom-file-input"
+                  className="custom-file-input"
                   id="thumbnail"
+                  value={fileName}
                   accept="image/png, image/jpeg"
                   onChange={handleChange}
                 />
-                <label class="custom-file-label" for="thumbnail">
-                  Choose file
+                <label className="custom-file-label" for="thumbnail">
+                  {fileName}
                 </label>
               </div>
             </Stack>
           </Grid>
-        </Grid>
-        <br/>
-        <br/>
-        <Grid container spacing={gridSpacing}>
-          {proImage.map((primg, index) => {
-            <Grid item xs={4} md={4} key={index}>
-              <InputLabel required>Product Image</InputLabel>
-              <Stack>
-                <a
-                  href={`${process.env.REACT_APP_IMAGE_URL}${primg}`}
-                  target="_blank"
-                >
-                  <img
-                    src={`${process.env.REACT_APP_IMAGE_URL}${primg}`}
-                    width={200}
-                    height={200}
-                  />
-                </a>
-              </Stack>
-            </Grid>;
-          })}
+          <Grid item xs={12} md={6}>
+            <Stack>
+              <InputLabel>Choose Mutiple Image</InputLabel>
+              <div className="custom-file">
+                <input
+                  type="file"
+                  className="custom-file-input"
+                  id="thumbnail"
+                  multiple
+                  value={fileName1}
+                  accept="image/png, image/jpeg"
+                  onChange={handleChange1}
+                />
+                <label className="custom-file-label" for="thumbnail">
+                  {fileName1}
+                </label>
+              </div>
+            </Stack>
+          </Grid>
         </Grid>
         <br></br>
         <center>

@@ -19,6 +19,7 @@ function App() {
   const [active, setActive] = React.useState(true);
   const [brImage, setBrImagee] = React.useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [fileName, setFileName] = useState();
 
   var myHeaders = new Headers();
   myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
@@ -50,6 +51,7 @@ function App() {
 
   function handleChange(event) {
     setFile(event.target.files[0]);
+    setFileName(event.target.value)
   }
 
   function handleSubmit(event) {
@@ -115,16 +117,17 @@ function App() {
           <Grid item xs={12} md={6}>
             <Stack>
               <InputLabel>Choose ThumbnailImage</InputLabel>
-              <div class="custom-file">
+              <div className="custom-file">
                 <input
                   type="file"
-                  class="custom-file-input"
+                  className="custom-file-input"
                   id="thumbnail"
+                  value={fileName}
                   accept="image/png, image/jpeg"
                   onChange={handleChange}
                 />
-                <label class="custom-file-label" for="thumbnail">
-                  Choose file
+                <label className="custom-file-label" for="thumbnail">
+                  {fileName}
                 </label>
               </div>
             </Stack>

@@ -6,7 +6,7 @@ export const Toggle = ({ label, toggled, onClick }) => {
     <>
       <center>
         <div className="switcher">
-          <label for="toggle-1">
+          <label htmlFor="toggle-1">
             <span>
               <small></small>
             </span>

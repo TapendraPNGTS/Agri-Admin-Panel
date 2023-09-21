@@ -189,7 +189,7 @@ export default function Users() {
                               )}
                             </TableCell>
                             <TableCell align="center" sx={{ pr: 3 }}>
-                              <Link
+                              {/* <Link
                                 to={`/view-franchise-request/${row.FrenchiseID}`}
                               >
                                 <IconButton
@@ -200,7 +200,7 @@ export default function Users() {
                                 >
                                   <VisibilityIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
-                              </Link>
+                              </Link> */}
                               <Tooltip
                                 placement="top"
                                 title="Edit"

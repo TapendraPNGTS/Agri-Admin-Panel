@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   Button,
@@ -15,7 +15,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 function App() {
-  const params = useParams();
   const navigate = useNavigate();
   const [firmName, setFirmName] = React.useState("");
   const [person, setPerson] = React.useState("");
@@ -26,6 +25,7 @@ function App() {
   const [city, setCity] = React.useState("");
   const [state, setState] = React.useState("");
   const [pinCode, setPinCode] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   //   bank ariable
@@ -55,8 +55,43 @@ function App() {
   function handleSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
+    const bank = {
+      BankName: bankName,
+      AccountNumber: acNumber,
+      BranchName: branchName,
+      IFSCCode: ifscCode,
+    };
+    const presticide = {
+      LicenseNumber: pstLicense,
+      StartDate: seedDate,
+      ValidUpto: pstValidDate,
+    };
+    const seed = {
+      LicenseNumber: seedLicense,
+      StartDate: pstDate,
+      ValidUpto: seedValidDate,
+    };
+    const fertilizer = {
+      LicenseNumber: fertiLicense,
+      StartDate: fertiDate,
+      ValidUpto: fertiValidDate,
+    };
     var raw = JSON.stringify({
       adminId: localStorage.getItem("userId"),
+      name: person,
+      firmName: firmName,
+      address: address,
+      email: email,
+      contact: number,
+      firmType: firmType,
+      gst: gstNo,
+      city: city,
+      state: state,
+      pincode: pinCode,
+      bank: bank,
+      presticide: presticide,
+      seed: seed,
+      fertilizer: fertilizer,
     });
     var requestOptions = {
       method: "POST",
@@ -65,7 +100,7 @@ function App() {
       redirect: "follow",
     };
 
-    fetch(`${process.env.REACT_APP_API_URL}`, requestOptions)
+    fetch(`${process.env.REACT_APP_API_URL}addFrencise`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.code === 200) {
@@ -79,7 +114,18 @@ function App() {
             draggable: true,
           });
         } else {
-          setIsLoading(false);
+          if (result.code === 201) {
+            setIsLoading(false);
+            toast.danger("Invalid Request", {
+              position: toast.POSITION.TOP_CENTER,
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            });
+          } else {
+          }
         }
       })
       .catch((error) => {});
@@ -138,6 +184,21 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
+              <InputLabel required>Email address</InputLabel>
+              <TextField
+                fullWidth
+                id="state"
+                name="state"
+                type="email"
+                inputProps={{ maxLength: 40 }}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter email address"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
               <InputLabel required>Contact No.</InputLabel>
               <TextField
                 fullWidth
@@ -183,7 +244,7 @@ function App() {
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
-                    .slice(0, 10);
+                    .slice(0, 13);
                 }}
                 value={gstNo}
                 onChange={(e) => setGstNo(e.target.value)}
@@ -287,12 +348,8 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                type="number"
-                onInput={(e) => {
-                  e.target.value = Math.max(0, parseInt(e.target.value))
-                    .toString()
-                    .slice(0, 10);
-                }}
+                type="text"
+                inputProps={{ maxLength: 15 }}
                 value={ifscCode}
                 onChange={(e) => setIfscCode(e.target.value)}
                 placeholder="Enter IFSC Code"
@@ -329,7 +386,12 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                inputProps={{ maxLength: 30 }}
+                type="number"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 14);
+                }}
                 value={pstLicense}
                 onChange={(e) => setPstLicense(e.target.value)}
                 placeholder="Enter Pesticide License No."
@@ -373,7 +435,12 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                inputProps={{ maxLength: 30 }}
+                type="number"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 14);
+                }}
                 value={seedLicense}
                 onChange={(e) => setSeedLicense(e.target.value)}
                 placeholder="Enter Seed License No."
@@ -417,7 +484,12 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                inputProps={{ maxLength: 30 }}
+                type="number"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 14);
+                }}
                 value={fertiLicense}
                 onChange={(e) => setFertiLicense(e.target.value)}
                 placeholder="Enter Fertilizer License No."
@@ -463,7 +535,7 @@ function App() {
           ) : (
             <>
               <Button variant="contained" type="submit">
-                Update Franchise
+                Submit Request
               </Button>
             </>
           )}

@@ -81,10 +81,6 @@ function App() {
             ></TextField>
           </Stack>
         </Grid>
-      </Grid>
-      <br />
-      <br />
-      <Grid container spacing={gridSpacing}>
         <Grid item xs={12} md={4}>
           <InputLabel required>Image</InputLabel>
           <Stack>

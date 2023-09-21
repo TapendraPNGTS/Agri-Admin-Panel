@@ -1,6 +1,5 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // material-ui
-import { Link } from '@mui/material';
 import Logo from '../../../assets/images/MY_AGRI_INPUT2.svg';
 // project imports
 
@@ -9,7 +8,7 @@ import Logo from '../../../assets/images/MY_AGRI_INPUT2.svg';
 const LogoSection = () => (
     <center>
         <Link to="dashboard">
-            <img src={Logo} alt="image" />
+            <img src={Logo} height={"55px"} alt="image" />
         </Link>
     </center>
 );

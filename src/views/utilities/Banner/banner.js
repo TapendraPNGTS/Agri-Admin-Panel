@@ -18,7 +18,13 @@ import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
 import { toast } from "react-toastify";
-import { IconButton, Stack, Tooltip, Typography , CircularProgress } from "@mui/material";
+import {
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -196,7 +202,7 @@ export default function DataTable() {
                             hover
                             role="checkbox"
                             tabIndex={-1}
-                            key={row.code}
+                            key={index}
                           >
                             <TableCell sx={{ pl: 3 }} align="start">
                               {index + 1}
@@ -272,7 +278,7 @@ export default function DataTable() {
           <>
             <br></br>
             <center>
-            <CircularProgress />
+              <CircularProgress />
             </center>
           </>
         )}
