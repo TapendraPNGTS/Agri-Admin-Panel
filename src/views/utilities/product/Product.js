@@ -18,7 +18,14 @@ import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
 import { toast } from "react-toastify";
-import { IconButton, Stack, Tooltip, Chip, Typography, CircularProgress } from "@mui/material";
+import {
+  IconButton,
+  Stack,
+  Tooltip,
+  Chip,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -226,9 +233,11 @@ export default function DataTable() {
                                 target="_blank"
                               >
                                 <Avatar
-                                  alt="M21"
+                                  alt="Agri Input"
+                                  variant="rounded"
+                                  size="md"
                                   src={`${process.env.REACT_APP_IMAGE_URL}${row.CoverImage}`}
-                                  sx={{ width: 50, height: 50 }}
+                                  sx={{ width: 60, height: 60 }}
                                 />
                               </a>
                             </TableCell>

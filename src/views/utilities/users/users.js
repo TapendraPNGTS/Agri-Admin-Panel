@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, Grid, Typography, Chip, IconButton, CircularProgress } from "@mui/material";
 import Paper from "@mui/material/Paper";
 // project imports
+import EditIcon from "@mui/icons-material/Edit";
 import MainCard from "ui-component/cards/MainCard";
 import { gridSpacing } from "store/constant";
 import Table from "@mui/material/Table";
@@ -188,12 +189,12 @@ export default function Users() {
                             </Stack>*/}
                               <Link to={`/view-user/${row.UserID}`}>
                                 <IconButton
-                                  color="primary"
-                                  title="view User"
-                                  aria-label="view"
+                                  color="edit"
+                                  title="Edit User"
+                                  aria-label="Edit"
                                   size="large"
                                 >
-                                  <VisibilityIcon sx={{ fontSize: "1.1rem" }} />
+                                  <EditIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
                               </Link>
                             </TableCell>

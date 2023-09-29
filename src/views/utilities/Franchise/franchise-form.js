@@ -21,7 +21,7 @@ function App() {
   const [address, setAddress] = React.useState("");
   const [number, setNumber] = React.useState("");
   const [firmType, setFirmType] = React.useState(false);
-  const [gstNo, setGstNo] = React.useState(false);
+  const [gstNo, setGstNo] = React.useState("");
   const [city, setCity] = React.useState("");
   const [state, setState] = React.useState("");
   const [pinCode, setPinCode] = React.useState("");
@@ -46,6 +46,57 @@ function App() {
   const [fertiLicense, setFertiLicense] = useState("");
   const [fertiDate, setFertiDate] = useState("");
   const [fertiValidDate, setFertiValidDate] = useState("");
+// Validation
+  const [message, setMessage] = useState("");
+  const [isValid, setIsValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [emailMessage, setEmailMessage] = useState("");
+  const [isGstValid, setIsGstValid] = useState(false);
+  const [gstMessage, setGstMessage] = useState("");
+  const [isIfscValid, setIsIfscValid] = useState(false);
+  const [ifscMessage, setIfscMessage] = useState("");
+
+  const phoneValidation = () => {
+    const regex =  /^[6-9]\d{9}$/;
+    return !(!number || regex.test(number) === false);
+  };
+
+  const phoneValid = () => {
+    const isPhoneValid = phoneValidation();
+    setIsValid(isPhoneValid);
+    setMessage(isPhoneValid ? <></> : "Phone Number not valid!" );
+  } 
+  const emailValidation = () => {
+    const regexEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+.)+[A-Z]{2,4}$/i;
+    return !(!email || regexEmail.test(email) === false);
+  };
+
+  const emailValid = () => {
+    const isEmailValid = emailValidation();
+    setIsEmailValid(isEmailValid);
+    setEmailMessage(isEmailValid ? <></> : "Email not valid!" );
+  } 
+  const gstValidation = () => {
+    const regexGst = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    return !(!gstNo || regexGst.test(gstNo) === false);
+  };
+
+  const gstValid = () => {
+    const isGstValid = gstValidation();
+    setIsGstValid(isGstValid);
+    setGstMessage(isGstValid ? <></> : "Gst number not valid!" );
+  } 
+
+  const ifscValidation = () => {
+    const regexIfsc = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    return !(!ifscCode || regexIfsc.test(ifscCode) === false);
+  };
+
+  const ifscValid = () => {
+    const isIfscValid = ifscValidation();
+    setIsIfscValid(isIfscValid);
+    setIfscMessage(isIfscValid ? <></> : "Ifsc not valid!" );
+  } 
 
   var myHeaders = new Headers();
   myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
@@ -190,11 +241,13 @@ function App() {
                 id="state"
                 name="state"
                 type="email"
+                onBlur={emailValid}
                 inputProps={{ maxLength: 40 }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email address"
               />
+              <p style={{color:'red'}}>{emailMessage}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -205,6 +258,7 @@ function App() {
                 id="state"
                 name="state"
                 type="number"
+                onBlur={phoneValid}
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
@@ -214,6 +268,7 @@ function App() {
                 onChange={(e) => setNumber(e.target.value)}
                 placeholder="Enter Contact No."
               />
+              <p style={{color:'red'}}>{message}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -240,16 +295,13 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                type="number"
-                onInput={(e) => {
-                  e.target.value = Math.max(0, parseInt(e.target.value))
-                    .toString()
-                    .slice(0, 13);
-                }}
+                type="text"
+                onBlur={gstValid}
                 value={gstNo}
                 onChange={(e) => setGstNo(e.target.value)}
                 placeholder="Enter GST No."
               />
+              <p style={{color:'red'}}>{gstMessage}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -349,11 +401,13 @@ function App() {
                 id="state"
                 name="state"
                 type="text"
+                onBlur={ifscValid}
                 inputProps={{ maxLength: 15 }}
                 value={ifscCode}
                 onChange={(e) => setIfscCode(e.target.value)}
                 placeholder="Enter IFSC Code"
               />
+              <p style={{color:'red'}}>{ifscMessage}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>

@@ -213,9 +213,11 @@ export default function DataTable() {
                                 target="_blank"
                               >
                                 <Avatar
-                                  alt="M21"
+                                  alt="Agri Input"
+                                  variant="rounded"
+                                  size="md"
                                   src={`${process.env.REACT_APP_IMAGE_URL}${row.Image}`}
-                                  sx={{ width: 50, height: 50 }}
+                                  sx={{ width: 60, height: 60 }}
                                 />
                               </a>
                             </TableCell>

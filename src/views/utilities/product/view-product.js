@@ -15,6 +15,8 @@ function App() {
   const [categoryName, setCategoryName] = React.useState("");
   const [categoryImg, setCategoryImg] = React.useState("");
   const [proImage, setProImage] = React.useState([]);
+  const [franchisePrice, setFranchisePrice] = useState("");
+  const [description, setDescription] = useState("");
 
   var myHeaders = new Headers();
   myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
@@ -40,10 +42,12 @@ function App() {
         setStatus(result.data.IsActive);
         setPrice(result.data.Price);
         setQuantity(result.data.Quantity);
+        setFranchisePrice(result.data.FrenchisePrice);
         setCategoryImage(result.data.CoverImage);
         setCategoryName(result.data.CategoryID.Name);
         setCategoryImg(result.data.CategoryID.Image);
         setProImage(result.data.Images);
+        setDescription(result.data.Description);
       })
       .catch((error) => console.log("error", error));
   }
@@ -107,6 +111,21 @@ function App() {
             ></TextField>
           </Stack>
         </Grid>
+        <Grid item xs={6} md={6}>
+          <Stack>
+            <InputLabel required>Franchise Price</InputLabel>
+            <TextField
+              fullWidth
+              id="price"
+              name="price"
+              disabled
+              type="number"
+              value={franchisePrice}
+              onChange={(e) => setFranchisePrice(e.target.value)}
+              placeholder="Enter product price"
+            />
+          </Stack>
+        </Grid>
         <Grid item xs={12} md={6}>
           <Stack>
             <InputLabel required>Quantity</InputLabel>
@@ -127,6 +146,22 @@ function App() {
               value={status}
               disabled
             ></TextField>
+          </Stack>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Stack>
+            <InputLabel required>Description</InputLabel>
+            <TextField
+              fullWidth
+              id="discription"
+              name="discription"
+              inputProps={{ maxLength: 250 }}
+              rows={3}
+              disabled
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Add Description"
+            />
           </Stack>
         </Grid>
       </Grid>

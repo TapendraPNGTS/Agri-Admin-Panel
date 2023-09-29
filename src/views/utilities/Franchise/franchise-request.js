@@ -21,7 +21,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import SwipeRightSharpIcon from '@mui/icons-material/SwipeRightSharp';
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -194,11 +194,11 @@ export default function Users() {
                               >
                                 <IconButton
                                   color="primary"
-                                  title="view User"
-                                  aria-label="view"
+                                  title="Accept Request"
+                                  aria-label="Accept Request"
                                   size="large"
                                 >
-                                  <VisibilityIcon sx={{ fontSize: "1.1rem" }} />
+                                  <SwipeRightSharpIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
                               </Link>
                               <Tooltip
