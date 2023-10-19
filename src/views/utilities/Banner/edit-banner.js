@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect , useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
@@ -12,6 +11,9 @@ import {
   Stack,
   CircularProgress,
 } from "@mui/material";
+import { toast } from "react-hot-toast";
+import BannerApi from "../../../api/banner.api";
+
 function App() {
   const params = useParams();
   const navigate = useNavigate();
@@ -20,80 +22,49 @@ function App() {
   const [brImage, setBrImagee] = React.useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState();
-
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
-
-  function getBannerById() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      bannerId: params.id,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getBannerById`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setActive(result.data.IsActive);
-        setBrImagee(result.data.Image);
-      })
-      .catch((error) => console.log("error", error));
-  }
-  React.useEffect(() => {
-    getBannerById();
-  }, []);
+  const bannerApi = new BannerApi();
 
   function handleChange(event) {
     setFile(event.target.files[0]);
     setFileName(event.target.value)
   }
 
-  function handleSubmit(event) {
+  const getBannerById = useCallback(async () => {
+    try {
+      const getBannerByIdResponse = await bannerApi.getBannerById({
+        bannerId: params.id,
+      });
+      if (getBannerByIdResponse && getBannerByIdResponse?.data?.code === 200) {
+        setActive(getBannerByIdResponse.data.data.IsActive);
+        setBrImagee(getBannerByIdResponse.data.data.Image);
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
+  useEffect(() => {
+    getBannerById();
+  }, []);
+  
+  async function handleSubmit(event) {
+    setIsLoading(true)
     event.preventDefault();
-    setIsLoading(true);
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
     var formdata = new FormData();
-    formdata.append("adminId", localStorage.getItem("userId"));
+    formdata.append("img", file);
     formdata.append("bannerId", params.id);
     formdata.append("active", active);
-    formdata.append("img", file);
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: formdata,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}updateBanner`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/banner");
-          toast.success("Updated Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
+    const editBannerResponse = await bannerApi.editBanner(formdata);
+    if (editBannerResponse && editBannerResponse?.data?.code === 200) {
+      toast.success(`Added successsfully`);
+      navigate("/banner", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
   }
 
   return (
@@ -136,11 +107,11 @@ function App() {
             <InputLabel required>Banner Image</InputLabel>
             <Stack>
               <a
-                href={`${process.env.REACT_APP_IMAGE_URL}${brImage}`}
+                href={brImage}
                 target="_blank"
               >
                 <img
-                  src={`${process.env.REACT_APP_IMAGE_URL}${brImage}`}
+                  src={brImage}
                   width={200}
                   height={200}
                 />

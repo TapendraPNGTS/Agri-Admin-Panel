@@ -7,7 +7,7 @@ import storage from 'redux-persist/lib/storage';
 import snackbarReducer from './slices/snackbar';
 import customerReducer from './slices/customer';
 import contactReducer from './slices/contact';
-import productReducer from './slices/product';
+// import productReducer from './slices/product';
 import chatReducer from './slices/chat';
 import calendarReducer from './slices/calendar';
 import mailReducer from './slices/mail';
@@ -15,6 +15,12 @@ import userReducer from './slices/user';
 import cartReducer from './slices/cart';
 import kanbanReducer from './slices/kanban';
 import menuReducer from './slices/menu';
+
+import bannerReducer from '../redux/redux-slice/banner.slice'
+import usersReducer from '../redux/redux-slice/user.slice'
+import categoryReducer from '../redux/redux-slice/category.slice'
+import productReducer from '../redux/redux-slice/product.slice'
+import subCategoryReducer from '../redux/redux-slice/sub-category.slice'
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -31,12 +37,19 @@ const reducer = combineReducers({
     kanban: kanbanReducer,
     customer: customerReducer,
     contact: contactReducer,
-    product: productReducer,
+    // product: productReducer,
     chat: chatReducer,
     calendar: calendarReducer,
     mail: mailReducer,
     user: userReducer,
-    menu: menuReducer
+    menu: menuReducer,
+
+
+    banner : bannerReducer,
+    user : usersReducer,
+    category : categoryReducer,
+    product : productReducer,
+    subCategory : subCategoryReducer,
 });
 
 export default reducer;

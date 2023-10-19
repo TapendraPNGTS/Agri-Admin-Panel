@@ -123,12 +123,12 @@ const ProductDetails = () => {
                     )}
                 </MainCard>
             </Grid>
-            <Grid item xs={12} lg={10} sx={{ mt: 3 }}>
+            {/* <Grid item xs={12} lg={10} sx={{ mt: 3 }}>
                 <Typography variant="h2">Related Products</Typography>
             </Grid>
             <Grid item xs={11} lg={10}>
                 <RelatedProducts id={id} />
-            </Grid>
+            </Grid> */}
             <FloatingCart />
         </Grid>
     );

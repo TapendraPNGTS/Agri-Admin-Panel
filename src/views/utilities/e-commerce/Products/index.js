@@ -91,9 +91,39 @@ const ProductsList = () => {
   const [products, setProducts] = useState([]);
   const productState = useSelector((state) => state.product);
 
+  function frenchiseProduct() {
+    var myHeaders = new Headers();
+    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
+    myHeaders.append(
+      "Authorization",
+      "Bearer " + localStorage.getItem("token")
+    );
+    myHeaders.append("Content-Type", "application/json");
+    var raw = JSON.stringify({
+      adminId: localStorage.getItem("userId"),
+    });
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    fetch(`${process.env.REACT_APP_API_URL}frenchiseProduct`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        setProducts(result.data);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  useEffect(() => {
+    frenchiseProduct();
+  }, []);
+
   useEffect(() => {
     setProducts(productState.products);
   }, [productState]);
+
 
   useEffect(() => {
     dispatch(getProducts());
@@ -241,13 +271,13 @@ const ProductsList = () => {
     productResult = products.map((product, index) => (
       <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
         <ProductCard
-          id={product.id}
-          image={product.image}
-          name={product.name}
-          description={product.description}
-          offerPrice={product.offerPrice}
-          salePrice={product.salePrice}
-          rating={product.rating}
+          id={product.ProductID}
+          image={product.CoverImage}
+          name={product.Name}
+          description={product.Description}
+          offerPrice={product.FrenchisePrice}
+          salePrice={product.Price}
+          rating={product.AvgRating}
           color={product.colors ? product.colors[0] : undefined}
         />
       </Grid>

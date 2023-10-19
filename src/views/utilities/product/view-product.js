@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback} from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useParams } from "react-router-dom";
 import { Grid, Stack, TextField } from "@mui/material";
+import { toast } from "react-hot-toast";
+import ProductApi from "../../../api/product.api";
+
 function App() {
   const params = useParams();
   const [name, setName] = React.useState("");
@@ -13,46 +16,45 @@ function App() {
   const [quantity, setQuantity] = React.useState("");
   const [categoryImage, setCategoryImage] = React.useState("");
   const [categoryName, setCategoryName] = React.useState("");
-  const [categoryImg, setCategoryImg] = React.useState("");
   const [proImage, setProImage] = React.useState([]);
   const [franchisePrice, setFranchisePrice] = useState("");
   const [description, setDescription] = useState("");
+  const productApi = new ProductApi();
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
+  const getProductById = useCallback(async () => {
+    try {
+      const getProductByIdResponse = await productApi.getProductById({
+        productId: params.id,
+      });
+      if (
+        getProductByIdResponse &&
+        getProductByIdResponse?.data?.code === 200
+      ) {
+        setName(getProductByIdResponse.data.data.Name);
+        setCategoryName(getProductByIdResponse.data.data.CategoryID.Name);
+        setDate(getProductByIdResponse.data.data.CreatedAt);
+        setStatus(getProductByIdResponse.data.data.IsActive);
+        setPrice(getProductByIdResponse.data.data.Price);
+        setQuantity(getProductByIdResponse.data.data.Quantity);
+        setFranchisePrice(getProductByIdResponse.data.data.FrenchisePrice);
+        setCategoryImage(getProductByIdResponse.data.data.CoverImage);
+        setProImage(getProductByIdResponse.data.data.Images);
+        // setCategoryName(getProductByIdResponse.data.data.categoryId.name);
+        // setCategoryImg(getProductByIdResponse.data.data.categoryId.image);
+        setDescription(getProductByIdResponse.data.data.Description);
+        // setFeatures(getProductByIdResponse.data.data.feature);
+        // console.log(getProductByIdResponse.data.data.images)
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
-  function getProductById() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      productId: params.id,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getProductById`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setName(result.data.Name);
-        setDate(result.data.createdAt);
-        setStatus(result.data.IsActive);
-        setPrice(result.data.Price);
-        setQuantity(result.data.Quantity);
-        setFranchisePrice(result.data.FrenchisePrice);
-        setCategoryImage(result.data.CoverImage);
-        setCategoryName(result.data.CategoryID.Name);
-        setCategoryImg(result.data.CategoryID.Image);
-        setProImage(result.data.Images);
-        setDescription(result.data.Description);
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  useEffect(() => {
+  React.useEffect(() => {
     getProductById();
   }, []);
 
@@ -80,7 +82,7 @@ function App() {
         </Grid>
         <Grid item xs={12} md={6}>
           <Stack>
-            <InputLabel required>Caegory Name</InputLabel>
+            <InputLabel required>Category Name</InputLabel>
             <TextField
               id="cateName"
               name="cateName"
@@ -171,11 +173,11 @@ function App() {
           <InputLabel required>Cover Image</InputLabel>
           <Stack>
             <a
-              href={`${process.env.REACT_APP_IMAGE_URL}${categoryImage}`}
+              href={categoryImage}
               target="_blank"
             >
               <img
-                src={`${process.env.REACT_APP_IMAGE_URL}${categoryImage}`}
+                src={categoryImage}
                 width={200}
                 height={200}
               />

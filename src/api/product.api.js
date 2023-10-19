@@ -1,5 +1,5 @@
 import { getTokenLocal } from "../utils/localStorage.util";
-import ApiRoutes from "../configs/endpoints.config";
+import ApiRoutes from "../conffigs/endpoints.config";
 import HttpClient from "./index.api";
 const baseURL = process.env.REACT_APP_API_URL;
 
@@ -13,6 +13,7 @@ class ProductList extends HttpClient {
   _initializeRequestInterceptor = () => {
     this.instance.interceptors.request.use((config) => {
       config.headers["Authorization"] = `Bearer ${getTokenLocal()}`;
+      config.headers["Authkey"] = process.env.REACT_APP_AUTH_KEY;
       return config;
     });
   };
@@ -28,16 +29,27 @@ class ProductList extends HttpClient {
     );
   };
 
-  AllProductListConfig = ApiRoutes.ProductList.All;
-  ProductListByIdConfig = ApiRoutes.ProductList.ProductById;
-  AddProductListConfig = ApiRoutes.ProductList.AddProduct;
-  EditProductListConfig = ApiRoutes.ProductList.EditProduct;
-  DeleteProductListConfig = ApiRoutes.ProductList.DeleteProduct;
+  AllProductListConfig = ApiRoutes.Product.All;
+  AllProductFrenciseConfig = ApiRoutes.Product.AllProductFrencise;
+  ProductListByIdConfig = ApiRoutes.Product.ProductById;
+  AddProductListConfig = ApiRoutes.Product.AddProduct;
+  addProductVarientsListConfig = ApiRoutes.Product.addProductVarients;
+  EditProductListConfig = ApiRoutes.Product.EditProduct;
+  EditProductVariantListConfig = ApiRoutes.Product.EditProductVariant;
+  DeleteProductListConfig = ApiRoutes.Product.DeleteProduct;
 
   getAllProduct = async () => {
     return this.instance({
       method: this.AllProductListConfig.Method,
       url: this.AllProductListConfig.Endpoint,
+      headers: {},
+      data: null,
+    });
+  };
+  getFranchiseProduct = async () => {
+    return this.instance({
+      method: this.AllProductFrenciseConfig.Method,
+      url: this.AllProductFrenciseConfig.Endpoint,
       headers: {},
       data: null,
     });
@@ -58,10 +70,26 @@ class ProductList extends HttpClient {
       data: data,
     });
   };
+  addProductVarients = async (data) => {
+    return this.instance({
+      method: this.addProductVarientsListConfig.Method,
+      url: this.addProductVarientsListConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
   editProduct = async (data) => {
     return this.instance({
       method: this.EditProductListConfig.Method,
       url: this.EditProductListConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  editProductVariant = async (data) => {
+    return this.instance({
+      method: this.EditProductVariantListConfig.Method,
+      url: this.EditProductVariantListConfig.Endpoint,
       headers: {},
       data: data,
     });

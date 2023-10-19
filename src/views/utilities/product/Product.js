@@ -17,7 +17,6 @@ import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
-import { toast } from "react-toastify";
 import {
   IconButton,
   Stack,
@@ -26,41 +25,38 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import ProductListApi from "../../../api/product.api";
+import { updateAllProduct } from "../../../redux/redux-slice/product.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
+  const dispatch = useDispatch();
+  const productApi = new ProductListApi();
+  const rows = useSelector((state) => state.product.Product);
 
-  function getAllProduct() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllProduct`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const getAllProduct = useCallback(async () => {
+    try {
+      const product = await productApi.getAllProduct({});
+      if (!product || !product.data.data) {
+        return toast.error("no latest banners available");
+      } else {
+        dispatch(updateAllProduct(product.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
     getAllProduct();
@@ -75,53 +71,6 @@ export default function DataTable() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
-  };
-
-  const DeleteCategory = (str) => () => {
-    swal({
-      title: "Are you sure want to delete?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        toast.success("Deleted Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-        var myHeaders = new Headers();
-        myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-        myHeaders.append(
-          "Authorization",
-          "Bearer " + localStorage.getItem("token")
-        );
-        myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify({
-          adminId: localStorage.getItem("userId"),
-          productId: str,
-        });
-
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
-
-        fetch(`${process.env.REACT_APP_API_URL}deleteProduct`, requestOptions)
-          .then((response) => response.text())
-          .then((result) => {
-            getAllProduct();
-          })
-          .catch((error) => console.log("error", error));
-      } else {
-      }
-    });
   };
 
   function formatDate(date) {
@@ -229,14 +178,14 @@ export default function DataTable() {
                             <TableCell>{row.CategoryID.Name}</TableCell>
                             <TableCell align="start">
                               <a
-                                href={`${process.env.REACT_APP_IMAGE_URL}${row.CoverImage}`}
+                                href={row.CoverImage}
                                 target="_blank"
                               >
                                 <Avatar
                                   alt="Agri Input"
                                   variant="rounded"
                                   size="md"
-                                  src={`${process.env.REACT_APP_IMAGE_URL}${row.CoverImage}`}
+                                  src={row.CoverImage}
                                   sx={{ width: 60, height: 60 }}
                                 />
                               </a>
@@ -295,7 +244,7 @@ export default function DataTable() {
                                   </IconButton>
                                 </Link>
 
-                                <Tooltip
+                                {/* <Tooltip
                                   placement="top"
                                   title="delete"
                                   onClick={DeleteCategory(`${row.ProductID}`)}
@@ -307,7 +256,7 @@ export default function DataTable() {
                                   >
                                     <DeleteIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
-                                </Tooltip>
+                                </Tooltip> */}
                               </Stack>
                             </TableCell>
                           </TableRow>

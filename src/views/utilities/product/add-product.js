@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
@@ -13,8 +12,18 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import ProductApi from "../../../api/product.api";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import CategoryApi from "../../../api/category.api";//
+import { updateAllCategory } from "../../../redux/redux-slice/category.slice";
+
 function App() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const productApi = new ProductApi();
   const [file, setFile] = useState([]);
   const [fileName, setFileName] = useState([]);
   const [file1, setFile1] = useState([]);
@@ -23,7 +32,6 @@ function App() {
   const [price, setPrice] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
   const [active, setActive] = React.useState(true);
-  const [rows, setRows] = useState([]);
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [franchisePrice, setFranchisePrice] = useState("");
@@ -33,36 +41,40 @@ function App() {
   const [bestDeal, setBestDeal] = React.useState(false);
   const [discount, setDiscount] = React.useState(false);
   const [discountPrice, setDiscountPrice] = React.useState(0);
+  const [features, setFeatures] = useState();
 
   function handleChange(event) {
     setFile(event.target.files[0]);
     setFileName(event.target.value);
   }
   function handleChange1(event) {
-    setFile1(event.target.files[0]);
+    setFile1(event.target.files);
     setFileName1(event.target.value);
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  const handleChangeDescription = (content, delta, source, editor) => {
+    setDescription(content);
+  };
+
+  const handleChangeFeatures = (content, delta, source, editor) => {
+    setFeatures(content);
+  };
+
+  async function handleSubmit(event) {
     setIsLoading(true);
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
+    event.preventDefault();
     var formdata = new FormData();
-    formdata.append("adminId", localStorage.getItem("userId"));
     formdata.append("name", name);
-    formdata.append("description", description);
+    formdata.append("description",description);
+    // formdata.append("feature",features);
     formdata.append("price", price);
     formdata.append("categoryId", category);
+    // formdata.append("subCategoryId", mainVarient);
     formdata.append("quantity", quantity);
     formdata.append("active", active);
     formdata.append("img", file);
-    for(const key of Object.keys(file1)){
-      formdata.append('images',file1[key]);
+    for (const key of Object.keys(file1)) {
+      formdata.append(`images`, file1[key]);
     }
     formdata.append("frenchisePrice", franchisePrice);
     formdata.append("discount", discount);
@@ -70,58 +82,33 @@ function App() {
     formdata.append("isNew", newArrival);
     formdata.append("isBestSeller", bestSeller);
     formdata.append("isBestDeal", bestDeal);
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: formdata,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}addProduct`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/product");
-          toast.success("Added Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
+    const addBannerResponse = await productApi.addProduct(formdata);
+    if (addBannerResponse && addBannerResponse?.data?.code === 200) {
+      toast.success(`Added successsfully`);
+      navigate("/product", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
   }
 
-  function getAllCategory() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllCategory`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const categoryApi = new CategoryApi();
+  const rows = useSelector((state) => state.category.Category);
+
+  const getAllCategory = useCallback(async () => {
+    try {
+      const categories = await categoryApi.getAllCategory();
+      if (!categories || !categories.data.data) {
+        return toast.error("no available");
+      } else {
+        dispatch(updateAllCategory(categories.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
     getAllCategory();
@@ -237,14 +224,24 @@ function App() {
           <Grid item xs={12} md={12}>
             <Stack>
               <InputLabel required>Description</InputLabel>
-              <TextField
-                fullWidth
-                id="discription"
-                name="discription"
-                inputProps={{ maxLength: 250 }}
+              <ReactQuill
+                className="quill-editor"
+                size={`md`}
+                theme="snow"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Add Description"
+                onChange={handleChangeDescription}
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Stack>
+              <InputLabel required>Features</InputLabel>
+              <ReactQuill
+                className="quill-editor"
+                size={`md`}
+                theme="snow"
+                value={features}
+                onChange={handleChangeFeatures}
               />
             </Stack>
           </Grid>

@@ -25,7 +25,7 @@ const OrderSummary = ({ checkout }) => (
                     <TableRow>
                         <TableCell>Sub Total</TableCell>
                         <TableCell align="right">
-                            {checkout.subtotal && <Typography variant="subtitle1">{currency(checkout.subtotal).format()}</Typography>}
+                            {checkout.subtotal && <Typography variant="subtitle1">₹{(checkout.subtotal)}</Typography>}
                         </TableCell>
                     </TableRow>
                     <TableRow>
@@ -33,7 +33,7 @@ const OrderSummary = ({ checkout }) => (
                         <TableCell align="right">
                             {checkout.discount && (
                                 <Typography variant="subtitle1">
-                                    {checkout.discount <= 0 ? '-' : currency(checkout.discount).format()}
+                                    ₹{checkout.discount <= 0 ? '-' : (checkout.discount)}
                                 </Typography>
                             )}
                         </TableCell>
@@ -43,7 +43,7 @@ const OrderSummary = ({ checkout }) => (
                         <TableCell align="right">
                             {checkout.shipping && (
                                 <Typography variant="subtitle1">
-                                    {checkout.shipping <= 0 ? '-' : currency(checkout.shipping).format()}
+                                    ₹{checkout.shipping <= 0 ? '-' : (checkout.shipping)}
                                 </Typography>
                             )}
                         </TableCell>
@@ -53,7 +53,7 @@ const OrderSummary = ({ checkout }) => (
                             <Typography variant="subtitle1">Total</Typography>
                         </TableCell>
                         <TableCell align="right" sx={{ borderBottom: 'none' }}>
-                            {checkout.total && <Typography variant="subtitle1">{currency(checkout.total).format()}</Typography>}
+                        {checkout.total && <Typography variant="subtitle1">₹{(checkout.total)}</Typography>}
                         </TableCell>
                     </TableRow>
                 </TableBody>

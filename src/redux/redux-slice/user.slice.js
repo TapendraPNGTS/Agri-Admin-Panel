@@ -4,11 +4,14 @@ import {
   getUserLocal,
   setTokenLocal,
   setUserLocal,
+  getPermissionLocal,
+  setPermissionLocal,
 } from "../../utils/localStorage.util";
 
 const initialState = {
   v_user_info: getUserLocal(),
   x_auth_token: getTokenLocal(),
+  permission: getPermissionLocal(),
   User: [],
 };
 
@@ -25,6 +28,10 @@ export const userSlice = createSlice({
       setTokenLocal(action.payload);
       state.x_auth_token = action.payload;
     },
+    updatePermission: (state, action) => {
+      setPermissionLocal(action.payload);
+      state.permission = action.payload;
+    },
     updateAllUser: (state, action) => {
       state.User = action.payload;
     },
@@ -32,7 +39,7 @@ export const userSlice = createSlice({
 });
 
 // this is for dispatch
-export const { updateUser, updateToken, updateAllUser } = userSlice.actions;
+export const { updateUser, updateToken, updateAllUser, updatePermission } = userSlice.actions;
 
 // this is for configureStore
 export default userSlice.reducer;

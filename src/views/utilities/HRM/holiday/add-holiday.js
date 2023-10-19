@@ -15,7 +15,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import formatDate from "../../Date-Formet/date-formet"
+import formatDate from "../../Date-Formet/date-formet";
 function App() {
   const navigate = useNavigate();
   const [name, setName] = React.useState("");
@@ -66,7 +66,9 @@ function App() {
   }
 
   const handleDateChange = (date) => {
-    {formatDate(setSelectedDate(date))};
+    {
+      formatDate(setSelectedDate(date));
+    }
   };
 
   return (
@@ -75,17 +77,16 @@ function App() {
         <Grid container spacing={gridSpacing}>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>Choose Date</InputLabel>
-              <DatePicker
-                label="Select a date"
-                selected={selectedDate}
-                onChange={handleDateChange}
-                dateFormat="dd/MM/yyyy" // Customize date format as needed
+              <InputLabel required>Date</InputLabel>
+              <TextField
+                fullWidth
+                id="date"
+                name="date"
+                type={`date`}
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                placeholder="Enter Occasion"
               />
-              <p>
-                Selected Date:{" "}
-                {selectedDate ? selectedDate.toLocaleDateString() : "None"}
-              </p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>

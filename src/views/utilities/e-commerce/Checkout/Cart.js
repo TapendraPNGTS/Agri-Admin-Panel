@@ -130,13 +130,13 @@ const Cart = ({ checkout, onNext, removeProduct, updateQuantity }) => {
                                                     <Avatar
                                                         size="md"
                                                         variant="rounded"
-                                                        src={row.image ? prodImage(`./${row.image}`) : ''}
+                                                        src={`${process.env.REACT_APP_IMAGE_URL}${row.image}`}
                                                     />
                                                 </Grid>
                                                 <Grid item>
                                                     <Stack spacing={0}>
                                                         <Typography variant="subtitle1">{row.name}</Typography>
-                                                        <Stack direction="row" alignItems="center" spacing={1}>
+                                                        {/* <Stack direction="row" alignItems="center" spacing={1}>
                                                             <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
                                                                 Size:{' '}
                                                                 <Typography variant="caption" component="span">
@@ -153,7 +153,7 @@ const Cart = ({ checkout, onNext, removeProduct, updateQuantity }) => {
                                                                     {colorsData ? colorsData[0].label : 'Multicolor'}
                                                                 </Typography>
                                                             </Typography>
-                                                        </Stack>
+                                                        </Stack> */}
                                                     </Stack>
                                                 </Grid>
                                             </Grid>
@@ -161,11 +161,11 @@ const Cart = ({ checkout, onNext, removeProduct, updateQuantity }) => {
                                         <TableCell align="right">
                                             <Stack>
                                                 {row.offerPrice && (
-                                                    <Typography variant="subtitle1">{currency(row.offerPrice).format()}</Typography>
+                                                    <Typography variant="subtitle1">₹{(row.offerPrice)}</Typography>
                                                 )}
                                                 {row.salePrice && (
                                                     <Typography variant="caption" sx={{ textDecoration: 'line-through' }}>
-                                                        {currency(row.salePrice).format()}
+                                                        ₹{(row.salePrice)}
                                                     </Typography>
                                                 )}
                                             </Stack>
@@ -176,7 +176,7 @@ const Cart = ({ checkout, onNext, removeProduct, updateQuantity }) => {
                                         <TableCell align="right">
                                             {row.offerPrice && row.quantity && (
                                                 <Typography variant="subtitle1">
-                                                    {currency(row.offerPrice * row.quantity).format()}
+                                                    ₹{(row.offerPrice * row.quantity)}
                                                 </Typography>
                                             )}
                                         </TableCell>

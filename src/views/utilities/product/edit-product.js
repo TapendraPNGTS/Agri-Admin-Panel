@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
@@ -13,15 +12,25 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
+
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import { toast } from "react-hot-toast";
+import ProductApi from "../../../api/product.api";
+import CategoryApi from "../../../api/category.api";
+import { updateAllCategory } from "../../../redux/redux-slice/category.slice";
+import { useDispatch, useSelector } from "react-redux";
+
 function App() {
   const params = useParams();
   const navigate = useNavigate();
+  const productApi = new ProductApi();
+  const dispatch = useDispatch();
   const [file, setFile] = useState([]);
   const [file1, setFile1] = useState([]);
   const [title, setTitle] = React.useState("");
   const [price, setPrice] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
-  const [rows, setRows] = React.useState([]);
   const [active, setActive] = React.useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [categoryId, setCategoryId] = useState();
@@ -34,64 +43,68 @@ function App() {
   const [description, setDescription] = useState("");
   const [fileName, setFileName] = useState([]);
   const [fileName1, setFileName1] = useState();
-
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
-
-  function getProductById() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      productId: params.id,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getProductById`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setCategoryId(result.data.CategoryID.CategoryID);
-        setTitle(result.data.Name);
-        setActive(result.data.IsActive);
-        setPrice(result.data.Price);
-        setQuantity(result.data.Quantity);
-        setDiscount(result.data.Discount);
-        setFranchisePrice(result.data.FrenchisePrice);
-        setBestSeller(result.data.IsBestSeller);
-        setBestDeal(result.data.IsBestDeal);
-        setNewArrival(result.data.IsNewArrival);
-        setDiscountPrice(result.data.DiscountPrice);
-        setDescription(result.data.Description);
-      })
-      .catch((error) => console.log("error", error));
-  }
-  React.useEffect(() => {
-    getProductById();
-  }, []);
+  const [coverImage, setCoverImage] = React.useState("");
+  const [proImage, setProImage] = React.useState([]);
+  const [features, setFeatures] = useState();
 
   function handleChange(event) {
     setFile(event.target.files[0]);
     setFileName(event.target.value);
   }
-
   function handleChange1(event) {
     setFile1(event.target.files);
     setFileName1(event.target.value);
   }
+  const handleChangeDescription = (content, delta, source, editor) => {
+    setDescription(content);
+  };
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  const handleChangeFeatures = (content, delta, source, editor) => {
+    setFeatures(content);
+  };
+  
+  const getProductById = useCallback(async () => {
+    try {
+      const getProductByIdResponse = await productApi.getProductById({
+        productId: params.id,
+      });
+      if (
+        getProductByIdResponse &&
+        getProductByIdResponse?.data?.code === 200
+      ) {
+        setTitle(getProductByIdResponse.data.data.Name);
+        setCategoryId(getProductByIdResponse.data.data.CategoryID.CategoryID);
+        setTitle(getProductByIdResponse.data.data.Name);
+        setActive(getProductByIdResponse.data.data.IsActive);
+        setPrice(getProductByIdResponse.data.data.Price);
+        setQuantity(getProductByIdResponse.data.data.Quantity);
+        setDiscount(getProductByIdResponse.data.data.Discount);
+        setFranchisePrice(getProductByIdResponse.data.data.FrenchisePrice);
+        setCoverImage(getProductByIdResponse.data.data.CoverImage);
+        setProImage(getProductByIdResponse.data.data.Images);
+        // setBestSeller(getProductByIdResponse.data.data.isBestSeller);
+        // setBestDeal(getProductByIdResponse.data.data.IsBestDeal);
+        // setNewArrival(getProductByIdResponse.data.data.IsNewArrival);
+        setDiscountPrice(getProductByIdResponse.data.data.DiscountPrice);
+        setDescription(getProductByIdResponse.data.data.Description);
+        // setFeatures(getProductByIdResponse.data.data.feature);
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
+  React.useEffect(() => {
+    getProductById();
+  }, []);
+
+  async function handleSubmit(event) {
     setIsLoading(true);
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
+    event.preventDefault();
     var formdata = new FormData();
     formdata.append("adminId", localStorage.getItem("userId"));
     formdata.append("productId", params.id);
@@ -99,74 +112,55 @@ function App() {
     formdata.append("active", active);
     formdata.append("price", price);
     formdata.append("quantity", quantity);
+    // formdata.append("feature", features);
     formdata.append("description", description);
     formdata.append("categoryId", categoryId);
+    // formdata.append("subCategoryId", mainVarient);
+    // formdata.append("categoryId", categoryId);
     formdata.append("img", file);
-    for(const key of Object.keys(file1)){
-      formdata.append('images',file1[key]);
+
+    for (const key of Object.keys(file1)) {
+      formdata.append("images", file1[key]);
     }
     formdata.append("frenchisePrice", franchisePrice);
     formdata.append("discount", discount);
     formdata.append("discountPrice", discountPrice);
-    formdata.append("isNew", newArrival);
-    formdata.append("isBestSeller", bestSeller);
-    formdata.append("isBestDeal", bestDeal);
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: formdata,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}updateProduct`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/product");
-          toast.success("Updated Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
+    // formdata.append("isNew", newArrival);
+    // formdata.append("isBestSeller", bestSeller);
+    // formdata.append("isBestDeal", bestDeal);
+    const editProductResponse = await productApi.editProduct(formdata);
+    if (editProductResponse && editProductResponse?.data?.code === 200) {
+      toast.success(`Added successsfully`);
+      navigate("/product", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
   }
 
-  function getAllCategory() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllCategory`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const categoryApi = new CategoryApi();
+  const rows = useSelector((state) => state.category.Category);
+
+  const getAllCategory = useCallback(async () => {
+    try {
+      const categories = await categoryApi.getAllCategory();
+      if (!categories || !categories.data.data) {
+        return toast.error("no available");
+      } else {
+        dispatch(updateAllCategory(categories.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
     getAllCategory();
   }, []);
+
+
 
   return (
     <MainCard title="Edit Product">
@@ -322,14 +316,24 @@ function App() {
           <Grid item xs={12} md={12}>
             <Stack>
               <InputLabel required>Description</InputLabel>
-              <TextField
-                fullWidth
-                id="discription"
-                name="discription"
-                inputProps={{ maxLength: 250 }}
+              <ReactQuill
+                className="quill-editor"
+                size={`lg`}
+                theme="snow"
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Add Description"
+                onChange={handleChangeDescription}
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Stack>
+              <InputLabel required>Features</InputLabel>
+              <ReactQuill
+                className="quill-editor"
+                size={`md`}
+                theme="snow"
+                value={features}
+                onChange={handleChangeFeatures}
               />
             </Stack>
           </Grid>
@@ -407,6 +411,29 @@ function App() {
                 </label>
               </div>
             </Stack>
+          </Grid>
+        </Grid>
+        <br />
+        <Grid container spacing={gridSpacing}>
+          <Grid item xs={4} md={4}>
+            <InputLabel required>Cover Image</InputLabel>
+            <Stack>
+              <a href={`${coverImage}`} target="_blank">
+                <img src={`${coverImage}`} width={200} height={200} />
+              </a>
+            </Stack>
+          </Grid>
+          <Grid item xs={4} md={4}>
+            <InputLabel required>Images</InputLabel>
+            {proImage.map((image, index) => {
+              return (
+                <Stack>
+                  <a href={image} target="_blank" key={index}>
+                    <img src={image} width={200} height={200} />
+                  </a>
+                </Stack>
+              );
+            })}
           </Grid>
         </Grid>
         <br></br>

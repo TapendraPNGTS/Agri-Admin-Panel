@@ -1,11 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-
 const initialState = {
   Product: [],
 };
 //internally using immer lib (can create mutable state)
 export const productSlice = createSlice({
-  name: "productList",
+  name: "productData",
   initialState,
   reducers: {
     updateAllProduct: (state, action) => {

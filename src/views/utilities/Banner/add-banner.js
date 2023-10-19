@@ -4,56 +4,37 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Grid, Stack , CircularProgress } from "@mui/material";
+import { Button, Grid, Stack, CircularProgress } from "@mui/material";
+import BannerApi from "../../../api/banner.api";
+import { getUserLocal } from "utils/localStorage.util";
+
 function App() {
   const navigate = useNavigate();
   const [file, setFile] = useState();
   const [fileName, setFileName] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const bannerApi = new BannerApi();
 
   function handleChange(event) {
     setFile(event.target.files[0]);
-    setFileName(event.target.value)
+    setFileName(event.target.value);
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  const userId = getUserLocal();
+
+  async function handleSubmit(event) {
     setIsLoading(true);
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
+    event.preventDefault();
     var formdata = new FormData();
-    formdata.append("adminId", localStorage.getItem("userId"));
     formdata.append("img", file);
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: formdata,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}addBanner`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/banner");
-          toast.success("Added Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
+    formdata.append("adminId", userId.StaffID);
+    const addBannerResponse = await bannerApi.addBanner(formdata);
+    if (addBannerResponse && addBannerResponse?.data?.code === 200) {
+      toast.success(`Added successsfully`);
+      navigate("/banner", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
   }
 
   return (

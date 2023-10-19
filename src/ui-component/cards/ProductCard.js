@@ -22,7 +22,7 @@ const prodImage = require.context('assets/images/e-commerce', true);
 const ProductCard = ({ id, color, name, image, description, offerPrice, salePrice, rating }) => {
     const dispatch = useDispatch();
 
-    const prodProfile = image && prodImage(`./${image}`);
+    const prodProfile = image;
     const [productRating] = useState(rating);
     const cart = useSelector((state) => state.cart);
 
@@ -63,7 +63,7 @@ const ProductCard = ({ id, color, name, image, description, offerPrice, salePric
                 >
                     <CardMedia
                         sx={{ height: 220 }}
-                        image={prodProfile}
+                        image={`${process.env.REACT_APP_IMAGE_URL}${prodProfile}`}
                         title="Contemplative Reptile"
                         component={Link}
                         to={`/e-commerce/product-details/${id}`}

@@ -17,7 +17,6 @@ import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
-import { getUserLocal } from "utils/localStorage.util";
 import {
   IconButton,
   Stack,
@@ -31,8 +30,8 @@ import { useNavigate, Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import CategoryApi from "../../../api/category.api";
-import { updateAllCategory } from "../../../redux/redux-slice/category.slice";
+import SubCategoryApi from "../../../api/sub-category.api";
+import { updateAllSubCategory } from "../../../redux/redux-slice/sub-category.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();
@@ -40,19 +39,16 @@ export default function DataTable() {
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const dispatch = useDispatch();
-  const categoryApi = new CategoryApi();
-  const rows = useSelector((state) => state.category.Category);
-  const userId = getUserLocal();
+  const categoryApi = new SubCategoryApi();
+  const rows = useSelector((state) => state.subCategory.SubCategory);
 
-  const getAllCategory = useCallback(async () => {
+  const getAllSubCategory = useCallback(async () => {
     try {
-      const categories = await categoryApi.getAllCategory({
-        adminId: userId.StaffID,
-      });
+      const categories = await categoryApi.getAllSubCategory();
       if (!categories || !categories.data.data) {
         return toast.error("no latest banners available");
       } else {
-        dispatch(updateAllCategory(categories.data.data));
+        dispatch(updateAllSubCategory(categories.data.data));
         return;
       }
     } catch (error) {
@@ -63,9 +59,10 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    getAllCategory();
+    getAllSubCategory();
   }, []);
-  useEffect(() => {}, [rows]);
+
+  // useEffect(() => {}, [rows]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -105,18 +102,18 @@ export default function DataTable() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Category List</Typography>
+              <Typography variant="h3">Sub Category List</Typography>
             </Grid>
 
             <Grid item>
               <Button
                 variant="outlined"
                 onClick={(e) => {
-                  navigate("/add-category");
+                  navigate("/add-subcategory");
                 }}
                 startIcon={<AddIcon />}
               >
-                Add Category
+                Add Sub Category
               </Button>
             </Grid>
           </Grid>
@@ -140,9 +137,10 @@ export default function DataTable() {
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>S. No.</TableCell>
                       <TableCell>Date</TableCell>
-                      <TableCell hidden>Category ID</TableCell>
-                      <TableCell>Category Image</TableCell>
                       <TableCell>Category Name</TableCell>
+                      <TableCell hidden>SubCategory ID</TableCell>
+                      <TableCell> Image</TableCell>
+                      <TableCell>Name</TableCell>
                       <TableCell>Status </TableCell>
                       <TableCell align="center" sx={{ pr: 3 }}>
                         Actions
@@ -154,7 +152,7 @@ export default function DataTable() {
                       .filter((row) =>
                         search === ""
                           ? row
-                          : row.Title.toLowerCase().includes(
+                          : row.name.toLowerCase().includes(
                               search.toLowerCase()
                             )
                       )
@@ -175,17 +173,19 @@ export default function DataTable() {
                               {index + 1}
                             </TableCell>
                             <TableCell>{formatDate(row.createdAt)}</TableCell>
-                            <TableCell hidden>{row.CategoryID}</TableCell>
+                            <TableCell>{row.CategoryID.Name}</TableCell>
+                            <TableCell hidden>{row.SubCategoryID}</TableCell>
+
                             <TableCell align="start">
                               <a
-                                href={row.Image}
+                                href={`${row.Image}`}
                                 target="_blank"
                               >
                                 <Avatar
                                   alt="Agri Input"
                                   variant="rounded"
                                   size="md"
-                                  src={row.Image}
+                                  src={`${row.Image}`}
                                   sx={{ width: 60, height: 60 }}
                                 />
                               </a>
@@ -217,7 +217,7 @@ export default function DataTable() {
                                   title="Edit"
                                   onClick={(e) => {
                                     navigate(
-                                      `/edit-category/${row.CategoryID}`
+                                      `/edit-subcategory/${row.SubCategoryID}`
                                     );
                                   }}
                                   data-target={`#`}
@@ -230,10 +230,10 @@ export default function DataTable() {
                                     <EditIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
                                 </Tooltip>
-                                <Link to={`/view-category/${row.CategoryID}`}>
+                                <Link to={`/view-subCategory/${row.SubCategoryID}`}>
                                   <IconButton
                                     color="primary"
-                                    title="view Product"
+                                    title="view"
                                     aria-label="view"
                                     size="large"
                                   >
@@ -245,7 +245,7 @@ export default function DataTable() {
                                 {/* <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={DeleteCategory(`${row.CategoryID}`)}
+                                  onClick={DeleteCategory(`${row.categoryId}`)}
                                 >
                                   <IconButton
                                     color="primary"

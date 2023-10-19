@@ -32,12 +32,22 @@ import AnimateButton from "ui-component/extended/AnimateButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
+import { useDispatch } from "react-redux";
+import AuthApi from "../../../../api/auth-api/auth.api";
+import {
+  updateUser,
+  updateToken,
+  updatePermission
+} from "../../../../redux/redux-slice/user.slice";
+
 // import Google from 'assets/images/icons/social-google.svg';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ loginProp, ...others }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const authApi = new AuthApi();
 
   if (!localStorage.getItem("token") === "") {
     window.location.href = "/dashboard";
@@ -74,63 +84,21 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             if (scriptedRef.current) {
-              var myHeaders = new Headers();
-              myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-              myHeaders.append("Content-Type", "application/json");
-
-              var raw = JSON.stringify({
+              const loginResponse = await authApi.login({
                 email: values.email,
                 password: values.password,
+                type: "Admin",
               });
-
-              var requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow",
-              };
-
-              fetch(`${process.env.REACT_APP_API_URL}login`, requestOptions)
-                .then((response) => response.json())
-                .then((result) => {
-                  if (result.code === 200) {
-                    localStorage.setItem("token", result.data.token);
-                    localStorage.setItem("userId", result.data.userId);
-                    localStorage.setItem(
-                      "permission",
-                      JSON.stringify(result.data.permission.RoleID.IsPermission)
-                    );
-                    toast.success("Login Successfully", {
-                      position: toast.POSITION.TOP_CENTER,
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                    });
-                    navigate("/dashboard");
-                    // window.location.reload();
-                  } else if (result.status === "notFound") {
-                    toast.error("User not found", {
-                      position: toast.POSITION.TOP_CENTER,
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                    });
-                  } else {
-                    toast.error(result.message, {
-                      position: toast.POSITION.TOP_CENTER,
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                    });
-                  }
-                })
-                .catch((error) => console.log("error", error));
+              // console.log(loginResponse);
+              if (loginResponse && loginResponse?.data?.code === 200) {
+                dispatch(updateToken(loginResponse.data.data.token));
+                dispatch(updateUser(JSON.stringify(loginResponse.data.data.userId)));
+                dispatch(updatePermission(loginResponse.data.data.permission.RoleID.IsPermission));
+                toast.success(`Login successsfully`);
+                window.location.replace("/dashboard", { replace: true });
+              } else if (loginResponse && loginResponse?.data?.code === 201) {
+                return toast.error(`Something went wrong!`);
+              }
               setStatus({ success: true });
               setSubmitting(false);
             }

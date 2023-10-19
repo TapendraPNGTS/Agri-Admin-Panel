@@ -1,30 +1,37 @@
-import React, { useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useParams } from "react-router-dom";
 import { Grid, Stack, TextField } from "@mui/material";
+
 import { toast } from "react-hot-toast";
-import CategoryApi from "../../../api/category.api";
+import SubCategoryApi from "../../../api/sub-category.api";
+
 
 function App() {
   const params = useParams();
-  const categoryApi = new CategoryApi();
   const [name, setName] = React.useState("");
   const [date, setDate] = React.useState("");
   const [status, setStatus] = React.useState("");
   const [categoryImage, setCategoryImage] = React.useState("");
+  const subcategory = new SubCategoryApi();
 
-  const getCategoryById = useCallback(async () => {
+  // setName(result.data.name);
+  // setDate(result.data.createdAt);
+  // setStatus(result.data.isActive);
+  // // setCategoryImage(result.data.image);
+
+  const getSubCategoryById = useCallback(async () => {
     try {
-      const getCategoryByIdResponse = await categoryApi.getCategoryById({
-        categoryId: params.id,
-      });
-      if (getCategoryByIdResponse && getCategoryByIdResponse?.data?.code === 200) {
-        setName(getCategoryByIdResponse.data.data.Name);
-        setStatus(getCategoryByIdResponse.data.data.IsActive);
-        setCategoryImage(getCategoryByIdResponse.data.data.Image);
-        setDate(getCategoryByIdResponse.data.data.createdAt);
+      const getSubCategoryByIdResponse = await subcategory.getSubCategoryById({
+        subCategoryId: params.id,
+      }); 
+      if (getSubCategoryByIdResponse && getSubCategoryByIdResponse?.data?.code === 200) {
+        setName(getSubCategoryByIdResponse.data.data.Name);
+        setStatus(getSubCategoryByIdResponse.data.data.IsActive);
+        setCategoryImage(getSubCategoryByIdResponse.data.data.Image);
+        setDate(getSubCategoryByIdResponse.data.data.createdAt);
       } else {
         return toast.error(`Something went wrong!`);
       }
@@ -36,8 +43,9 @@ function App() {
   });
 
   React.useEffect(() => {
-    getCategoryById();
+    getSubCategoryById();
   }, []);
+
 
   function formatDate(date) {
     return new Date(date).toLocaleString("en-us", {
@@ -82,11 +90,11 @@ function App() {
           <InputLabel required>Image</InputLabel>
           <Stack>
             <a
-              href={categoryImage}
+              href={`${categoryImage}`}
               target="_blank"
             >
               <img
-                src={categoryImage}
+                src={`${categoryImage}`}
                 width={200}
                 height={200}
               />

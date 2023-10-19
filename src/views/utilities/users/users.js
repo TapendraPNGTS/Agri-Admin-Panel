@@ -188,14 +188,14 @@ export default function Users() {
                                 </Tooltip>
                             </Stack>*/}
                               <Link to={`/view-user/${row.UserID}`}>
-                                <IconButton
+                                {/* <IconButton
                                   color="edit"
                                   title="Edit User"
                                   aria-label="Edit"
                                   size="large"
-                                >
+                                > */}
                                   <EditIcon sx={{ fontSize: "1.1rem" }} />
-                                </IconButton>
+                                {/* </IconButton> */}
                               </Link>
                             </TableCell>
                           </TableRow>

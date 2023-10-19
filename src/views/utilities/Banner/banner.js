@@ -17,7 +17,6 @@ import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
-import { toast } from "react-toastify";
 import {
   IconButton,
   Stack,
@@ -25,46 +24,19 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import BannerApi from "../../../api/banner.api";
+import { updateAllBanner } from "../../../redux/redux-slice/banner.slice";
+import { getUserLocal } from "utils/localStorage.util";
 
 export default function DataTable() {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
-
-  function getAllBanner() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllBanner`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  useEffect(() => {
-    getAllBanner();
-  }, []);
-
-  useEffect(() => {}, [rows]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -75,52 +47,51 @@ export default function DataTable() {
     setPage(0);
   };
 
-  const DeleteCategory = (str) => () => {
-    swal({
-      title: "Are you sure want to delete?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        toast.success("Deleted Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-        var myHeaders = new Headers();
-        myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-        myHeaders.append(
-          "Authorization",
-          "Bearer " + localStorage.getItem("token")
-        );
-        myHeaders.append("Content-Type", "application/json");
+  const dispatch = useDispatch();
+  const bannerApi = new BannerApi();
+  const rows = useSelector((state) => state.banner.Banner);
+  const userId = getUserLocal();
 
-        var raw = JSON.stringify({
-          adminId: localStorage.getItem("userId"),
-          bannerId: str,
-        });
-
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
-
-        fetch(`${process.env.REACT_APP_API_URL}deleteBanner`, requestOptions)
-          .then((response) => response.text())
-          .then((result) => {
-            getAllBanner();
-          })
-          .catch((error) => console.log("error", error));
+  const getAllBanner = useCallback(async () => {
+    try {
+      const banners = await bannerApi.getAllBanner({
+        adminId: userId.StaffID,
+      });
+      if (!banners || !banners.data.data) {
+        return toast.error("no latest banners available");
       } else {
+        dispatch(updateAllBanner(banners.data.data));
+        return;
       }
-    });
-  };
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
+  useEffect(() => {
+    getAllBanner();
+  }, []);
+
+  // const handleDelete = async (bannerId) => {
+  //   try {
+  //     const deleteBannerResponse = await bannerApi.deleteBanner({
+  //       adminId: userId.StaffID,
+  //       bannerId,
+  //     });
+  //     if (deleteBannerResponse && deleteBannerResponse?.data?.code === 200) {
+  //       getAllBanner();
+  //       return toast.success("Deleted Successfully");
+  //     } else {
+  //       return toast.error(deleteBannerResponse.data?.message);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Something went wrong");
+  //     throw error;
+  //   }
+  // };
 
   return (
     <>
@@ -209,14 +180,14 @@ export default function DataTable() {
                             </TableCell>
                             <TableCell align="start">
                               <a
-                                href={`${process.env.REACT_APP_IMAGE_URL}${row.Image}`}
+                                href={row.Image}
                                 target="_blank"
                               >
                                 <Avatar
                                   alt="Agri Input"
                                   variant="rounded"
                                   size="md"
-                                  src={`${process.env.REACT_APP_IMAGE_URL}${row.Image}`}
+                                  src={row.Image}
                                   sx={{ width: 60, height: 60 }}
                                 />
                               </a>
@@ -247,7 +218,7 @@ export default function DataTable() {
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={DeleteCategory(`${row.BannerID}`)}
+                                  // onClick={handleDelete(`${row.BannerID}`)}
                                 >
                                   <IconButton
                                     color="primary"

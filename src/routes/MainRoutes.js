@@ -182,6 +182,20 @@ const AppECommCheckout = Loadable(
   lazy(() => import("views/utilities/e-commerce/Checkout"))
 );
 
+// subcategory routes
+const SubCategory = Loadable(
+  lazy(() => import("views/utilities/sub-category/subcategory"))
+);
+const AddSubCategory = Loadable(
+  lazy(() => import("views/utilities/sub-category/add-subcategory"))
+);
+const EditSubCategory = Loadable(
+  lazy(() => import("views/utilities/sub-category/edit-subcategory"))
+);
+const ViewSubCategory = Loadable(
+  lazy(() => import("views/utilities/sub-category/view-subcategory"))
+);
+
 // sample page routing
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -228,6 +242,26 @@ const MainRoutes = {
         {
           path: "edit-commission/:id",
           element: <EditCommissiom />,
+        },
+      ],
+    },
+    {
+      children: [
+        {
+          path: "sub-category",
+          element: <SubCategory />,
+        },
+        {
+          path: "add-subcategory",
+          element: <AddSubCategory />,
+        },
+        {
+          path: "edit-subcategory/:id",
+          element: <EditSubCategory />,
+        },
+        {
+          path: "view-subcategory/:id",
+          element: <ViewSubCategory />,
         },
       ],
     },
