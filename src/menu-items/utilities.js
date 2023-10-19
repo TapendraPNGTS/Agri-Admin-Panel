@@ -180,8 +180,16 @@ if (userId) {
             url: "/franchise-request-form",
             breadcrumbs: false,
           },
+          {
+            id: "franchise-state",
+            title: "Franchise State",
+            type: "item",
+            url: "/franchise-state",
+            breadcrumbs: false,
+          },
         ],
-      },{
+      },
+      {
         id: "users",
         title: "Users",
         type: "collapse",

@@ -148,7 +148,7 @@ const AddDistrict = Loadable(
 
 // Manage area routes
 const PinCode = Loadable(
-  lazy(() => import("views/utilities/manage-area/pin-code/pin-code"))
+  lazy(() => import("views/utilities/manage-area/state/pin-code"))
 );
 const EditPinCode = Loadable(
   lazy(() => import("views/utilities/manage-area/pin-code/edit-pin-code"))

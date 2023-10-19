@@ -3,67 +3,45 @@ import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import Spinner from "react-bootstrap/Spinner";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   Button,
   Grid,
-  MenuItem,
-  Select,
   Stack,
   TextField,
 } from "@mui/material";
 import formatDate from "../../Date-Formet/date-formet";
+import { toast } from "react-hot-toast";
+import HolidayApi from "../../../../api/holiday.api";
+
 function App() {
   const navigate = useNavigate();
   const [name, setName] = React.useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const holidayApi = new HolidayApi();
+
   React.useEffect(() => {}, []);
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    setIsLoading(true);
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      occasion: name,
-      date: selectedDate,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+   async function handleSubmit(event) {
+     setIsLoading(true);
+     event.preventDefault();
+     const addServiceRequestResponse = await holidayApi.addHoliday({
+       occasion: name,
+       date: selectedDate,
+     });
+     if (
+       addServiceRequestResponse &&
+       addServiceRequestResponse?.data?.code === 200
+     ) {
+       toast.success(`Added successsfully`);
+       navigate("/holidays", { replace: true });
+     } else {
+       return toast.error(`Something went wrong!`);
+     }
+   }
 
-    fetch(`${process.env.REACT_APP_API_URL}addHoliday`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/holidays");
-          toast.success("Added Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
-  }
 
   const handleDateChange = (date) => {
     {

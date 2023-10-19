@@ -16,46 +16,42 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
-import { toast } from "react-toastify";
 import { IconButton, Stack, Tooltip, Typography , CircularProgress } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import ZipApi from "../../../../api/pin-code.api";
+import { updateAllZipCode } from "../../../../redux/redux-slice/zipCode.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append(
-    "Authorization",
-    "Bearer " + localStorage.getItem("token")
-  );
-  myHeaders.append("Content-Type", "application/json");
+  const dispatch = useDispatch();
+  const zipApi = new ZipApi();
+  const rows = useSelector((state) => state.state.State);
 
-  function getAllZip() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllZip`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const getAllZipCode = useCallback(async () => {
+    try {
+      const zipCode = await zipApi.getAllZipCode({});
+      if (!zipCode || !zipCode.data.data) {
+        return toast.error("no latest zipCode available");
+      } else {
+        dispatch(updateAllZipCode(zipCode.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
-    getAllZip();
+    getAllZipCode();
   }, []);
 
   useEffect(() => {}, [rows]);
@@ -68,47 +64,7 @@ export default function DataTable() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
-  const DeleteCategory = (str) => () => {
-    swal({
-      title: "Are you sure want to delete?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        toast.success("Deleted Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-
-        var raw = JSON.stringify({
-          adminId: localStorage.getItem("userId"),
-          zipId: str,
-        });
-
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
-
-        fetch(`${process.env.REACT_APP_API_URL}deleteZip`, requestOptions)
-          .then((response) => response.text())
-          .then((result) => {
-            getAllZip();
-          })
-          .catch((error) => console.log("error", error));
-      } else {
-      }
-    });
-  };
-
+  
   return (
     <>
       <TextField
@@ -219,7 +175,7 @@ export default function DataTable() {
                                   </IconButton>
                                 </Tooltip>
 
-                                <Tooltip
+                                {/* <Tooltip
                                   placement="top"
                                   title="delete"
                                   onClick={DeleteCategory(`${row.ZipID}`)}
@@ -231,7 +187,7 @@ export default function DataTable() {
                                   >
                                     <DeleteIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
-                                </Tooltip>
+                                </Tooltip> */}
                               </Stack>
                             </TableCell>
                           </TableRow>

@@ -34,6 +34,7 @@ import ProductListApi from "../../../api/product.api";
 import { updateAllProduct } from "../../../redux/redux-slice/product.slice";
 
 export default function DataTable() {
+  
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");

@@ -8,7 +8,6 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Card from "@mui/material/Card";
-import swal from "sweetalert";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import TextField from "@mui/material/TextField";
@@ -16,93 +15,62 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
-import { toast } from "react-toastify";
 import { IconButton, Stack, Tooltip, Chip, Typography, CircularProgress } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate , Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import RoleApi from "../../../api/role.api";
+import { updateAllRole } from "../../../redux/redux-slice/role.slice";
 
 const StaffManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
 
-  function getAllRole() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllRole`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const dispatch = useDispatch();
+  const roleApi = new RoleApi();
+  const rows = useSelector((state) => state.role.Role);
+
+  const getAllRole = useCallback(async () => {
+    try {
+      const role = await roleApi.getAllRole({});
+      if (!role || !role.data.data) {
+        return toast.error("no latest banners available");
+      } else {
+        dispatch(updateAllRole(role.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
   useEffect(() => {
     getAllRole();
   }, []);
 
   useEffect(() => {}, [rows]);
 
-  const DeleteCategory = (str) => () => {
-    swal({
-      title: "Are you sure want to delete?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        toast.success("Deleted Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-        var myHeaders = new Headers();
-        myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-        myHeaders.append(
-          "Authorization",
-          "Bearer " + localStorage.getItem("token")
-        );
-        myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify({
-          adminId: localStorage.getItem("userId"),
-          roleId: str,
-        });
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
-        fetch(`${process.env.REACT_APP_API_URL}deleteRole`, requestOptions)
-          .then((response) => response.text())
-          .then((result) => {
-            getAllRole();
-          })
-          .catch((error) => console.log("error", error));
-      } else {
-      }
-    });
-  };
+  // const handleDelete = async (roleId) => {
+  //   try {
+  //     const deleteRoleResponse = await roleApi.deleteRole({ roleId });
+  //     if (deleteRoleResponse && deleteRoleResponse?.data?.code === 200) {
+  //       getAllRole();
+  //       return toast.success("Deleted Successfully");
+  //     } else {
+  //       return toast.error(deleteRoleResponse.data?.message);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Something went wrong");
+  //     throw error;
+  //   }
+  // };
 
   function formatDate(date) {
     return new Date(date).toLocaleString("en-us", {
@@ -255,7 +223,7 @@ const StaffManagement = () => {
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={DeleteCategory(`${row.RoleID}`)}
+                                  // onClick={handleDelete(`${row.RoleID}`)}
                                 >
                                   <IconButton
                                     color="primary"

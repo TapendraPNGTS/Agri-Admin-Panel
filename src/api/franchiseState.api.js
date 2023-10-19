@@ -1,0 +1,80 @@
+import { getTokenLocal } from "../utils/localStorage.util";
+import ApiRoutes from "../conffigs/endpoints.config";
+import HttpClient from "./index.api";
+const baseURL = process.env.REACT_APP_API_URL;
+
+class State extends HttpClient {
+  constructor() {
+    super(baseURL);
+    this._initializeRequestInterceptor();
+    this._initializeResponseInterceptor();
+  }
+
+  _initializeRequestInterceptor = () => {
+    this.instance.interceptors.request.use((config) => {
+      config.headers["Authorization"] = `Bearer ${getTokenLocal()}`;
+      config.headers["Authkey"] = process.env.REACT_APP_AUTH_KEY;
+      return config;
+    });
+  };
+
+  _initializeResponseInterceptor = () => {
+    this.instance.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (response) => {
+        return Promise.resolve(response);
+      }
+    );
+  };
+
+  AllFranchiseStateConfig = ApiRoutes.FranchiseState.AllFranchiseState;
+  FranchiseStateByIdConfig = ApiRoutes.FranchiseState.FranchiseStateById;
+  AddFranchiseStateConfig = ApiRoutes.FranchiseState.AddFranchiseState;
+  EditFranchiseStateConfig = ApiRoutes.FranchiseState.EditFranchiseState;
+  DeleteFranchiseStateConfig = ApiRoutes.FranchiseState.DeleteFranchiseState;
+
+  getAllStateFranchise = async (data) => {
+    return this.instance({
+      method: this.AllStateConfig.Method,
+      url: this.AllStateConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  getStateFranchiseById = async (data) => {
+    return this.instance({
+      method: this.StateByIdConfig.Method,
+      url: this.StateByIdConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  addStateFranchise = async (data) => {
+    return this.instance({
+      method: this.AddStateConfig.Method,
+      url: this.AddStateConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  editStateFranchise = async (data) => {
+    return this.instance({
+      method: this.EditStateConfig.Method,
+      url: this.EditStateConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  deleteStateFranchise = async (data) => {
+    return this.instance({
+      method: this.DeleteStateConfig.Method,
+      url: this.DeleteStateConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+}
+
+export default State;

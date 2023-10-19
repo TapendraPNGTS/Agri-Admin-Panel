@@ -21,35 +21,50 @@ import usersReducer from '../redux/redux-slice/user.slice'
 import categoryReducer from '../redux/redux-slice/category.slice'
 import productReducer from '../redux/redux-slice/product.slice'
 import subCategoryReducer from '../redux/redux-slice/sub-category.slice'
+import districtReducer from "../redux/redux-slice/district.slice";
+import stateReducer from "../redux/redux-slice/state.slice";
+import zipCodeReducer from "../redux/redux-slice/zipCode.slice";
+import attendenceReducer from "../redux/redux-slice/attendence.slice";
+import holidayReducer from "../redux/redux-slice/holiday.slice";
+import roleReducer from "../redux/redux-slice/role.slice";
+import frenciseReducer from "../redux/redux-slice/frenchise.slice";
+import frenciseStateReducer from "../redux/redux-slice/franchiseState.slice";
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({
-    snackbar: snackbarReducer,
-    cart: persistReducer(
-        {
-            key: 'cart',
-            storage,
-            keyPrefix: 'berry-'
-        },
-        cartReducer
-    ),
-    kanban: kanbanReducer,
-    customer: customerReducer,
-    contact: contactReducer,
-    // product: productReducer,
-    chat: chatReducer,
-    calendar: calendarReducer,
-    mail: mailReducer,
-    user: userReducer,
-    menu: menuReducer,
+  snackbar: snackbarReducer,
+  cart: persistReducer(
+    {
+      key: "cart",
+      storage,
+      keyPrefix: "berry-",
+    },
+    cartReducer
+  ),
+  kanban: kanbanReducer,
+  customer: customerReducer,
+  contact: contactReducer,
+  // product: productReducer,
+  chat: chatReducer,
+  calendar: calendarReducer,
+  mail: mailReducer,
+  user: userReducer,
+  menu: menuReducer,
 
-
-    banner : bannerReducer,
-    user : usersReducer,
-    category : categoryReducer,
-    product : productReducer,
-    subCategory : subCategoryReducer,
+  banner: bannerReducer,
+  user: usersReducer,
+  category: categoryReducer,
+  product: productReducer,
+  subCategory: subCategoryReducer,
+  district: districtReducer,
+  state: stateReducer,
+  zip: zipCodeReducer,
+  attendence: attendenceReducer,
+  holiday: holidayReducer,
+  role: roleReducer,
+  frencise: frenciseReducer,
+  franchiseState: frenciseStateReducer,
 });
 
 export default reducer;

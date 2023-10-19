@@ -14,48 +14,42 @@ import { IconButton, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import { Chip, Typography, CircularProgress } from "@mui/material";
-import { useState, useEffect } from "react";
-import FullCalendar from "@fullcalendar/react";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import dayGridPlugin from "@fullcalendar/daygrid";
+import { useState, useEffect, useCallback } from "react";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import AttendenceApi from "../../../../api/attendence.api";
+import { updateAllAttendence } from "../../../../redux/redux-slice/attendence.slice";
 
 export default function Attenance() {
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
 
-  function getAllAttendence() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
+    const dispatch = useDispatch();
+    const attendenceApi = new AttendenceApi();
+    const rows = useSelector((state) => state.attendence.Attendence);
+
+    const getAllAttendance = useCallback(async () => {
+      try {
+        const attendence = await attendenceApi.getAllAttendence({});
+        if (!attendence || !attendence.data.data) {
+          return toast.error("no latest banners available");
+        } else {
+          dispatch(updateAllAttendence(attendence.data.data));
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+        throw error;
+      }
     });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllAttendence`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
 
-  useEffect(() => {
-    getAllAttendence();
-  }, []);
+    useEffect(() => {
+      getAllAttendance();
+    }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
@@ -14,8 +13,18 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
+import { toast } from "react-hot-toast";
+import FrenciseApi from "../../../api/franchise.api";
+import { useDispatch, useSelector } from "react-redux";
+import StateApi from "../../../api/state.api";
+import { updateAllState } from "../../../redux/redux-slice/state.slice";
+import DistrictApi from "../../../api/district.api";
+import { updateAllDistrict } from "../../../redux/redux-slice/district.slice";
+
 function App() {
   const navigate = useNavigate();
+    const frenciseApi = new FrenciseApi();
+
   const [firmName, setFirmName] = React.useState("");
   const [person, setPerson] = React.useState("");
   const [address, setAddress] = React.useState("");
@@ -27,6 +36,8 @@ function App() {
   const [pinCode, setPinCode] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [village, setVillage] = React.useState("");
+  const [tehsil, setTehsil] = React.useState("");
 
   //   bank ariable
   const [bankName, setBankName] = useState("");
@@ -98,89 +109,76 @@ function App() {
     setIfscMessage(isIfscValid ? <></> : "Ifsc not valid!" );
   } 
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
+    async function handleSubmit(event) {
+      setIsLoading(true);
+      event.preventDefault();
+      const bank = {
+        bankName: bankName,
+        accountNumber: acNumber,
+        branchName: branchName,
+        ifscCode: ifscCode,
+      };
+      const addFrenciseResponse = await frenciseApi.addFrencise({
+        name: person,
+        firmName: firmName,
+        address: address,
+        email: email,
+        contact: number,
+        firmType: firmType,
+        gst: gstNo,
+        village: village,
+        tehsil: tehsil,
+        cityId: city,
+        stateId: state,
+        pincode: pinCode,
+        bank: bank,
+      });
+      if (addFrenciseResponse && addFrenciseResponse?.data?.code === 200) {
+        toast.success(`Added successsfully`);
+        navigate("/franchise-request", { replace: true });
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    }
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    setIsLoading(true);
-    const bank = {
-      BankName: bankName,
-      AccountNumber: acNumber,
-      BranchName: branchName,
-      IFSCCode: ifscCode,
-    };
-    const presticide = {
-      LicenseNumber: pstLicense,
-      StartDate: seedDate,
-      ValidUpto: pstValidDate,
-    };
-    const seed = {
-      LicenseNumber: seedLicense,
-      StartDate: pstDate,
-      ValidUpto: seedValidDate,
-    };
-    const fertilizer = {
-      LicenseNumber: fertiLicense,
-      StartDate: fertiDate,
-      ValidUpto: fertiValidDate,
-    };
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      name: person,
-      firmName: firmName,
-      address: address,
-      email: email,
-      contact: number,
-      firmType: firmType,
-      gst: gstNo,
-      city: city,
-      state: state,
-      pincode: pinCode,
-      bank: bank,
-      presticide: presticide,
-      seed: seed,
-      fertilizer: fertilizer,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+    const dispatch = useDispatch();
+    const stateApi = new StateApi();
+    const allState = useSelector((state) => state.state.State);
 
-    fetch(`${process.env.REACT_APP_API_URL}addFrencise`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/franchise-request");
-          toast.success("Updated Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+    const getAllState = useCallback(async () => {
+      try {
+        const state = await stateApi.getAllState({});
+        if (!state || !state.data.data) {
+          return toast.error("no latest state available");
         } else {
-          if (result.code === 201) {
-            setIsLoading(false);
-            toast.danger("Invalid Request", {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-            });
-          } else {
-          }
+          dispatch(updateAllState(state.data.data));
+          return;
         }
-      })
-      .catch((error) => {});
-  }
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+        throw error;
+      }
+    });
+
+    useEffect(() => {
+      getAllState();
+    }, []);
+
+    const districtApi = new DistrictApi();
+    const allDistrict = useSelector((state) => state.district.District);
+
+    async function handledistrict(event) {
+      event.preventDefault();
+      const district = await districtApi.getDistrictByStateId({
+        stateId: state,
+      });
+      if (district && district?.data?.code === 200) {
+        return dispatch(updateAllDistrict(district.data.data));
+      } else {
+        return;
+      }
+    }
 
   return (
     <MainCard title="Franchise Form">
@@ -247,7 +245,7 @@ function App() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email address"
               />
-              <p style={{color:'red'}}>{emailMessage}</p>
+              <p style={{ color: "red" }}>{emailMessage}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -268,7 +266,7 @@ function App() {
                 onChange={(e) => setNumber(e.target.value)}
                 placeholder="Enter Contact No."
               />
-              <p style={{color:'red'}}>{message}</p>
+              <p style={{ color: "red" }}>{message}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -301,35 +299,46 @@ function App() {
                 onChange={(e) => setGstNo(e.target.value)}
                 placeholder="Enter GST No."
               />
-              <p style={{color:'red'}}>{gstMessage}</p>
-            </Stack>
-          </Grid>
-          <Grid item xs={6} md={6}>
-            <Stack>
-              <InputLabel required>City</InputLabel>
-              <TextField
-                fullWidth
-                id="address"
-                name="address"
-                inputProps={{ maxLength: 30 }}
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Enter City"
-              />
+              <p style={{ color: "red" }}>{gstMessage}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>State</InputLabel>
-              <TextField
-                fullWidth
-                id="address"
-                name="address"
-                inputProps={{ maxLength: 30 }}
+              <Select
+                id="state"
+                name="state"
                 value={state}
                 onChange={(e) => setState(e.target.value)}
-                placeholder="Enter State"
-              />
+                onBlur={handledistrict}
+              >
+                {allState.map((state, index) => {
+                  return (
+                    <MenuItem value={state.StateID} key={index}>
+                      {state.Name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>District</InputLabel>
+              <Select
+                id="state"
+                name="state"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              >
+                {allDistrict.map((state, index) => {
+                  return (
+                    <MenuItem value={state.districtId} key={index}>
+                      {state.Name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -407,7 +416,7 @@ function App() {
                 onChange={(e) => setIfscCode(e.target.value)}
                 placeholder="Enter IFSC Code"
               />
-              <p style={{color:'red'}}>{ifscMessage}</p>
+              <p style={{ color: "red" }}>{ifscMessage}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -428,7 +437,7 @@ function App() {
         {/* license section */}
         <br />
         <br />
-        <Grid item>
+        {/* <Grid item>
           <Typography variant="h3">License Info</Typography>
         </Grid>
         <br />
@@ -582,7 +591,7 @@ function App() {
           </Grid>
         </Grid>
         <br />
-        <br />
+        <br /> */}
         <center>
           {isLoading ? (
             <CircularProgress />

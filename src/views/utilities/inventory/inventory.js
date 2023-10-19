@@ -10,48 +10,43 @@ import TableRow from "@mui/material/TableRow";
 import Card from "@mui/material/Card";
 import AddIcon from "@mui/icons-material/Add";
 import TextField from "@mui/material/TextField";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
 import { CircularProgress, Typography } from "@mui/material";
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import ProductListApi from "../../../api/product.api";
+import { updateAllProduct } from "../../../redux/redux-slice/product.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
 
-  function getAllProduct() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllProduct`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const dispatch = useDispatch();
+  const productApi = new ProductListApi();
+  const rows = useSelector((state) => state.product.Product);
+
+  const getAllProduct = useCallback(async () => {
+    try {
+      const product = await productApi.getAllProduct({});
+      if (!product || !product.data.data) {
+        return toast.error("no latest banners available");
+      } else {
+        dispatch(updateAllProduct(product.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
     getAllProduct();

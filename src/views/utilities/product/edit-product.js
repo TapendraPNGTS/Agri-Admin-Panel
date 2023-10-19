@@ -20,6 +20,8 @@ import ProductApi from "../../../api/product.api";
 import CategoryApi from "../../../api/category.api";
 import { updateAllCategory } from "../../../redux/redux-slice/category.slice";
 import { useDispatch, useSelector } from "react-redux";
+import SubCategoryApi from "../../../api/sub-category.api";
+import { updateAllSubCategory } from "../../../redux/redux-slice/sub-category.slice";
 
 function App() {
   const params = useParams();
@@ -46,6 +48,7 @@ function App() {
   const [coverImage, setCoverImage] = React.useState("");
   const [proImage, setProImage] = React.useState([]);
   const [features, setFeatures] = useState();
+  const [mainVarient, setMainVerient] = React.useState("");
 
   function handleChange(event) {
     setFile(event.target.files[0]);
@@ -62,7 +65,7 @@ function App() {
   const handleChangeFeatures = (content, delta, source, editor) => {
     setFeatures(content);
   };
-  
+
   const getProductById = useCallback(async () => {
     try {
       const getProductByIdResponse = await productApi.getProductById({
@@ -112,11 +115,12 @@ function App() {
     formdata.append("active", active);
     formdata.append("price", price);
     formdata.append("quantity", quantity);
-    // formdata.append("feature", features);
+    formdata.append("feature", features);
     formdata.append("description", description);
     formdata.append("categoryId", categoryId);
-    // formdata.append("subCategoryId", mainVarient);
-    // formdata.append("categoryId", categoryId);
+    const variant = JSON.stringify(tags);
+    formdata.append("variant", variant);
+    formdata.append("subCategoryId", mainVarient);
     formdata.append("img", file);
 
     for (const key of Object.keys(file1)) {
@@ -125,9 +129,9 @@ function App() {
     formdata.append("frenchisePrice", franchisePrice);
     formdata.append("discount", discount);
     formdata.append("discountPrice", discountPrice);
-    // formdata.append("isNew", newArrival);
-    // formdata.append("isBestSeller", bestSeller);
-    // formdata.append("isBestDeal", bestDeal);
+    formdata.append("isNew", newArrival);
+    formdata.append("isBestSeller", bestSeller);
+    formdata.append("isBestDeal", bestDeal);
     const editProductResponse = await productApi.editProduct(formdata);
     if (editProductResponse && editProductResponse?.data?.code === 200) {
       toast.success(`Added successsfully`);
@@ -160,7 +164,39 @@ function App() {
     getAllCategory();
   }, []);
 
+    const subCategoryApi = new SubCategoryApi();
+    const rowses = useSelector((state) => state.subCategory.SubCategory);
 
+    async function handleSetSubCategory(event) {
+      event.preventDefault();
+      const subCategories = await subCategoryApi.getSubCategoryByCategoryId({
+        categoryId: categoryId,
+      });
+      if (subCategories && subCategories?.data?.code === 200) {
+        return dispatch(updateAllSubCategory(subCategories.data.data));
+      } else {
+        return;
+      }
+    }
+
+    
+  const [tags, setTags] = useState([]);
+  const [input, setInput] = useState("");
+
+  const handleInputChange = (event) => {
+    setInput(event.target.value);
+  };
+
+  const handleInputKeyDown = (event) => {
+    if ((event.key === "Enter" && input) || event.key === " ") {
+      setTags([...tags, input.trim()]);
+      setInput("");
+    }
+  };
+
+  const handleTagClick = (index) => {
+    setTags(tags.filter((tag, i) => i !== index));
+  };
 
   return (
     <MainCard title="Edit Product">
@@ -235,6 +271,35 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
+              <InputLabel required>Variant</InputLabel>
+              <TextField
+                fullWidth
+                id="quantity"
+                name="quantity"
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleInputKeyDown}
+              />
+              <br />
+              <div>
+                {tags.map((tag, index) => (
+                  <span>
+                    <span
+                      key={index}
+                      onClick={() => handleTagClick(index)}
+                      style={{ border: "1px solid", borderRadius: "5px" }}
+                    >
+                      &nbsp; {tag} <span style={{ color: "red" }}>x</span>{" "}
+                      &nbsp;
+                    </span>
+                    &nbsp; &nbsp;
+                  </span>
+                ))}
+              </div>
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
               <InputLabel required>Product Quantity</InputLabel>
               <TextField
                 fullWidth
@@ -260,10 +325,33 @@ function App() {
                 value={categoryId}
                 key={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
+                onBlur={handleSetSubCategory}
               >
                 {rows.map((row, i) => {
                   return (
                     <MenuItem key={i} value={row.CategoryID}>
+                      {row.Name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Sub Category</InputLabel>
+              <Select
+                id="mainVarient"
+                name="mainVarient"
+                value={categoryId}
+                onChange={(e) => setMainVerient(e.target.value)}
+                renderValue={
+                  categoryId !== "" ? undefined : () => "--Select SubCategory--"
+                }
+              >
+                {rowses.map((row, i) => {
+                  return (
+                    <MenuItem key={i} value={row.SubCategoryID}>
                       {row.Name}
                     </MenuItem>
                   );

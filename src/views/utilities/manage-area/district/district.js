@@ -16,43 +16,45 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
-import { toast } from "react-toastify";
-import { IconButton, Stack, Tooltip, Typography , CircularProgress } from "@mui/material";
-import { useState, useEffect } from "react";
+import {
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import DistrictApi from "../../../../api/district.api";
+import { updateAllDistrict } from "../../../../redux/redux-slice/district.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append(
-    "Authorization",
-    "Bearer " + localStorage.getItem("token")
-  );
-  myHeaders.append("Content-Type", "application/json");
+  const dispatch = useDispatch();
+  const districtApi = new DistrictApi();
+  const rows = useSelector((state) => state.district.District);
 
-  function getAllDistrict() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllDistrict`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const getAllDistrict = useCallback(async () => {
+    try {
+      const district = await districtApi.getAllDistrict({});
+      if (!district || !district.data.data) {
+        return toast.error("no latest district available");
+      } else {
+        dispatch(updateAllDistrict(district.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
     getAllDistrict();
@@ -69,45 +71,45 @@ export default function DataTable() {
     setPage(0);
   };
 
-  const DeleteCategory = (str) => () => {
-    swal({
-      title: "Are you sure want to delete?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        toast.success("Deleted Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+  // const DeleteCategory = (str) => () => {
+  //   swal({
+  //     title: "Are you sure want to delete?",
+  //     icon: "warning",
+  //     buttons: true,
+  //     dangerMode: true,
+  //   }).then((willDelete) => {
+  //     if (willDelete) {
+  //       toast.success("Deleted Successfully", {
+  //         position: toast.POSITION.TOP_CENTER,
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //       });
 
-        var raw = JSON.stringify({
-          adminId: localStorage.getItem("userId"),
-          districtId: str,
-        });
+  //       var raw = JSON.stringify({
+  //         adminId: localStorage.getItem("userId"),
+  //         districtId: str,
+  //       });
 
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
+  //       var requestOptions = {
+  //         method: "POST",
+  //         headers: myHeaders,
+  //         body: raw,
+  //         redirect: "follow",
+  //       };
 
-        fetch(`${process.env.REACT_APP_API_URL}deleteDistrict`, requestOptions)
-          .then((response) => response.text())
-          .then((result) => {
-            getAllDistrict();
-          })
-          .catch((error) => console.log("error", error));
-      } else {
-      }
-    });
-  };
+  //       fetch(`${process.env.REACT_APP_API_URL}deleteDistrict`, requestOptions)
+  //         .then((response) => response.text())
+  //         .then((result) => {
+  //           getAllDistrict();
+  //         })
+  //         .catch((error) => console.log("error", error));
+  //     } else {
+  //     }
+  //   });
+  // };
 
   return (
     <>
@@ -206,7 +208,9 @@ export default function DataTable() {
                                   placement="top"
                                   title="Edit"
                                   onClick={(e) => {
-                                    navigate(`/edit-district/${row.DistrictID}`);
+                                    navigate(
+                                      `/edit-district/${row.districtId}`
+                                    );
                                   }}
                                   data-target={`#`}
                                 >
@@ -222,7 +226,7 @@ export default function DataTable() {
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={DeleteCategory(`${row.DistrictID}`)}
+                                  // onClick={DeleteCategory(`${row.DistrictID}`)}
                                 >
                                   <IconButton
                                     color="primary"
@@ -255,7 +259,7 @@ export default function DataTable() {
           <>
             <br></br>
             <center>
-            <CircularProgress />
+              <CircularProgress />
             </center>
           </>
         )}

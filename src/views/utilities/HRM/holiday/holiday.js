@@ -17,7 +17,6 @@ import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import Avatar from "@mui/material/Avatar";
-import { toast } from "react-toastify";
 import {
   IconButton,
   Stack,
@@ -26,45 +25,43 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import HolidayApi from "../../../../api/holiday.api";
+import { updateAllHoliday } from "../../../../redux/redux-slice/holiday.slice";
 
 export default function DataTable() {
-  const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
 
-  function getAllHoliday() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllHoliday`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const holidayApi = new HolidayApi();
+  const rows = useSelector((state) => state.holiday.Holiday);
+
+  const getAllHoliday = useCallback(async () => {
+    try {
+      const holiday = await holidayApi.getAllHoliday({});
+      if (!holiday || !holiday.data.data) {
+        return toast.error("no latest banners available");
+      } else {
+        dispatch(updateAllHoliday(holiday.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
     getAllHoliday();
   }, []);
+
 
   useEffect(() => {}, [rows]);
 
@@ -77,52 +74,52 @@ export default function DataTable() {
     setPage(0);
   };
 
-  const DeleteCategory = (str) => () => {
-    swal({
-      title: "Are you sure want to delete?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        toast.success("Deleted Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-        var myHeaders = new Headers();
-        myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-        myHeaders.append(
-          "Authorization",
-          "Bearer " + localStorage.getItem("token")
-        );
-        myHeaders.append("Content-Type", "application/json");
+  // const DeleteCategory = (str) => () => {
+  //   swal({
+  //     title: "Are you sure want to delete?",
+  //     icon: "warning",
+  //     buttons: true,
+  //     dangerMode: true,
+  //   }).then((willDelete) => {
+  //     if (willDelete) {
+  //       toast.success("Deleted Successfully", {
+  //         position: toast.POSITION.TOP_CENTER,
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //       });
+  //       var myHeaders = new Headers();
+  //       myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
+  //       myHeaders.append(
+  //         "Authorization",
+  //         "Bearer " + localStorage.getItem("token")
+  //       );
+  //       myHeaders.append("Content-Type", "application/json");
 
-        var raw = JSON.stringify({
-          adminId: localStorage.getItem("userId"),
-          holidayId: str,
-        });
+  //       var raw = JSON.stringify({
+  //         adminId: localStorage.getItem("userId"),
+  //         holidayId: str,
+  //       });
 
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
+  //       var requestOptions = {
+  //         method: "POST",
+  //         headers: myHeaders,
+  //         body: raw,
+  //         redirect: "follow",
+  //       };
 
-        fetch(`${process.env.REACT_APP_API_URL}deleteHoliday`, requestOptions)
-          .then((response) => response.text())
-          .then((result) => {
-            getAllHoliday();
-          })
-          .catch((error) => console.log("error", error));
-      } else {
-      }
-    });
-  };
+  //       fetch(`${process.env.REACT_APP_API_URL}deleteHoliday`, requestOptions)
+  //         .then((response) => response.text())
+  //         .then((result) => {
+  //           getAllHoliday();
+  //         })
+  //         .catch((error) => console.log("error", error));
+  //     } else {
+  //     }
+  //   });
+  // };
 
   function formatDate(date) {
     return new Date(date).toLocaleString("en-us", {
@@ -271,7 +268,7 @@ export default function DataTable() {
                                     />
                                   </IconButton>
                                 </Link> */}
-                                <Tooltip
+                                {/* <Tooltip
                                   placement="top"
                                   title="delete"
                                   onClick={DeleteCategory(`${row.HolidayID}`)}
@@ -283,7 +280,7 @@ export default function DataTable() {
                                   >
                                     <DeleteIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
-                                </Tooltip>
+                                </Tooltip> */}
                               </Stack>
                             </TableCell>
                           </TableRow>

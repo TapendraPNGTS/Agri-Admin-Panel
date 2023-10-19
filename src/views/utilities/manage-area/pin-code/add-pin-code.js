@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
@@ -13,87 +12,70 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import DistrictApi from "../../../../api/district.api";
+import { updateAllDistrict } from "../../../../redux/redux-slice/district.slice";
+
 function App() {
   const params = useParams();
   const navigate = useNavigate();
-  const [rows, setRows] = React.useState([]);
   const [name, setName] = React.useState("");
   const [district, setDistrict] = React.useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
+    const dispatch = useDispatch();
+    const districtApi = new DistrictApi();
+    const rows = useSelector((state) => state.district.District);
 
-  function getAllDistrict() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
+    const getAllDistrict = useCallback(async () => {
+      try {
+        const district = await districtApi.getAllDistrict({});
+        if (!district || !district.data.data) {
+          return toast.error("no latest district available");
+        } else {
+          dispatch(updateAllDistrict(district.data.data));
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+        throw error;
+      }
     });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllDistrict`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
 
+    useEffect(() => {
+      getAllDistrict();
+    }, []);
 
-  useEffect(() => {
-    getAllDistrict();
-  }, []);
-
-  function handleSubmit(event) {
-    event.preventDefault();
+  async function handleSubmit(event) {
     setIsLoading(true);
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
+    event.preventDefault();
+    const addServiceRequestResponse = await districtApi.addDistrict({
       districtId: district,
       code: name,
     });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}addZip`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/pin-code");
-          toast.success("Added Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
+    if (
+      addServiceRequestResponse &&
+      addServiceRequestResponse?.data?.code === 200
+    ) {
+      toast.success(`Added successsfully`);
+      navigate("/district", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
   }
 
   return (
     <MainCard title="Add Pin Code">
       <form action="#" onSubmit={handleSubmit}>
         <Grid container spacing={gridSpacing}>
-        <Grid item xs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>Choose District</InputLabel>
               <Select
-                id="active"
-                name="active"
+                id="district"
+                name="district"
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
               >

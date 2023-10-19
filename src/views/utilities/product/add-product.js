@@ -19,6 +19,8 @@ import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import CategoryApi from "../../../api/category.api";//
 import { updateAllCategory } from "../../../redux/redux-slice/category.slice";
+import SubCategoryApi from "../../../api/sub-category.api";
+import { updateAllSubCategory } from "../../../redux/redux-slice/sub-category.slice";
 
 function App() {
   const navigate = useNavigate();
@@ -42,6 +44,7 @@ function App() {
   const [discount, setDiscount] = React.useState(false);
   const [discountPrice, setDiscountPrice] = React.useState(0);
   const [features, setFeatures] = useState();
+  const [mainVarient, setMainVerient] = React.useState("");
 
   function handleChange(event) {
     setFile(event.target.files[0]);
@@ -66,12 +69,17 @@ function App() {
     var formdata = new FormData();
     formdata.append("name", name);
     formdata.append("description",description);
-    // formdata.append("feature",features);
+    formdata.append("feature",features);
     formdata.append("price", price);
     formdata.append("categoryId", category);
-    // formdata.append("subCategoryId", mainVarient);
+    formdata.append("subCategoryId", mainVarient);
     formdata.append("quantity", quantity);
     formdata.append("active", active);
+    // Append each item in the variant array to the FormData object
+    tags.forEach((item, index) => {
+      formdata.append(`variant[${index}]`, item);
+    });
+    // formdata.append("variant", variant);
     formdata.append("img", file);
     for (const key of Object.keys(file1)) {
       formdata.append(`images`, file1[key]);
@@ -114,9 +122,43 @@ function App() {
     getAllCategory();
   }, []);
 
+  const subCategoryApi = new SubCategoryApi();
+  const rowses = useSelector((state) => state.subCategory.SubCategory);
+
+    async function handleSetSubCategory(event) {
+      event.preventDefault();
+      const subCategories = await subCategoryApi.getSubCategoryByCategoryId({
+        categoryId: category,
+      });
+      if (subCategories && subCategories?.data?.code === 200) {
+        return dispatch(updateAllSubCategory(subCategories.data.data));
+      } else {
+        return;
+      }
+    }
+
+  const [tags, setTags] = useState([]);
+  const [input, setInput] = useState("");
+
+  const handleInputChange = (event) => {
+    setInput(event.target.value);
+  };
+
+  const handleInputKeyDown = (event) => {
+    if ((event.key === "Enter" && input)|| event.key === " ") {
+      setTags([...tags, input.trim()]);
+      setInput("");
+    }
+
+  };
+
+  const handleTagClick = (index) => {
+    setTags(tags.filter((tag, i) => i !== index));
+  };
+
   return (
     <MainCard title="Add Product">
-      <form action="#" onSubmit={handleSubmit}>
+      <form>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={6} md={6}>
             <Stack>
@@ -204,16 +246,68 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
+              <InputLabel required>Variant</InputLabel>
+              <TextField
+                fullWidth
+                id="quantity"
+                name="quantity"
+                value={input}
+                onChange={handleInputChange}
+                onKeyDown={handleInputKeyDown}
+              />
+              <br />
+              <div>
+                {tags.map((tag, index) => (
+                  <span>
+                    <span
+                      key={index}
+                      onClick={() => handleTagClick(index)}
+                      style={{ border: "1px solid", borderRadius: "5px" }}
+                    >
+                      &nbsp; {tag} <span style={{ color: "red" }}>x</span>{" "}
+                      &nbsp;
+                    </span>
+                    &nbsp; &nbsp;
+                  </span>
+                ))}
+              </div>
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
               <InputLabel required>Choose Category</InputLabel>
               <Select
                 id="active"
                 name="active"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                onBlur={handleSetSubCategory}
               >
                 {rows.map((row, i) => {
                   return (
                     <MenuItem key={i} value={row.CategoryID}>
+                      {row.Name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Sub Category</InputLabel>
+              <Select
+                id="mainVarient"
+                name="mainVarient"
+                value={mainVarient}
+                onChange={(e) => setMainVerient(e.target.value)}
+                renderValue={
+                  category !== "" ? undefined : () => "--Select SubCategory--"
+                }
+              >
+                {rowses.map((row, i) => {
+                  return (
+                    <MenuItem key={i} value={row.SubCategoryID}>
                       {row.Name}
                     </MenuItem>
                   );
@@ -372,7 +466,7 @@ function App() {
           {isLoading ? (
             <CircularProgress />
           ) : (
-            <Button variant="contained" type="submit">
+            <Button variant="contained" onClick={handleSubmit}>
               Add Product
             </Button>
           )}

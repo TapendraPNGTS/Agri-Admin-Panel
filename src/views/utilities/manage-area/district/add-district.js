@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
@@ -13,74 +12,61 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
+import { toast } from "react-hot-toast";
+import DistrictApi from "../../../../api/district.api";
+import StateApi from "../../../../api/state.api";
+import { updateAllState } from "../../../../redux/redux-slice/state.slice";
+import { useDispatch, useSelector } from "react-redux";
+
 function App() {
   const params = useParams();
   const navigate = useNavigate();
-  const [rows, setRows] = React.useState([]);
   const [name, setName] = React.useState("");
   const [state, setState] = React.useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const districtApi = new DistrictApi();
+  const dispatch = useDispatch();
+  const stateApi = new StateApi();
+  const rows = useSelector((state) => state.state.State);
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
 
-  function getAllState() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllState`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+
+  const getAllState = useCallback(async () => {
+    try {
+      const state = await stateApi.getAllState({});
+      if (!state || !state.data.data) {
+        return toast.error("no latest state available");
+      } else {
+        dispatch(updateAllState(state.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
     getAllState();
   }, []);
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  async function handleSubmit(event) {
     setIsLoading(true);
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
+    event.preventDefault();
+    const addServiceRequestResponse = await districtApi.addDistrict({
       stateId: state,
       name: name,
     });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}addDistrict`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/district");
-          toast.success("Added Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
+    if (
+      addServiceRequestResponse &&
+      addServiceRequestResponse?.data?.code === 200
+    ) {
+      toast.success(`Added successsfully`);
+      navigate("/district", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
   }
 
   return (

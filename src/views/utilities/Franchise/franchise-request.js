@@ -23,16 +23,19 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import SwipeRightSharpIcon from '@mui/icons-material/SwipeRightSharp';
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
+import { useDispatch, useSelector } from "react-redux";
+import FrenciseApi from "../../../api/franchise.api";
+import { updateAllFrencise } from "../../../redux/redux-slice/frenchise.slice";
+import { toast } from "react-hot-toast";
 // ===============================|| COLOR BOX ||=============================== //
 // ===============================|| UI COLOR ||=============================== //
 
 export default function Users() {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
-  const [rows, setRows] = React.useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState("");
   const handleChangePage = (event, newPage) => {
@@ -44,35 +47,26 @@ export default function Users() {
     setPage(0);
   };
 
-  function getAllFrencise() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
+  const dispatch = useDispatch();
+  const frenciseApi = new FrenciseApi();
+  const rows = useSelector((state) => state.frencise.Frencise);
 
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
+  const getAllFrencise = useCallback(async () => {
+    try {
+      const Frencise = await frenciseApi.getAllFrencise();
+      if (!Frencise || !Frencise.data.data) {
+        return toast.error("no latest banners available");
+      } else {
+        dispatch(updateAllFrencise(Frencise.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}getAllFrencise`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          setRows(result.data);
-        }
-      })
-      .catch((error) => {});
-  }
   useEffect(() => {
     getAllFrencise();
   }, []);

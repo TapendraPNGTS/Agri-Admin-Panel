@@ -138,7 +138,8 @@ const ApiRoutes = {
       Endpoint: "/deleteService",
       Method: HttpMethod.Post,
     },
-  },  SubCategory: {
+  },
+  SubCategory: {
     All: {
       Endpoint: "/getAllSubCategory",
       Method: HttpMethod.Post,
@@ -291,6 +292,98 @@ const ApiRoutes = {
     },
     DeleteFarmer: {
       Endpoint: "/deleteFarmer",
+      Method: HttpMethod.Post,
+    },
+  },
+  District: {
+    AllDistrict: {
+      Endpoint: "/getAllDistrict",
+      Method: HttpMethod.Post,
+    },
+    DistrictById: {
+      Endpoint: "/getDistrictById",
+      Method: HttpMethod.Post,
+    },
+    DistrictByStateId: {
+      Endpoint: "/getDistrictByStateId",
+      Method: HttpMethod.Post,
+    },
+    AddDistrict: {
+      Endpoint: "/addDistrict",
+      Method: HttpMethod.Post,
+    },
+    EditDistrict: {
+      Endpoint: "/updateDistrict",
+      Method: HttpMethod.Post,
+    },
+    DeleteDistrict: {
+      Endpoint: "/deleteDistrict",
+      Method: HttpMethod.Post,
+    },
+  },
+  State: {
+    AllState: {
+      Endpoint: "/getAllState",
+      Method: HttpMethod.Post,
+    },
+    StateById: {
+      Endpoint: "/getStateById",
+      Method: HttpMethod.Post,
+    },
+    AddState: {
+      Endpoint: "/addState",
+      Method: HttpMethod.Post,
+    },
+    EditState: {
+      Endpoint: "/updateState",
+      Method: HttpMethod.Post,
+    },
+    DeleteState: {
+      Endpoint: "/deleteState",
+      Method: HttpMethod.Post,
+    },
+  },
+  ZipCode: {
+    AllZipCode: {
+      Endpoint: "/getAllZip",
+      Method: HttpMethod.Post,
+    },
+    ZipCodeById: {
+      Endpoint: "/getZipById",
+      Method: HttpMethod.Post,
+    },
+    AddZipCode: {
+      Endpoint: "/addZip",
+      Method: HttpMethod.Post,
+    },
+    EditZipCode: {
+      Endpoint: "/editZip",
+      Method: HttpMethod.Post,
+    },
+    DeleteZipCode: {
+      Endpoint: "/deleteZip",
+      Method: HttpMethod.Post,
+    },
+  },
+  FranchiseState: {
+    AllFranchiseState: {
+      Endpoint: "/getAllStateFranchise",
+      Method: HttpMethod.Post,
+    },
+    FranchiseStateById: {
+      Endpoint: "/getStateFranchiseById",
+      Method: HttpMethod.Post,
+    },
+    AddFranchiseState: {
+      Endpoint: "/addStateFranchise",
+      Method: HttpMethod.Post,
+    },
+    EditFranchiseState: {
+      Endpoint: "/editStateFranchise",
+      Method: HttpMethod.Post,
+    },
+    DeleteFranchiseState: {
+      Endpoint: "/deleteStateFranchise",
       Method: HttpMethod.Post,
     },
   },
