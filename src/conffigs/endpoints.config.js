@@ -387,6 +387,28 @@ const ApiRoutes = {
       Method: HttpMethod.Post,
     },
   },
+  FranchiseDistrict: {
+    AllFranchiseDistrict: {
+      Endpoint: "/getAllDistrictFranchise",
+      Method: HttpMethod.Post,
+    },
+    FranchiseDistrictById: {
+      Endpoint: "/getDistrictFranchiseById",
+      Method: HttpMethod.Post,
+    },
+    AddFranchiseDistrict: {
+      Endpoint: "/addDistrictFranchise",
+      Method: HttpMethod.Post,
+    },
+    EditFranchiseDistrict: {
+      Endpoint: "/editDistrictFranchise",
+      Method: HttpMethod.Post,
+    },
+    DeleteFranchiseDistrict: {
+      Endpoint: "/deleteDistrictFranchise",
+      Method: HttpMethod.Post,
+    },
+  },
 };
 
 export default ApiRoutes;

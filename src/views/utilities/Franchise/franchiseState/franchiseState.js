@@ -16,13 +16,20 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
-import { IconButton, Stack, Tooltip, Typography , CircularProgress } from "@mui/material";
+import {
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+  CircularProgress,
+  Chip,
+} from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import StateApi from "../../../../api/state.api";
-import { updateAllState } from "../../../../redux/redux-slice/state.slice";
+import FranchiseStateApi from "../../../../api/franchiseState.api";
+import { updateAllFranchiseState } from "../../../../redux/redux-slice/franchiseState.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();
@@ -31,16 +38,16 @@ export default function DataTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const dispatch = useDispatch();
-  const stateApi = new StateApi();
-  const rows = useSelector((state) => state.state.State);
+  const stateApi = new FranchiseStateApi();
+  const rows = useSelector((state) => state.franchiseState.FranchiseState);
 
   const getAllState = useCallback(async () => {
     try {
-      const state = await stateApi.getAllState({});
+      const state = await stateApi.getAllStateFranchise({});
       if (!state || !state.data.data) {
         return toast.error("no latest state available");
       } else {
-        dispatch(updateAllState(state.data.data));
+        dispatch(updateAllFranchiseState(state.data.data));
         return;
       }
     } catch (error) {
@@ -101,17 +108,17 @@ export default function DataTable() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">State</Typography>
+              <Typography variant="h3">Franchise State</Typography>
             </Grid>
             <Grid item>
               <Button
                 variant="outlined"
                 onClick={(e) => {
-                  navigate("/add-state");
+                  navigate("/add-franchise-state");
                 }}
                 startIcon={<AddIcon />}
               >
-                Add State
+                Add Franchise State
               </Button>
             </Grid>
           </Grid>
@@ -134,10 +141,13 @@ export default function DataTable() {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>S. No.</TableCell>
-                      <TableCell>State</TableCell>
-                      {/* <TableCell align="center" sx={{ pr: 3 }}>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Contact</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell align="center" sx={{ pr: 3 }}>
                         Actions
-                      </TableCell> */}
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -145,7 +155,7 @@ export default function DataTable() {
                       .filter((row) =>
                         search === ""
                           ? row
-                          : row.Title.toLowerCase().includes(
+                          : row.Name.toLowerCase().includes(
                               search.toLowerCase()
                             )
                       )
@@ -168,7 +178,28 @@ export default function DataTable() {
                             <TableCell sx={{ pl: 3 }} align="start">
                               {row.Name}
                             </TableCell>
-                            {/* <TableCell align="center" sx={{ pr: 3 }}>
+                            <TableCell sx={{ pl: 3 }} align="start">
+                              {row.Email}
+                            </TableCell>
+                            <TableCell sx={{ pl: 3 }} align="start">
+                              {row.Contact}
+                            </TableCell>
+                            <TableCell align="start">
+                              {row.IsActive ? (
+                                <Chip
+                                  label="Active"
+                                  color="success"
+                                  size="small"
+                                />
+                              ) : (
+                                <Chip
+                                  label="Inactive"
+                                  color="warning"
+                                  size="small"
+                                />
+                              )}
+                            </TableCell>
+                            <TableCell align="center" sx={{ pr: 3 }}>
                               <Stack
                                 direction="row"
                                 justifyContent="center"
@@ -178,7 +209,9 @@ export default function DataTable() {
                                   placement="top"
                                   title="Edit"
                                   onClick={(e) => {
-                                    navigate(`/edit-state/${row.stateID}`);
+                                    navigate(
+                                      `/edit-franchise-state/${row.StateID}`
+                                    );
                                   }}
                                   data-target={`#`}
                                 >
@@ -191,7 +224,7 @@ export default function DataTable() {
                                   </IconButton>
                                 </Tooltip>
 
-                                <Tooltip
+                                {/* <Tooltip
                                   placement="top"
                                   title="delete"
                                   onClick={DeleteCategory(`${row.StateID}`)}
@@ -203,9 +236,9 @@ export default function DataTable() {
                                   >
                                     <DeleteIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
-                                </Tooltip>
+                                </Tooltip> */}
                               </Stack>
-                            </TableCell> */}
+                            </TableCell>
                           </TableRow>
                         );
                       })}

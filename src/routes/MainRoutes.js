@@ -116,6 +116,27 @@ const ViewFranchiseRequest = Loadable(
 const EditFranchiseRequest = Loadable(
   lazy(() => import("views/utilities/Franchise/edit-franchise"))
 );
+const FranchiseState = Loadable(
+  lazy(() => import("views/utilities/Franchise/franchiseState/franchiseState"))
+)
+const AddFranchiseState = Loadable(
+  lazy(() => import("views/utilities/Franchise/franchiseState/add-franchiseState"))
+);
+const EditFranchiseState = Loadable(
+  lazy(() =>
+    import("views/utilities/Franchise/franchiseState/edit-franchiseState")
+  )
+);
+const FranchiseDistrict = Loadable(
+  lazy(() =>
+    import("views/utilities/Franchise/franchiseDistrict/franchiseDistrict")
+  )
+);
+const AddFranchiseDistrict = Loadable(
+  lazy(() =>
+    import("views/utilities/Franchise/franchiseDistrict/add-franchiseDistrict")
+  )
+);
 
 // password routes
 const ChangePassword = Loadable(
@@ -195,6 +216,8 @@ const EditSubCategory = Loadable(
 const ViewSubCategory = Loadable(
   lazy(() => import("views/utilities/sub-category/view-subcategory"))
 );
+
+
 
 // sample page routing
 // ==============================|| MAIN ROUTING ||============================== //
@@ -354,6 +377,26 @@ const MainRoutes = {
         {
           path: "edit-franchise-request/:id",
           element: <EditFranchiseRequest />,
+        },
+        {
+          path: "franchise-state",
+          element: <FranchiseState />,
+        },
+        {
+          path: "add-franchise-state",
+          element: <AddFranchiseState />,
+        },
+        {
+          path: "edit-franchise-state/:id",
+          element: <EditFranchiseState />,
+        },
+        {
+          path: "franchise-district",
+          element: <FranchiseDistrict />,
+        },
+        {
+          path: "add-franchise-district",
+          element: <AddFranchiseDistrict />,
         },
       ],
     },

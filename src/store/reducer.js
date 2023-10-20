@@ -29,6 +29,8 @@ import holidayReducer from "../redux/redux-slice/holiday.slice";
 import roleReducer from "../redux/redux-slice/role.slice";
 import frenciseReducer from "../redux/redux-slice/frenchise.slice";
 import frenciseStateReducer from "../redux/redux-slice/franchiseState.slice";
+import frenciseDistrictReducer from "../redux/redux-slice/franchiseDistrict.slice";
+
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -65,6 +67,7 @@ const reducer = combineReducers({
   role: roleReducer,
   frencise: frenciseReducer,
   franchiseState: frenciseStateReducer,
+  franchiseDistrict: frenciseDistrictReducer,
 });
 
 export default reducer;

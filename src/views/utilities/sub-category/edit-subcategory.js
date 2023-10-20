@@ -18,6 +18,7 @@ import {
   TextField,
   CircularProgress
 } from "@mui/material";
+
 function App() {
   const params = useParams();
   const SubcategoryApi = new SubCategoryApi();
@@ -36,7 +37,7 @@ function App() {
 
   const getAllCategory = useCallback(async () => {
     try {
-      const categories = await categoryApi.getAllCategory();
+      const categories = await categoryApi.getAllCategory({});
       if (!categories || !categories.data.data) {
         return toast.error("no available");
       } else {
@@ -85,12 +86,11 @@ function App() {
     setIsLoading(true)
     event.preventDefault();
     var formdata = new FormData();
-    formdata.append("adminId", localStorage.getItem("userId"));
     formdata.append("subCategoryId", params.id);
     formdata.append("categoryId", category);
     formdata.append("name", title);
     formdata.append("active", active);
-    formdata.append("image", file);
+    formdata.append("img", file);
     const editCategoryResponse = await SubcategoryApi.editSubCategory(formdata);
     if (editCategoryResponse && editCategoryResponse?.data?.code === 200) {
       toast.success(`Added successsfully`);

@@ -37,40 +37,40 @@ class State extends HttpClient {
 
   getAllStateFranchise = async (data) => {
     return this.instance({
-      method: this.AllStateConfig.Method,
-      url: this.AllStateConfig.Endpoint,
+      method: this.AllFranchiseStateConfig.Method,
+      url: this.AllFranchiseStateConfig.Endpoint,
       headers: {},
       data: data,
     });
   };
   getStateFranchiseById = async (data) => {
     return this.instance({
-      method: this.StateByIdConfig.Method,
-      url: this.StateByIdConfig.Endpoint,
+      method: this.FranchiseStateByIdConfig.Method,
+      url: this.FranchiseStateByIdConfig.Endpoint,
       headers: {},
       data: data,
     });
   };
   addStateFranchise = async (data) => {
     return this.instance({
-      method: this.AddStateConfig.Method,
-      url: this.AddStateConfig.Endpoint,
+      method: this.AddFranchiseStateConfig.Method,
+      url: this.AddFranchiseStateConfig.Endpoint,
       headers: {},
       data: data,
     });
   };
   editStateFranchise = async (data) => {
     return this.instance({
-      method: this.EditStateConfig.Method,
-      url: this.EditStateConfig.Endpoint,
+      method: this.EditFranchiseStateConfig.Method,
+      url: this.EditFranchiseStateConfig.Endpoint,
       headers: {},
       data: data,
     });
   };
   deleteStateFranchise = async (data) => {
     return this.instance({
-      method: this.DeleteStateConfig.Method,
-      url: this.DeleteStateConfig.Endpoint,
+      method: this.DeleteFranchiseStateConfig.Method,
+      url: this.DeleteFranchiseStateConfig.Endpoint,
       headers: {},
       data: data,
     });

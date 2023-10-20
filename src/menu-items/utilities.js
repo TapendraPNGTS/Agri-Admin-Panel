@@ -160,6 +160,20 @@ if (userId) {
         breadcrumbs: false,
         children: [
           {
+            id: "franchise-state",
+            title: "State",
+            type: "item",
+            url: "/franchise-state",
+            breadcrumbs: false,
+          },
+          {
+            id: "franchise-district",
+            title: "District",
+            type: "item",
+            url: "/franchise-district",
+            breadcrumbs: false,
+          },
+          {
             id: "franchise",
             title: "All Active Franchise",
             type: "item",
@@ -178,13 +192,6 @@ if (userId) {
             title: "Recommended Franchise",
             type: "item",
             url: "/franchise-request-form",
-            breadcrumbs: false,
-          },
-          {
-            id: "franchise-state",
-            title: "Franchise State",
-            type: "item",
-            url: "/franchise-state",
             breadcrumbs: false,
           },
         ],

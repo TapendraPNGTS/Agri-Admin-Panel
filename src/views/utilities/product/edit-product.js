@@ -34,8 +34,8 @@ function App() {
   const [price, setPrice] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
   const [active, setActive] = React.useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const [categoryId, setCategoryId] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [franchisePrice, setFranchisePrice] = useState("");
   const [bestSeller, setBestSeller] = React.useState(false);
   const [newArrival, setNewArrival] = React.useState(false);
@@ -85,12 +85,13 @@ function App() {
         setFranchisePrice(getProductByIdResponse.data.data.FrenchisePrice);
         setCoverImage(getProductByIdResponse.data.data.CoverImage);
         setProImage(getProductByIdResponse.data.data.Images);
-        // setBestSeller(getProductByIdResponse.data.data.isBestSeller);
-        // setBestDeal(getProductByIdResponse.data.data.IsBestDeal);
-        // setNewArrival(getProductByIdResponse.data.data.IsNewArrival);
+        setBestSeller(getProductByIdResponse.data.data.isBestSeller);
+        setBestDeal(getProductByIdResponse.data.data.IsBestDeal);
+        setNewArrival(getProductByIdResponse.data.data.IsNewArrival);
         setDiscountPrice(getProductByIdResponse.data.data.DiscountPrice);
         setDescription(getProductByIdResponse.data.data.Description);
-        // setFeatures(getProductByIdResponse.data.data.feature);
+        setFeatures(getProductByIdResponse.data.data.feature);
+        setTags(getProductByIdResponse.data.data.Variants);
       } else {
         return toast.error(`Something went wrong!`);
       }
@@ -118,8 +119,9 @@ function App() {
     formdata.append("feature", features);
     formdata.append("description", description);
     formdata.append("categoryId", categoryId);
-    const variant = JSON.stringify(tags);
-    formdata.append("variant", variant);
+      tags.forEach((item, index) => {
+        formdata.append(`variant[${index}]`, item);
+      });
     formdata.append("subCategoryId", mainVarient);
     formdata.append("img", file);
 
@@ -200,7 +202,7 @@ function App() {
 
   return (
     <MainCard title="Edit Product">
-      <form action="#" onSubmit={handleSubmit}>
+      <form>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={6} md={6}>
             <Stack>
@@ -529,7 +531,7 @@ function App() {
           {isLoading ? (
             <CircularProgress />
           ) : (
-            <Button variant="contained" type="submit">
+            <Button variant="contained" onClick={handleSubmit}>
               Update Product
             </Button>
           )}
