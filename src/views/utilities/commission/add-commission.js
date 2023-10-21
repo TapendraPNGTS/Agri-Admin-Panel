@@ -3,79 +3,62 @@ import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+import CommissiomApi from "../../../api/commission.api";
 import {
   Button,
   Grid,
+  Stack,
   MenuItem,
   Select,
-  Stack,
   TextField,
   CircularProgress,
 } from "@mui/material";
+
 function App() {
-  const params = useParams();
   const navigate = useNavigate();
+  const commissionApi = new CommissiomApi();
   const [name, setName] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
-
-  function handleSubmit(event) {
-    event.preventDefault();
+  async function handleSubmit(event) {
     setIsLoading(true);
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
+    event.preventDefault();
+    const addServiceRequestResponse = await commissionApi.addCommissiom({
       commission: amount,
       name: name,
     });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}addCommission`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/commission");
-          toast.success("Added Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
+    if (
+      addServiceRequestResponse &&
+      addServiceRequestResponse?.data?.code === 200
+    ) {
+      toast.success(`Added successsfully`);
+      navigate("/commission", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
   }
 
   return (
-    <MainCard title="Add District">
+    <MainCard title="Add Commission">
       <form action="#" onSubmit={handleSubmit}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>Name</InputLabel>
-              <TextField
-                fullWidth
-                id="state"
-                name="state"
-                inputProps={{ maxLength: 30 }}
+              <InputLabel required>Role</InputLabel>
+              <Select
+                id="active"
+                name="active"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enter State Name"
-              />
+              >
+                <MenuItem value="State">State</MenuItem>
+                <MenuItem value="District">District</MenuItem>
+                <MenuItem value="Block">Block</MenuItem>
+                <MenuItem value="Cluster">Cluster</MenuItem>
+                <MenuItem value="Village">Village</MenuItem>
+              </Select>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
@@ -11,6 +11,11 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import RoleApi from "../../../api/role.api";
+import { updateAllRole } from "../../../redux/redux-slice/role.slice";
+
 function App() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -19,7 +24,30 @@ function App() {
   const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [data, setData] = React.useState([]);
-  const [rows, setRows] = React.useState([]);
+
+  const dispatch = useDispatch();
+  const roleApi = new RoleApi();
+  const rows = useSelector((state) => state.role.Role);
+
+  const getAllRole = useCallback(async () => {
+    try {
+      const role = await roleApi.getAllRole();
+      if (!role || !role.data.data) {
+        return toast.error("no latest banners available");
+      } else {
+        dispatch(updateAllRole(role.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
+  useEffect(() => {
+    getAllRole();
+  }, []);
 
   var myHeaders = new Headers();
   myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
@@ -28,27 +56,6 @@ function App() {
     "Bearer " + localStorage.getItem("token")
   );
   myHeaders.append("Content-Type", "application/json");
-
-  function getAllRole() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllRole`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
-  useEffect(() => {
-    getAllRole();
-  }, []);
 
   function addStaff(e) {
     e.preventDefault();
@@ -74,6 +81,32 @@ function App() {
       })
       .catch((error) => console.log("error", error));
   }
+
+  const [message, setMessage] = useState("");
+  const [isValid, setIsValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [emailMessage, setEmailMessage] = useState("");
+  const phoneValidation = () => {
+    const regex =  /^[6-9]\d{9}$/;
+    return !(!phone || regex.test(phone) === false);
+  };
+
+  const phoneValid = () => {
+    const isPhoneValid = phoneValidation();
+    setIsValid(isPhoneValid);
+    setMessage(isPhoneValid ? <></> : "Phone Number not valid!" );
+  } 
+
+  const emailValidation = () => {
+    const regexEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+.)+[A-Z]{2,4}$/i;
+    return !(!email || regexEmail.test(email) === false);
+  };
+
+  const emailValid = () => {
+    const isEmailValid = emailValidation();
+    setIsEmailValid(isEmailValid);
+    setEmailMessage(isEmailValid ? <></> : "Email not valid!" );
+  } 
 
   return (
     <MainCard title="Add User">
@@ -103,8 +136,8 @@ function App() {
                 onChange={(e) => setRole(e.target.value)}
               >
                 {rows.map((row, index) => (
-                  <MenuItem value={row.RoleID} key={index}>
-                    {row.Name}
+                  <MenuItem value={row.roleId} key={index}>
+                    {row.name}
                   </MenuItem>
                  ))}
               </Select>
@@ -115,13 +148,17 @@ function App() {
             <Stack>
               <InputLabel required>Email</InputLabel>
               <TextField
-                type="email"
                 fullWidth
                 id="Email"
                 name="Email"
+                type="email"
+                onBlur={emailValid}
+                inputProps={{ maxLength: 40 }}
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
               />
+              <p style={{color:'red'}}>{emailMessage}</p>
             </Stack>
           </Grid>
 
@@ -129,13 +166,20 @@ function App() {
             <Stack>
               <InputLabel required>Phone</InputLabel>
               <TextField
-                type="number"
                 fullWidth
                 id="Phone"
                 name="Phone"
+                type="number"
+                onBlur={phoneValid}
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 10);
+                }}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter Phone Number"
               />
+              <p style={{color:'red'}}>{message}</p>
             </Stack>
           </Grid>
 

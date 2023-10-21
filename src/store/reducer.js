@@ -26,11 +26,15 @@ import stateReducer from "../redux/redux-slice/state.slice";
 import zipCodeReducer from "../redux/redux-slice/zipCode.slice";
 import attendenceReducer from "../redux/redux-slice/attendence.slice";
 import holidayReducer from "../redux/redux-slice/holiday.slice";
-import roleReducer from "../redux/redux-slice/role.slice";
 import frenciseReducer from "../redux/redux-slice/frenchise.slice";
 import frenciseStateReducer from "../redux/redux-slice/franchiseState.slice";
 import frenciseDistrictReducer from "../redux/redux-slice/franchiseDistrict.slice";
-
+import frenciseBlockReducer from "../redux/redux-slice/franchiseBlock.slice";
+import frenciseClusterReducer from "../redux/redux-slice/franchiseCluster.slice";
+import frenciseVillageReducer from "../redux/redux-slice/franchiseVillage.slice";
+import roleReducer from "../redux/redux-slice/role.slice";
+import staffReducer from "../redux/redux-slice/staff.slice";
+import commissionReducer from "../redux/redux-slice/commission.slice";
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -68,6 +72,12 @@ const reducer = combineReducers({
   frencise: frenciseReducer,
   franchiseState: frenciseStateReducer,
   franchiseDistrict: frenciseDistrictReducer,
+  franchiseBlock: frenciseBlockReducer,
+  franchiseCluster: frenciseClusterReducer,
+  franchiseVillage: frenciseVillageReducer,
+  role: roleReducer,
+  staff: staffReducer,
+  commission: commissionReducer,
 });
 
 export default reducer;

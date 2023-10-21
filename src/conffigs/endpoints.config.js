@@ -305,7 +305,7 @@ const ApiRoutes = {
       Method: HttpMethod.Post,
     },
     DistrictByStateId: {
-      Endpoint: "/getDistrictByStateId",
+      Endpoint: "/getCityByStateId",
       Method: HttpMethod.Post,
     },
     AddDistrict: {
@@ -406,6 +406,94 @@ const ApiRoutes = {
     },
     DeleteFranchiseDistrict: {
       Endpoint: "/deleteDistrictFranchise",
+      Method: HttpMethod.Post,
+    },
+  },
+  FranchiseBlock: {
+    AllFranchiseBlock: {
+      Endpoint: "/getAllBlockFranchise",
+      Method: HttpMethod.Post,
+    },
+    FranchiseBlockById: {
+      Endpoint: "/getBlockFranchiseById",
+      Method: HttpMethod.Post,
+    },
+    AddFranchiseBlock: {
+      Endpoint: "/addBlockFranchise",
+      Method: HttpMethod.Post,
+    },
+    EditFranchiseBlock: {
+      Endpoint: "/editBlockFranchise",
+      Method: HttpMethod.Post,
+    },
+    DeleteFranchiseBlock: {
+      Endpoint: "/deleteBlockFranchise",
+      Method: HttpMethod.Post,
+    },
+  },
+  FranchiseCluster: {
+    AllFranchiseCluster: {
+      Endpoint: "/getAllClusterFranchise",
+      Method: HttpMethod.Post,
+    },
+    FranchiseClusterById: {
+      Endpoint: "/getClusterFranchiseById",
+      Method: HttpMethod.Post,
+    },
+    AddFranchiseCluster: {
+      Endpoint: "/addClusterFranchise",
+      Method: HttpMethod.Post,
+    },
+    EditFranchiseCluster: {
+      Endpoint: "/editClusterFranchise",
+      Method: HttpMethod.Post,
+    },
+    DeleteFranchiseCluster: {
+      Endpoint: "/deleteClusterFranchise",
+      Method: HttpMethod.Post,
+    },
+  },
+  FranchiseVillage: {
+    AllFranchiseVillage: {
+      Endpoint: "/getAllVillageFranchise",
+      Method: HttpMethod.Post,
+    },
+    FranchiseVillageById: {
+      Endpoint: "/getVillageFranchiseById",
+      Method: HttpMethod.Post,
+    },
+    AddFranchiseVillage: {
+      Endpoint: "/addVillageFranchise",
+      Method: HttpMethod.Post,
+    },
+    EditFranchiseVillage: {
+      Endpoint: "/editVillageFranchise",
+      Method: HttpMethod.Post,
+    },
+    DeleteFranchiseVillage: {
+      Endpoint: "/deleteVillageFranchise",
+      Method: HttpMethod.Post,
+    },
+  },
+  Commissiom: {
+    All: {
+      Endpoint: "/getAllCommission",
+      Method: HttpMethod.Post,
+    },
+    CommissiomById: {
+      Endpoint: "/getCommissionById",
+      Method: HttpMethod.Post,
+    },
+    AddCommissiom: {
+      Endpoint: "/addCommission",
+      Method: HttpMethod.Post,
+    },
+    EditCommissiom: {
+      Endpoint: "/updateCommission",
+      Method: HttpMethod.Post,
+    },
+    DeleteCommissiom: {
+      Endpoint: "/deleteCommission",
       Method: HttpMethod.Post,
     },
   },

@@ -140,12 +140,12 @@ export default function DataTable() {
                             <TableCell>{row.CategoryID.Name}</TableCell>
                             <TableCell align="start">
                               <a
-                                href={`${process.env.REACT_APP_IMAGE_URL}${row.CoverImage}`}
+                                href={row.CoverImage}
                                 target="_blank"
                               >
                                 <Avatar
                                   alt="M21"
-                                  src={`${process.env.REACT_APP_IMAGE_URL}${row.CoverImage}`}
+                                  src={row.CoverImage}
                                   sx={{ width: 50, height: 50 }}
                                 />
                               </a>

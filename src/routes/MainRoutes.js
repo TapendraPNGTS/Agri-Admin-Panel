@@ -75,29 +75,31 @@ const EditHoliday = Loadable(
 const StaffManagement = Loadable(
   lazy(() => import("views/utilities/Staff Management/StaffManagement"))
 );
-const Rolls = Loadable(
-  lazy(() => import("views/utilities/Staff Management/Rolls"))
-);
 const Permission = Loadable(
-  lazy(() => import("views/utilities/Staff Management/Permission"))
+  lazy(() => import("views/utilities/Staff Management/permission/Permission"))
 );
 const CreateUser = Loadable(
   lazy(() => import("views/utilities/Staff Management/CreateUser"))
 );
+
+const Rolls = Loadable(
+  lazy(() => import("views/utilities/Staff Management/role/Rolls"))
+);
 const AddRoles = Loadable(
-  lazy(() => import("views/utilities/Staff Management/AddRoles"))
+  lazy(() => import("views/utilities/Staff Management/role/AddRoles"))
+);
+const ViewRole = Loadable(
+  lazy(() => import("views/utilities/Staff Management/role/view-role"))
+);
+const EditRole = Loadable(
+  lazy(() => import("views/utilities/Staff Management/role/EditRoles"))
+);
+
+const ViewStaff = Loadable(
+  lazy(() => import("views/utilities/Staff Management/view-staff"))
 );
 const EditUser = Loadable(
   lazy(() => import("views/utilities/Staff Management/edit-user"))
-);
-const ViewRole = Loadable(
-  lazy(() => import("views/utilities/Staff Management/view-role"))
-);
-const EditRole = Loadable(
-  lazy(() => import("views/utilities/Staff Management/EditRoles"))
-);
-const ViewStaff = Loadable(
-  lazy(() => import("views/utilities/Staff Management/view-staff"))
 );
 
 // franchises routes
@@ -115,27 +117,6 @@ const ViewFranchiseRequest = Loadable(
 );
 const EditFranchiseRequest = Loadable(
   lazy(() => import("views/utilities/Franchise/edit-franchise"))
-);
-const FranchiseState = Loadable(
-  lazy(() => import("views/utilities/Franchise/franchiseState/franchiseState"))
-)
-const AddFranchiseState = Loadable(
-  lazy(() => import("views/utilities/Franchise/franchiseState/add-franchiseState"))
-);
-const EditFranchiseState = Loadable(
-  lazy(() =>
-    import("views/utilities/Franchise/franchiseState/edit-franchiseState")
-  )
-);
-const FranchiseDistrict = Loadable(
-  lazy(() =>
-    import("views/utilities/Franchise/franchiseDistrict/franchiseDistrict")
-  )
-);
-const AddFranchiseDistrict = Loadable(
-  lazy(() =>
-    import("views/utilities/Franchise/franchiseDistrict/add-franchiseDistrict")
-  )
 );
 
 // password routes
@@ -217,8 +198,80 @@ const ViewSubCategory = Loadable(
   lazy(() => import("views/utilities/sub-category/view-subcategory"))
 );
 
+//incharge routes
 
+const FranchiseState = Loadable(
+  lazy(() => import("views/utilities/incharge/franchiseState/franchiseState"))
+);
+const AddFranchiseState = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseState/add-franchiseState")
+  )
+);
+const EditFranchiseState = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseState/edit-franchiseState")
+  )
+);
+const FranchiseDistrict = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseDistrict/franchiseDistrict")
+  )
+);
+const AddFranchiseDistrict = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseDistrict/add-franchiseDistrict")
+  )
+);
+const EditFranchiseDistrict = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseDistrict/edit-franchiseDistrict")
+  )
+);
 
+// block routes
+const FranchiseBlock = Loadable(
+  lazy(() => import("views/utilities/incharge/franchiseBlock/franchiseBlock"))
+);
+const AddFranchiseBlock = Loadable(
+  lazy(() => import("views/utilities/incharge/franchiseBlock/add-franchiseBlock"))
+);
+const EditFranchiseBlock = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseBlock/edit-franchiseBlock")
+  )
+);
+// cluster routes
+const FranchiseCluster = Loadable(
+  lazy(() => import("views/utilities/incharge/franchiseCluster/franchiseCluster"))
+);
+const AddFranchiseCluster = Loadable(
+  lazy(() => import("views/utilities/incharge/franchiseCluster/add-franchiseCluster"))
+);
+const EditFranchiseCluster = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseCluster/edit-franchiseCluster")
+  )
+);
+
+// cluster routes
+const FranchiseVillage = Loadable(
+  lazy(() => import("views/utilities/incharge/franchiseVillage/franchiseVillage"))
+);
+const AddFranchiseVillage = Loadable(
+  lazy(() => import("views/utilities/incharge/franchiseVillage/add-franchiseVillage"))
+);
+const EditFranchiseVillage = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseVillage/edit-franchiseVillage")
+  )
+);
+
+//ledger
+
+const Ledger = Loadable(
+  lazy(() => import("views/utilities/Transaction History/transaction"))
+);
 // sample page routing
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -229,6 +282,10 @@ const MainRoutes = {
     {
       path: "/dashboard",
       element: <Dashboard />,
+    },
+    {
+      path: "/transaction-history",
+      element: <Ledger />,
     },
 
     {
@@ -378,6 +435,10 @@ const MainRoutes = {
           path: "edit-franchise-request/:id",
           element: <EditFranchiseRequest />,
         },
+      ],
+    },
+    {
+      children: [
         {
           path: "franchise-state",
           element: <FranchiseState />,
@@ -397,6 +458,46 @@ const MainRoutes = {
         {
           path: "add-franchise-district",
           element: <AddFranchiseDistrict />,
+        },
+        {
+          path: "edit-franchise-district/:id",
+          element: <EditFranchiseDistrict />,
+        },
+        {
+          path: "franchise-block",
+          element: <FranchiseBlock />,
+        },
+        {
+          path: "add-franchise-block",
+          element: <AddFranchiseBlock />,
+        },
+        {
+          path: "edit-franchise-block/:id",
+          element: <EditFranchiseBlock />,
+        },
+        {
+          path: "franchise-cluster",
+          element: <FranchiseCluster />,
+        },
+        {
+          path: "add-franchise-cluster",
+          element: <AddFranchiseCluster />,
+        },
+        {
+          path: "edit-franchise-cluster/:id",
+          element: <EditFranchiseCluster />,
+        },
+        {
+          path: "franchise-village",
+          element: <FranchiseVillage />,
+        },
+        {
+          path: "add-franchise-village",
+          element: <AddFranchiseVillage />,
+        },
+        {
+          path: "edit-franchise-village/:id",
+          element: <EditFranchiseVillage />,
         },
       ],
     },

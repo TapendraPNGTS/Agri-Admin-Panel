@@ -153,10 +153,10 @@ export default function Users() {
                               {row.Address ? row.Address : "-"}
                             </TableCell>
                             <TableCell align="start">
-                              {row.City ? row.City : "-"}
+                              {row.CityID.Name ? row.CityID.Name : "-"}
                             </TableCell>
                             <TableCell align="start">
-                              {row.State ? row.State : "-"}
+                              {row.StateID.Name ? row.StateID.Name : "-"}
                             </TableCell>
                             <TableCell align="start">
                               {row.PinCode ? row.PinCode : "-"}

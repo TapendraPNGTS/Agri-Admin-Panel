@@ -16,6 +16,7 @@ import {
   IconListDetails,
   IconCash,
   IconBasket,
+  IconAdjustmentsHorizontal,
 } from "@tabler/icons";
 // constant
 const icons = {
@@ -33,6 +34,7 @@ const icons = {
   IconListDetails,
   IconCash,
   IconBasket,
+  IconAdjustmentsHorizontal,
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -153,26 +155,56 @@ if (userId) {
         icon: icons.IconBuildingStore,
       },
       {
+        id: "incharge",
+        title: "Incharge",
+        type: "collapse",
+        icon: icons.IconAdjustmentsHorizontal,
+        breadcrumbs: false,
+        children: [
+          {
+            id: "incharge-state",
+            title: "State Incharge",
+            type: "item",
+            url: "/franchise-state",
+            breadcrumbs: false,
+          },
+          {
+            id: "incharge-district",
+            title: "District Incharge",
+            type: "item",
+            url: "/franchise-district",
+            breadcrumbs: false,
+          },
+          {
+            id: "incharge-block",
+            title: "Block Incharge",
+            type: "item",
+            url: "/franchise-block",
+            breadcrumbs: false,
+          },
+          {
+            id: "incharge-cluster",
+            title: "Cluster Incharge",
+            type: "item",
+            url: "/franchise-cluster",
+            breadcrumbs: false,
+          },
+          // {
+          //   id: "incharge-village",
+          //   title: "Village Incharge",
+          //   type: "item",
+          //   url: "/franchise-village",
+          //   breadcrumbs: false,
+          // },
+        ],
+      },
+      {
         id: "franchise",
         title: "Franchise",
         type: "collapse",
         icon: icons.IconBuildingSkyscraper,
         breadcrumbs: false,
         children: [
-          {
-            id: "franchise-state",
-            title: "State",
-            type: "item",
-            url: "/franchise-state",
-            breadcrumbs: false,
-          },
-          {
-            id: "franchise-district",
-            title: "District",
-            type: "item",
-            url: "/franchise-district",
-            breadcrumbs: false,
-          },
           {
             id: "franchise",
             title: "All Active Franchise",
@@ -189,7 +221,7 @@ if (userId) {
           },
           {
             id: "franchise-recommendation-form",
-            title: "Recommended Franchise",
+            title: "Add Franchise",
             type: "item",
             url: "/franchise-request-form",
             breadcrumbs: false,
@@ -211,6 +243,13 @@ if (userId) {
             breadcrumbs: false,
           },
         ],
+      },
+      {
+        id: "transaction-history",
+        title: "Transaction History",
+        type: "item",
+        url: "/transaction-history",
+        icon: icons.IconCash,
       },
       {
         id: "purchase",
@@ -247,8 +286,7 @@ if (userId) {
         ],
       },
     ];
-  } else if(userId.Type === ""){
-
+  } else if (userId.Type === "") {
   }
 }
 

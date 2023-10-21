@@ -16,92 +16,59 @@ import TableBody from "@mui/material/TableBody";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import swal from "sweetalert";
-import { toast } from "react-toastify";
-import { IconButton, Stack, Tooltip, Typography, Chip } from "@mui/material";
-import { useState, useEffect } from "react";
+import { IconButton, Stack, Tooltip, Typography, CircularProgress } from "@mui/material";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate , Link } from "react-router-dom";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import StaffApi from "../../../api/staff.api";
+import { updateAllStaff } from "../../../redux/redux-slice/staff.slice";
 
 const StaffManagement = () => {
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const staffApi = new StaffApi();
+  const rows = useSelector((state) => state.staff.Staff);
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
 
-  function getAllStaff() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllStaff`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const getAllStaff = useCallback(async () => {
+    try {
+      const staff = await staffApi.getAllStaff();
+      if (!staff || !staff.data.data) {
+        return toast.error("no latest banners available");
+      } else {
+        dispatch(updateAllStaff(staff.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
   useEffect(() => {
     getAllStaff();
   }, []);
 
-  const DeleteCategory = (str) => () => {
-    swal({
-      title: "Are you sure want to delete?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        toast.success("Deleted Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-        var myHeaders = new Headers();
-        myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-        myHeaders.append(
-          "Authorization",
-          "Bearer " + localStorage.getItem("token")
-        );
-        myHeaders.append("Content-Type", "application/json");
-
-        var raw = JSON.stringify({
-          adminId: localStorage.getItem("userId"),
-          roleId: str,
-        });
-
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
-
-        fetch(`${process.env.REACT_APP_API_URL}deleteRole`, requestOptions)
-          .then((response) => response.text())
-          .then((result) => {
-            getAllStaff();
-          })
-          .catch((error) => console.log("error", error));
+  const handleDelete = async (staffId) => {
+    try {
+      const deleteStaffResponse = await staffApi.deleteStaff({ staffId });
+      if (deleteStaffResponse && deleteStaffResponse?.data?.code === 200) {
+        getAllStaff();
+        return toast.success("Deleted Successfully");
       } else {
+        return toast.error(deleteStaffResponse.data?.message);
       }
-    });
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
   };
 
   return (
@@ -191,13 +158,13 @@ const StaffManagement = () => {
                             hover
                             role="checkbox"
                             tabIndex={-1}
-                            key={row.code}
+                            key={row.Code}
                           >
                             <TableCell sx={{ pl: 3 }} align="start">
                               {index + 1}
                             </TableCell>
                             <TableCell>{row.RoleID.Name}</TableCell>
-                            <TableCell>{row.UserName}</TableCell>
+                            <TableCell>{row.Name}</TableCell>
                             <TableCell align="start">{row.Email}</TableCell>
                             <TableCell align="start">{row.Contact}</TableCell>
                             <TableCell align="start">{row.Type}</TableCell>
@@ -210,8 +177,8 @@ const StaffManagement = () => {
                                 <Tooltip
                                   placement="top"
                                   title="Edit"
-                                  onClick={(e)=>{
-                                    navigate(`/edit-user/${row.StaffID}`)
+                                  onClick={(e) => {
+                                    navigate(`/edit-user/${row.StaffID}`);
                                   }}
                                   data-target={`#`}
                                 >
@@ -238,7 +205,7 @@ const StaffManagement = () => {
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={DeleteCategory(`${row.StaffID}`)}
+                                  onClick={() => handleDelete(`${row.StaffID}`)}
                                 >
                                   <IconButton
                                     color="primary"
@@ -270,7 +237,9 @@ const StaffManagement = () => {
         ) : (
           <>
             <br></br>
-            <h5 className="text-center">Please Wait Data Loading...</h5>
+            <center>
+              <CircularProgress />
+            </center>
           </>
         )}
       </MainCard>

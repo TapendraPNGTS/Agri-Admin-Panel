@@ -21,7 +21,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
-import SwipeRightSharpIcon from '@mui/icons-material/SwipeRightSharp';
+import SwipeRightSharpIcon from "@mui/icons-material/SwipeRightSharp";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
@@ -153,13 +153,13 @@ export default function Users() {
                               {row.Address ? row.Address : "-"}
                             </TableCell>
                             <TableCell align="start">
-                              {row.City ? row.City : "-"}
+                              {row.CityID.Name ? row.CityID.Name : "-"}
                             </TableCell>
                             <TableCell align="start">
-                              {row.State ? row.State : "-"}
+                              {row.StateID.Name ? row.StateID.Name : "-"}
                             </TableCell>
                             <TableCell align="start">
-                              {row.State ? row.State : "-"}
+                              {row.PinCode ? row.PinCode : "-"}
                             </TableCell>
                             <TableCell align="start">
                               {row.Status === "Pending" ? (
@@ -183,18 +183,26 @@ export default function Users() {
                               )}
                             </TableCell>
                             <TableCell align="center" sx={{ pr: 3 }}>
-                              <Link
-                                to={`/view-franchise-request/${row.FrenchiseID}`}
-                              >
-                                <IconButton
-                                  color="primary"
-                                  title="Accept Request"
-                                  aria-label="Accept Request"
-                                  size="large"
-                                >
-                                  <SwipeRightSharpIcon sx={{ fontSize: "1.1rem" }} />
-                                </IconButton>
-                              </Link>
+                              {row.Status === "Accept" ? (
+                                <></>
+                              ) : (
+                                <>
+                                  <Link
+                                    to={`/view-franchise-request/${row.FrenchiseID}`}
+                                  >
+                                    <IconButton
+                                      color="primary"
+                                      title="Accept Request"
+                                      aria-label="Accept Request"
+                                      size="large"
+                                    >
+                                      <SwipeRightSharpIcon
+                                        sx={{ fontSize: "1.1rem" }}
+                                      />
+                                    </IconButton>
+                                  </Link>
+                                </>
+                              )}
                               <Tooltip
                                 placement="top"
                                 title="Edit"

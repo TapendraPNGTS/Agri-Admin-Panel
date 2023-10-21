@@ -16,46 +16,43 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Grid } from "@mui/material";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
-import { toast } from "react-toastify";
 import { IconButton, Stack, Tooltip, Typography , CircularProgress } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import CommissiomApi from "../../../api/commission.api";
+import { updateAllCommission } from "../../../redux/redux-slice/commission.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const commissiomApi = new CommissiomApi();
+  const rows = useSelector((state) => state.commission.Commission);
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append(
-    "Authorization",
-    "Bearer " + localStorage.getItem("token")
-  );
-  myHeaders.append("Content-Type", "application/json");
-
-  function getAllCommission() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllCommission`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const getAllCommissiom = useCallback(async () => {
+    try {
+      const commission = await commissiomApi.getAllCommissiom({
+        
+      });
+      if (!commission || !commission.data.data) {
+        return toast.error("no latest commission available");
+      } else {
+        dispatch(updateAllCommission(commission.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
-    getAllCommission();
+    getAllCommissiom();
   }, []);
 
   useEffect(() => {}, [rows]);
@@ -69,45 +66,29 @@ export default function DataTable() {
     setPage(0);
   };
 
-  const DeleteCategory = (str) => () => {
-    swal({
-      title: "Are you sure want to delete?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then((willDelete) => {
-      if (willDelete) {
-        toast.success("Deleted Successfully", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-
-        var raw = JSON.stringify({
-          adminId: localStorage.getItem("userId"),
-          commissionId: str,
-        });
-
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
-
-        fetch(`${process.env.REACT_APP_API_URL}deleteCommission`, requestOptions)
-          .then((response) => response.text())
-          .then((result) => {
-            getAllCommission();
-          })
-          .catch((error) => console.log("error", error));
+  const handleDelete = async (CommissionID) => {
+    try {
+      const deleteCommissionResponse = await commissiomApi.DeleteCommissiom({ CommissionID });
+      if (deleteCommissionResponse && deleteCommissionResponse?.data?.code === 200) {
+        getAllCommissiom();
+        return toast.success("Deleted Successfully");
       } else {
+        return toast.error(deleteCommissionResponse.data?.message);
       }
-    });
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
   };
+
+    function formatDate(date) {
+      return new Date(date).toLocaleString("en-us", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    }
 
   return (
     <>
@@ -162,6 +143,7 @@ export default function DataTable() {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>S. No.</TableCell>
+                      <TableCell>Date</TableCell>
                       <TableCell>Name</TableCell>
                       <TableCell>Commissiom</TableCell>
                       <TableCell align="center" sx={{ pr: 3 }}>
@@ -174,7 +156,7 @@ export default function DataTable() {
                       .filter((row) =>
                         search === ""
                           ? row
-                          : row.Title.toLowerCase().includes(
+                          : row.Name.toLowerCase().includes(
                               search.toLowerCase()
                             )
                       )
@@ -195,6 +177,9 @@ export default function DataTable() {
                               {index + 1}
                             </TableCell>
                             <TableCell sx={{ pl: 3 }} align="start">
+                              {formatDate(row.updatedAt)}
+                            </TableCell>
+                            <TableCell sx={{ pl: 3 }} align="start">
                               {row.Name}
                             </TableCell>
                             <TableCell sx={{ pl: 3 }} align="start">
@@ -210,7 +195,9 @@ export default function DataTable() {
                                   placement="top"
                                   title="Edit"
                                   onClick={(e) => {
-                                    navigate(`/edit-commission/${row.CommissionID}`);
+                                    navigate(
+                                      `/edit-commission/${row.CommissionID}`
+                                    );
                                   }}
                                   data-target={`#`}
                                 >
@@ -226,7 +213,7 @@ export default function DataTable() {
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={DeleteCategory(`${row.CommissionID}`)}
+                                  onClick={handleDelete(`${row.CommissionID}`)}
                                 >
                                   <IconButton
                                     color="primary"
@@ -259,7 +246,7 @@ export default function DataTable() {
           <>
             <br></br>
             <center>
-            <CircularProgress />
+              <CircularProgress />
             </center>
           </>
         )}

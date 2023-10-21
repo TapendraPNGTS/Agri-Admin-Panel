@@ -91,16 +91,19 @@ function App() {
         <Grid container spacing={gridSpacing}>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>Name</InputLabel>
-              <TextField
-                fullWidth
-                id="state"
-                name="state"
-                inputProps={{ maxLength: 30 }}
+              <InputLabel required>Role</InputLabel>
+              <Select
+                id="active"
+                name="active"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enter State Name"
-              />
+              >
+                <MenuItem value="State">State</MenuItem>
+                <MenuItem value="District">District</MenuItem>
+                <MenuItem value="Block">Block</MenuItem>
+                <MenuItem value="Cluster">Cluster</MenuItem>
+                <MenuItem value="Village">Village</MenuItem>
+              </Select>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>

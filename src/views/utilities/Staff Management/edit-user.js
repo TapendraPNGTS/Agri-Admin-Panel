@@ -60,10 +60,10 @@ function App() {
       .then((response) => response.json())
       .then((result) => {
         setName(result.data.UserName);
-        setRole(result.data.Type);
-        setEmail(result.data.Email);
-        setPhone(result.data.Contact);
-        setPassword(result.data.Password);
+        setRole(result.data.type);
+        setEmail(result.data.email);
+        setPhone(result.data.contact);
+        setPassword(result.data.password);
       })
       .catch((error) => console.log("error", error));
   }
@@ -126,8 +126,8 @@ function App() {
                 onChange={(e) => setRole(e.target.value)}
               >
                 {rows.map((row, index) => (
-                  <MenuItem value={row.RoleID} key={index}>
-                    {row.Name}
+                  <MenuItem value={row.roleId} key={index}>
+                    {row.name}
                   </MenuItem>
                 ))}
               </Select>
