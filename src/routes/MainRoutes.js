@@ -272,6 +272,21 @@ const EditFranchiseVillage = Loadable(
 const Ledger = Loadable(
   lazy(() => import("views/utilities/Transaction History/transaction"))
 );
+
+// order history
+
+const OrderHistory = Loadable(
+  lazy(() => import("views/utilities/order-history/orderHistory"))
+)
+
+const CompleteOrder = Loadable(
+  lazy(() => import("views/utilities/order-history/completeOrder"))
+);
+
+const ViewOrder = Loadable(
+  lazy(() => import("views/utilities/order-history/viewPendingOrder"))
+);
+
 // sample page routing
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -286,6 +301,18 @@ const MainRoutes = {
     {
       path: "/transaction-history",
       element: <Ledger />,
+    },
+    {
+      path: "/pending-order",
+      element: <OrderHistory />,
+    },
+    {
+      path: "/complete-order",
+      element: <CompleteOrder />,
+    },
+    {
+      path: "/view-order",
+      element: <ViewOrder />,
     },
 
     {

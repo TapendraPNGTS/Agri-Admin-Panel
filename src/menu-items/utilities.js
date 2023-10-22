@@ -245,6 +245,29 @@ if (userId) {
         ],
       },
       {
+        id: "order",
+        title: "Order History",
+        type: "collapse",
+        icon: icons.IconUsers,
+        breadcrumbs: false,
+        children: [
+          {
+            id: "complete-order",
+            title: "Complete Order",
+            type: "item",
+            url: "/complete-order",
+            breadcrumbs: false,
+          },
+          {
+            id: "pending-order",
+            title: "Pending Order",
+            type: "item",
+            url: "/pending-order",
+            breadcrumbs: false,
+          },
+        ],
+      },
+      {
         id: "transaction-history",
         title: "Transaction History",
         type: "item",

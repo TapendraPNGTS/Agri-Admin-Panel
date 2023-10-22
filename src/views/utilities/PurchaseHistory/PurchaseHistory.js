@@ -19,6 +19,7 @@ import {
   Stack,
   Tooltip,
   Typography,
+  Chip,
   CircularProgress,
 } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -136,9 +137,12 @@ export default function PurchaseHistory() {
                       18-10-2023
                       {/* {format(new Date(row.PaymentDate), 'E, MMM d yyyy')} */}
                     </TableCell>
-                    <TableCell align="start">
-                      Pending
-                      {/* {row.Status} */}
+                    <TableCell>
+                      {/* { ? ( */}
+                        {/* <Chip label="Completed" color="success" size="small" /> */}
+                      {/* ) : ( */}
+                        <Chip label="Pending" color="error" size="small" />
+                      {/* )} */}
                     </TableCell>
                     <TableCell align="center" sx={{ pr: 3 }}>
                       <Stack
@@ -157,20 +161,6 @@ export default function PurchaseHistory() {
                             size="large"
                           >
                             <RemoveRedEyeIcon sx={{ fontSize: "1.1rem" }} />
-                          </IconButton>
-                          {/* </Link> */}
-                        </Tooltip>
-                        <Tooltip placement="top" title="view">
-                          {/* <Link to={`/view-purchase-history/${row.PaymentID}`}  */}
-                          {/* onClick={()=>handleHistory(row.PaymentID)} */}
-                          {/* > */}
-
-                          <IconButton
-                            color="primary"
-                            aria-label="download"
-                            size="large"
-                          >
-                            <DownloadIcon sx={{ fontSize: "1.1rem" }} />
                           </IconButton>
                           {/* </Link> */}
                         </Tooltip>
