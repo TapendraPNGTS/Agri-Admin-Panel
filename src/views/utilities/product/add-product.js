@@ -398,7 +398,7 @@ function App() {
           {discount ? (
             <Grid item xs={6} md={6}>
               <Stack>
-                <InputLabel required>Discount Price</InputLabel>
+                <InputLabel required>Discount Percent</InputLabel>
                 <TextField
                   fullWidth
                   id="price"
@@ -406,7 +406,7 @@ function App() {
                   onInput={(e) => {
                     e.target.value = Math.max(0, parseFloat(e.target.value))
                       .toString()
-                      .slice(0, 6);
+                      .slice(0, 2);
                   }}
                   type="number"
                   value={discountPrice}
