@@ -14,11 +14,13 @@ import {
 } from "@mui/material";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import BlockApi from "../../../../api/block.api";
 import DistrictApi from "../../../../api/district.api";
 import { updateAllDistrict } from "../../../../redux/redux-slice/district.slice";
 
 function App() {
   const params = useParams();
+  const blockApi = new BlockApi();
   const navigate = useNavigate();
   const [name, setName] = React.useState("");
   const [district, setDistrict] = React.useState("");
@@ -51,23 +53,23 @@ function App() {
   async function handleSubmit(event) {
     setIsLoading(true);
     event.preventDefault();
-    const addServiceRequestResponse = await districtApi.addDistrict({
+    const addServiceRequestResponse = await blockApi.addBlock({
       districtId: district,
-      code: name,
+      name: name,
     });
     if (
       addServiceRequestResponse &&
       addServiceRequestResponse?.data?.code === 200
     ) {
       toast.success(`Added successsfully`);
-      navigate("/district", { replace: true });
+      navigate("/block", { replace: true });
     } else {
       return toast.error(`Something went wrong!`);
     }
   }
 
   return (
-    <MainCard title="Add Pin Code">
+    <MainCard title="Add Block">
       <form action="#" onSubmit={handleSubmit}>
         <Grid container spacing={gridSpacing}>
           <Grid item xs={6} md={6}>
@@ -91,21 +93,16 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>Pin Code</InputLabel>
+              <InputLabel required>Block</InputLabel>
               <TextField
                 fullWidth
-                id="state"
-                name="state"
+                id="block"
+                name="block"
                 inputProps={{ maxLength: 30 }}
-                type="number"
-                onInput={(e) => {
-                  e.target.value = Math.max(0, parseInt(e.target.value))
-                    .toString()
-                    .slice(0, 6);
-                }}
+                type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enter State Name"
+                placeholder="Enter Block Name"
               />
             </Stack>
           </Grid>
@@ -117,7 +114,7 @@ function App() {
             <CircularProgress />
           ) : (
             <Button variant="contained" type="submit">
-              Add Pin Code
+              Add Block
             </Button>
           )}
         </center>

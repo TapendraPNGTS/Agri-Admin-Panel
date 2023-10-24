@@ -159,6 +159,16 @@ const AddBlock = Loadable(
   lazy(() => import("views/utilities/manage-area/block/add-block"))
 );
 
+const Cluster = Loadable(
+  lazy(() => import("views/utilities/manage-area/cluster/cluster"))
+);
+const EditCluster = Loadable(
+  lazy(() => import("views/utilities/manage-area/cluster/edit-cluster"))
+);
+const AddCluster = Loadable(
+  lazy(() => import("views/utilities/manage-area/cluster/add-cluster"))
+);
+
 // commission routes
 const Commissiom = Loadable(
   lazy(() => import("views/utilities/commission/commission"))
@@ -565,8 +575,20 @@ const MainRoutes = {
           element: <EditBlock />,
         },
         {
-          path: "addblock",
+          path: "add-block",
           element: <AddBlock />,
+        },
+        {
+          path: "cluster",
+          element: <Cluster />,
+        },
+        {
+          path: "edit-cluster/:id",
+          element: <EditCluster />,
+        },
+        {
+          path: "add-cluster",
+          element: <AddCluster />,
         },
       ],
     },

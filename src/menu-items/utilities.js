@@ -100,6 +100,13 @@ if (userId) {
             url: "/block",
             breadcrumbs: false,
           },
+          {
+            id: "cluster",
+            title: "Cluster",
+            type: "item",
+            url: "/cluster",
+            breadcrumbs: false,
+          },
         ],
       },
       {

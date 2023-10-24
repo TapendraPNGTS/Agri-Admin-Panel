@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
@@ -13,73 +12,59 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
+
+import { toast } from "react-hot-toast";
+import StateApi from "../../../../api/state.api";
+
 function App() {
   const params = useParams();
+  const stateApi = new StateApi();
   const navigate = useNavigate();
   const [name, setName] = React.useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
-
-  function getStateById() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      stateId: params.id,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getStateById`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setName(result.data.Name);
-      })
-      .catch((error) => console.log("error", error));
-  }
-  React.useEffect(() => {
-    getStateById();
-  }, []);
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    setIsLoading(true);
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      name: name,
-      stateId: params.id,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}updateState`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/state");
-          toast.success("Updated Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+    const getStateById = useCallback(async () => {
+      try {
+        const getStateByIddResponse = await stateApi.getStateById({
+          stateFId: params.id,
+        });
+        if (
+          getStateByIddResponse &&
+          getStateByIddResponse?.data?.code === 200
+        ) {
+          setName(getStateByIddResponse.data.data.Name);
         } else {
-          setIsLoading(false);
+          return toast.error(`Something went wrong!`);
         }
-      })
-      .catch((error) => {});
-  }
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+        throw error;
+      }
+    });
+
+    useEffect(() => {
+      getStateById();
+    }, []);
+
+    async function handleSubmit(event) {
+      setIsLoading(true);
+      event.preventDefault();
+      const addServiceRequestResponse = await stateApi.updateState({
+        stateId: params.id,
+        name: name,
+      });
+      if (
+        addServiceRequestResponse &&
+        addServiceRequestResponse?.data?.code === 200
+      ) {
+        toast.success(`Added successsfully`);
+        navigate("/franchise-state", { replace: true });
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    }
+
 
   return (
     <MainCard title="Edit State">

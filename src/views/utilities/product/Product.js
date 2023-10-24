@@ -155,7 +155,7 @@ export default function DataTable() {
                       .filter((row) =>
                         search === ""
                           ? row
-                          : row.Title.toLowerCase().includes(
+                          : row.Name.toLowerCase().includes(
                               search.toLowerCase()
                             )
                       )
@@ -178,10 +178,7 @@ export default function DataTable() {
                             <TableCell>{formatDate(row.createdAt)}</TableCell>
                             <TableCell>{row.CategoryID.Name}</TableCell>
                             <TableCell align="start">
-                              <a
-                                href={row.CoverImage}
-                                target="_blank"
-                              >
+                              <a href={row.CoverImage} target="_blank">
                                 <Avatar
                                   alt="Agri Input"
                                   variant="rounded"

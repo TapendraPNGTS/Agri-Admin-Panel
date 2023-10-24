@@ -71,45 +71,24 @@ export default function DataTable() {
     setPage(0);
   };
 
-  // const DeleteCategory = (str) => () => {
-  //   swal({
-  //     title: "Are you sure want to delete?",
-  //     icon: "warning",
-  //     buttons: true,
-  //     dangerMode: true,
-  //   }).then((willDelete) => {
-  //     if (willDelete) {
-  //       toast.success("Deleted Successfully", {
-  //         position: toast.POSITION.TOP_CENTER,
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //       });
+    const handleDelete = async (DistrictID) => {
+      try {
+        const deleteBannerResponse = await districtApi.deleteDistrict({
+          districtId: DistrictID,
+        });
+        if (deleteBannerResponse && deleteBannerResponse?.data?.code === 200) {
+          getAllDistrict();
+          return toast.success("Deleted Successfully");
+        } else {
+          return toast.error(deleteBannerResponse.data?.message);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+        throw error;
+      }
+    };
 
-  //       var raw = JSON.stringify({
-  //         adminId: localStorage.getItem("userId"),
-  //         districtId: str,
-  //       });
-
-  //       var requestOptions = {
-  //         method: "POST",
-  //         headers: myHeaders,
-  //         body: raw,
-  //         redirect: "follow",
-  //       };
-
-  //       fetch(`${process.env.REACT_APP_API_URL}deleteDistrict`, requestOptions)
-  //         .then((response) => response.text())
-  //         .then((result) => {
-  //           getAllDistrict();
-  //         })
-  //         .catch((error) => console.log("error", error));
-  //     } else {
-  //     }
-  //   });
-  // };
 
   return (
     <>
@@ -164,6 +143,7 @@ export default function DataTable() {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>S. No.</TableCell>
+                      <TableCell>State</TableCell>
                       <TableCell>District</TableCell>
                       <TableCell align="center" sx={{ pr: 3 }}>
                         Actions
@@ -196,6 +176,9 @@ export default function DataTable() {
                               {index + 1}
                             </TableCell>
                             <TableCell sx={{ pl: 3 }} align="start">
+                              {row.StateID.Name}
+                            </TableCell>
+                            <TableCell sx={{ pl: 3 }} align="start">
                               {row.Name}
                             </TableCell>
                             <TableCell align="center" sx={{ pr: 3 }}>
@@ -209,7 +192,7 @@ export default function DataTable() {
                                   title="Edit"
                                   onClick={(e) => {
                                     navigate(
-                                      `/edit-district/${row.districtId}`
+                                      `/edit-district/${row.DistrictID}`
                                     );
                                   }}
                                   data-target={`#`}
@@ -226,7 +209,9 @@ export default function DataTable() {
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  // onClick={DeleteCategory(`${row.DistrictID}`)}
+                                  onClick={() =>
+                                    handleDelete(`${row.DistrictID}`)
+                                  }
                                 >
                                   <IconButton
                                     color="primary"

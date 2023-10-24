@@ -13,10 +13,10 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { toast } from "react-hot-toast";
-import DistrictApi from "../../../../api/district.api";
 import StateApi from "../../../../api/state.api";
 import { updateAllState } from "../../../../redux/redux-slice/state.slice";
 import { useDispatch, useSelector } from "react-redux";
+import DistrictApi from "../../../../api/district.api";
 
 function App() {
   const params = useParams();

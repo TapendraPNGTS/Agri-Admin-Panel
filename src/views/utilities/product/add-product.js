@@ -45,6 +45,7 @@ function App() {
   const [discountPrice, setDiscountPrice] = React.useState(0);
   const [features, setFeatures] = useState();
   const [mainVarient, setMainVerient] = React.useState("");
+  const [ salePrice, setSalePrice] = React.useState('');
 
   function handleChange(event) {
     setFile(event.target.files[0]);
@@ -85,8 +86,8 @@ function App() {
       formdata.append(`images`, file1[key]);
     }
     formdata.append("frenchisePrice", franchisePrice);
-    formdata.append("discount", discount);
-    formdata.append("discountPrice", discountPrice);
+    // formdata.append("discount", discount);
+    formdata.append("discountPrice", salePrice);
     formdata.append("isNew", newArrival);
     formdata.append("isBestSeller", bestSeller);
     formdata.append("isBestDeal", bestDeal);
@@ -189,6 +190,25 @@ function App() {
                 type="number"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
+                placeholder="Enter product price"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Market Price</InputLabel>
+              <TextField
+                fullWidth
+                id="price"
+                name="price"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 6);
+                }}
+                type="number"
+                value={salePrice}
+                onChange={(e) => setSalePrice(e.target.value)}
                 placeholder="Enter product price"
               />
             </Stack>
@@ -381,7 +401,7 @@ function App() {
               </Select>
             </Stack>
           </Grid>
-          <Grid item xs={6} md={6}>
+          {/* <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>Discount</InputLabel>
               <Select
@@ -417,7 +437,7 @@ function App() {
             </Grid>
           ) : (
             <></>
-          )}
+          )} */}
         </Grid>
         <br />
         <Grid container spacing={gridSpacing}>

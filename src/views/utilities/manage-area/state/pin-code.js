@@ -21,8 +21,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import ZipApi from "../../../../api/pin-code.api";
-import { updateAllZipCode } from "../../../../redux/redux-slice/zipCode.slice";
+import ZipApi from "../../../../api/block.api";
+import { updateAllZipCode } from "../../../../redux/redux-slice/block.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();

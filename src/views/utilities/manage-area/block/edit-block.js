@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
@@ -13,111 +12,103 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
+
+import { toast } from "react-hot-toast";
+import BlockApi from "../../../../api/block.api";
+
+import { useDispatch, useSelector } from "react-redux";
+import DistrictApi from "../../../../api/district.api";
+import { updateAllDistrict } from "../../../../redux/redux-slice/district.slice";
+
 function App() {
   const params = useParams();
+  const blockApi = new BlockApi();
   const navigate = useNavigate();
-  const [rows, setRows] = React.useState([]);
   const [name, setName] = React.useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [district, setDistrict] = React.useState("");
-  const [zipId, setZipId] = React.useState("");
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
+  const dispatch = useDispatch();
+  const districtApi = new DistrictApi();
+  const rows = useSelector((state) => state.district.District);
 
-  function getZipById() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      zipId: params.id,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getZipById`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setName(result.data.Code);
-        setZipId(result.data.ZipID);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const getAllDistrict = useCallback(async () => {
+    try {
+      const district = await districtApi.getAllDistrict({});
+      if (!district || !district.data.data) {
+        return toast.error("no latest block available");
+      } else {
+        dispatch(updateAllDistrict(district.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
-  function getAllDistrict() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllDistrict`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  React.useEffect(() => {
+  useEffect(() => {
     getAllDistrict();
-    getZipById();
   }, []);
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    setIsLoading(true);
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      code: name,
-      districtId: district,
-      zipId: zipId
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+  const getBlockById = useCallback(async () => {
+    try {
+      const getDistrictByIddResponse = await blockApi.getBlockById({
+        blockId: params.id,
+      });
+      if (
+        getDistrictByIddResponse &&
+        getDistrictByIddResponse?.data?.code === 200
+      ) {
+        setName(getDistrictByIddResponse.data.data.Name);
+        setDistrict(getDistrictByIddResponse.data.data.DistrictID);
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
-    fetch(`${process.env.REACT_APP_API_URL}editZip`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/pin-code");
-          toast.success("Updated Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
+  useEffect(() => {
+    getBlockById();
+  }, []);
+
+  async function handleSubmit(event) {
+    setIsLoading(true);
+    event.preventDefault();
+    const addServiceRequestResponse = await blockApi.editBlock({
+      districtId: district,
+      blockId: params.id,
+      name: name,
+    });
+    if (
+      addServiceRequestResponse &&
+      addServiceRequestResponse?.data?.code === 200
+    ) {
+      toast.success(`Added successsfully`);
+      navigate("/block", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
   }
+
+
 
   return (
     <MainCard title="Edit Pin Code">
       <form action="#" onSubmit={handleSubmit}>
         <Grid container spacing={gridSpacing}>
-        <Grid item xs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>Choose District</InputLabel>
               <Select
                 id="active"
                 name="active"
                 value={district}
-                key={district}
                 onChange={(e) => setDistrict(e.target.value)}
               >
                 {rows.map((row, i) => {
@@ -132,20 +123,16 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>Pin Code</InputLabel>
+              <InputLabel required>Block</InputLabel>
               <TextField
                 fullWidth
                 id="state"
                 name="state"
-                type='number'
-                onInput={(e) => {
-                  e.target.value = Math.max(0, parseInt(e.target.value))
-                    .toString()
-                    .slice(0, 6);
-                }}
+                type="text"
+                inputProps={{ maxLength: 30 }}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enter Pin Code"
+                placeholder="Enter Block"
               />
             </Stack>
           </Grid>

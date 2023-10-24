@@ -359,25 +359,47 @@ const ApiRoutes = {
       Method: HttpMethod.Post,
     },
   },
-  ZipCode: {
-    AllZipCode: {
-      Endpoint: "/getAllZip",
+  Block: {
+    AllBlock: {
+      Endpoint: "/getAllBlock",
       Method: HttpMethod.Post,
     },
-    ZipCodeById: {
-      Endpoint: "/getZipById",
+    BlockById: {
+      Endpoint: "/getBlockById",
       Method: HttpMethod.Post,
     },
-    AddZipCode: {
-      Endpoint: "/addZip",
+    AddBlock: {
+      Endpoint: "/addBlock",
       Method: HttpMethod.Post,
     },
-    EditZipCode: {
-      Endpoint: "/editZip",
+    EditBlock: {
+      Endpoint: "/editBlock",
       Method: HttpMethod.Post,
     },
-    DeleteZipCode: {
-      Endpoint: "/deleteZip",
+    DeleteBlock: {
+      Endpoint: "/deleteBlock",
+      Method: HttpMethod.Post,
+    },
+  },
+  Cluster: {
+    AllCluster: {
+      Endpoint: "/getAllCluster",
+      Method: HttpMethod.Post,
+    },
+    ClusterById: {
+      Endpoint: "/getClusterById",
+      Method: HttpMethod.Post,
+    },
+    AddCluster: {
+      Endpoint: "/addCluster",
+      Method: HttpMethod.Post,
+    },
+    EditCluster: {
+      Endpoint: "/editCluster",
+      Method: HttpMethod.Post,
+    },
+    DeleteCluster: {
+      Endpoint: "/deleteCluster",
       Method: HttpMethod.Post,
     },
   },

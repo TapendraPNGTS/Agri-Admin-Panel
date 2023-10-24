@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
@@ -13,96 +12,89 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
+
+import { toast } from "react-hot-toast";
+import DistrictApi from "../../../../api/district.api";
+import { useDispatch, useSelector } from "react-redux";
+import StateApi from "../../../../api/state.api";
+import { updateAllState } from "../../../../redux/redux-slice/state.slice";
+
 function App() {
   const params = useParams();
+  const districtApi = new DistrictApi();
   const navigate = useNavigate();
-  const [rows, setRows] = React.useState([]);
   const [name, setName] = React.useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = React.useState("");
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
+    const dispatch = useDispatch();
+    const stateApi = new StateApi();
+    const rows = useSelector((state) => state.state.State);
 
-  function getDistrictById() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      districtId: params.id,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getDistrictById`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setName(result.data.Name);
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function getAllState() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getAllState`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setRows(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  React.useEffect(() => {
-    getDistrictById();
-    getAllState();
-  }, []);
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    setIsLoading(true);
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      name: name,
-      stateId: state,
-      districtId: params.id,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}editDistrict`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/district");
-          toast.success("Updated Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+    const getAllState = useCallback(async () => {
+      try {
+        const state = await stateApi.getAllState({});
+        if (!state || !state.data.data) {
+          return toast.error("no latest state available");
         } else {
-          setIsLoading(false);
+          dispatch(updateAllState(state.data.data));
+          return;
         }
-      })
-      .catch((error) => {});
-  }
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+        throw error;
+      }
+    });
+
+    useEffect(() => {
+      getAllState();
+    }, []);
+
+    const getStateById = useCallback(async () => {
+      try {
+        const getStateByIddResponse = await districtApi.getDistrictById({
+          cityId: params.id,
+        });
+        if (
+          getStateByIddResponse &&
+          getStateByIddResponse?.data?.code === 200
+        ) {
+          setName(getStateByIddResponse.data.data.Name);
+          setState(getStateByIddResponse.data.data.StateID);
+        } else {
+          return toast.error(`Something went wrong!`);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+        throw error;
+      }
+    });
+
+    useEffect(() => {
+      getStateById();
+    }, []);
+
+    async function handleSubmit(event) {
+      setIsLoading(true);
+      event.preventDefault();
+      const addServiceRequestResponse = await districtApi.updateDistrict({
+        stateId: state,
+        cityId: params.id,
+        name: name,
+      });
+      if (
+        addServiceRequestResponse &&
+        addServiceRequestResponse?.data?.code === 200
+      ) {
+        toast.success(`Added successsfully`);
+        navigate("/franchise-state", { replace: true });
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    }
+
 
   return (
     <MainCard title="Edit District">

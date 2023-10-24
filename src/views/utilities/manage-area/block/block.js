@@ -21,8 +21,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import ZipApi from "../../../../api/pin-code.api";
-import { updateAllZipCode } from "../../../../redux/redux-slice/zipCode.slice";
+import BlockApi from "../../../../api/block.api";
+import { updateAllBlock } from "../../../../redux/redux-slice/block.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();
@@ -31,16 +31,16 @@ export default function DataTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const dispatch = useDispatch();
-  const zipApi = new ZipApi();
-  const rows = useSelector((state) => state.state.State);
+  const blockApi = new BlockApi();
+  const rows = useSelector((state) => state.block.Block);
 
-  const getAllZipCode = useCallback(async () => {
+  const getAllBlock = useCallback(async () => {
     try {
-      const zipCode = await zipApi.getAllZipCode({});
-      if (!zipCode || !zipCode.data.data) {
-        return toast.error("no latest zipCode available");
+      const block = await blockApi.getAllBlock({});
+      if (!block || !block.data.data) {
+        return toast.error("no latest block available");
       } else {
-        dispatch(updateAllZipCode(zipCode.data.data));
+        dispatch(updateAllBlock(block.data.data));
         return;
       }
     } catch (error) {
@@ -51,7 +51,7 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    getAllZipCode();
+    getAllBlock();
   }, []);
 
   useEffect(() => {}, [rows]);
@@ -85,17 +85,17 @@ export default function DataTable() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Pin Code</Typography>
+              <Typography variant="h3">Block</Typography>
             </Grid>
             <Grid item>
               <Button
                 variant="outlined"
                 onClick={(e) => {
-                  navigate("/add-pin-code");
+                  navigate("/add-block");
                 }}
                 startIcon={<AddIcon />}
               >
-                Add Pin Code
+                Add Block
               </Button>
             </Grid>
           </Grid>
@@ -118,7 +118,8 @@ export default function DataTable() {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>S. No.</TableCell>
-                      <TableCell>Pin Code</TableCell>
+                      <TableCell>District</TableCell>
+                      <TableCell>Block</TableCell>
                       <TableCell align="center" sx={{ pr: 3 }}>
                         Actions
                       </TableCell>
@@ -144,13 +145,16 @@ export default function DataTable() {
                             hover
                             role="checkbox"
                             tabIndex={-1}
-                            key={row.code}
+                            key={row.Name}
                           >
                             <TableCell sx={{ pl: 3 }} align="start">
                               {index + 1}
                             </TableCell>
                             <TableCell sx={{ pl: 3 }} align="start">
-                              {row.Code}
+                              {row.DistrictID.Name}
+                            </TableCell>
+                            <TableCell sx={{ pl: 3 }} align="start">
+                              {row.Name}
                             </TableCell>
                             <TableCell align="center" sx={{ pr: 3 }}>
                               <Stack
@@ -162,7 +166,7 @@ export default function DataTable() {
                                   placement="top"
                                   title="Edit"
                                   onClick={(e) => {
-                                    navigate(`/edit-pin-code/${row.ZipID}`);
+                                    navigate(`/edit-block/${row.ZipID}`);
                                   }}
                                   data-target={`#`}
                                 >
@@ -211,7 +215,7 @@ export default function DataTable() {
           <>
             <br></br>
             <center>
-            <CircularProgress />
+              <CircularProgress />
             </center>
           </>
         )}
