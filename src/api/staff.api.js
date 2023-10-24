@@ -13,6 +13,7 @@ class Staff extends HttpClient {
   _initializeRequestInterceptor = () => {
     this.instance.interceptors.request.use((config) => {
       config.headers["Authorization"] = `Bearer ${getTokenLocal()}`;
+      config.headers["Authkey"] = process.env.REACT_APP_AUTH_KEY;
       return config;
     });
   };

@@ -30,7 +30,7 @@ class Holiday extends HttpClient {
   };
 
   AllHolidayConfig = ApiRoutes.Holiday.All;
-  AttAendanceByIdConfig = ApiRoutes.Holiday.HolidayById;
+  HolidayByIdConfig = ApiRoutes.Holiday.HolidayById;
   AddHolidayConfig = ApiRoutes.Holiday.AddHoliday;
   EditHolidayConfig = ApiRoutes.Holiday.EditHoliday;
   DeleteHolidayConfig = ApiRoutes.Holiday.DeleteHoliday;
@@ -55,9 +55,7 @@ class Holiday extends HttpClient {
     return this.instance({
       method: this.AddHolidayConfig.Method,
       url: this.AddHolidayConfig.Endpoint,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: {},
       data: data,
     });
   };
@@ -65,9 +63,7 @@ class Holiday extends HttpClient {
     return this.instance({
       method: this.EditHolidayConfig.Method,
       url: this.EditHolidayConfig.Endpoint,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: {},
       data: data,
     });
   };

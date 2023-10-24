@@ -94,10 +94,10 @@ if (userId) {
             breadcrumbs: false,
           },
           {
-            id: "pin-code",
-            title: "Pin Code",
+            id: "block",
+            title: "Block",
             type: "item",
-            url: "/pin-code",
+            url: "/block",
             breadcrumbs: false,
           },
         ],
@@ -206,17 +206,17 @@ if (userId) {
         breadcrumbs: false,
         children: [
           {
-            id: "franchise",
-            title: "All Active Franchise",
+            id: "franchise-request",
+            title: "Active Franchise",
             type: "item",
-            url: "/franchise",
+            url: "/franchise-request",
             breadcrumbs: false,
           },
           {
-            id: "franchise-request",
-            title: "Franchise Request",
+            id: "franchise",
+            title: "Pending Franchise",
             type: "item",
-            url: "/franchise-request",
+            url: "/franchise",
             breadcrumbs: false,
           },
           {
@@ -224,22 +224,6 @@ if (userId) {
             title: "Add Franchise",
             type: "item",
             url: "/franchise-request-form",
-            breadcrumbs: false,
-          },
-        ],
-      },
-      {
-        id: "users",
-        title: "Users",
-        type: "collapse",
-        icon: icons.IconUsers,
-        breadcrumbs: false,
-        children: [
-          {
-            id: "all-users",
-            title: "All Users",
-            type: "item",
-            url: "/users",
             breadcrumbs: false,
           },
         ],
@@ -289,6 +273,25 @@ if (userId) {
         icon: icons.IconCash,
       },
       {
+        id: "farmers",
+        title: "Farmers",
+        type: "collapse",
+        icon: icons.IconUsers,
+        breadcrumbs: false,
+        children: [
+          {
+            id: "all-farmers",
+            title: "Farmers",
+            type: "item",
+            url: "/users",
+            breadcrumbs: false,
+          },
+        ],
+      },
+    ];
+  } else if (userId.Type === "Franchise") {
+    Parent = [
+      {
         id: "our-product",
         title: <FormattedMessage id="Our-Product" />,
         type: "collapse",
@@ -308,8 +311,60 @@ if (userId) {
           },
         ],
       },
+      {
+        id: "order",
+        title: "Order History",
+        type: "collapse",
+        icon: icons.IconUsers,
+        breadcrumbs: false,
+        children: [
+          {
+            id: "complete-order",
+            title: "Complete Order",
+            type: "item",
+            url: "/complete-order",
+            breadcrumbs: false,
+          },
+          {
+            id: "pending-order",
+            title: "Pending Order",
+            type: "item",
+            url: "/pending-order",
+            breadcrumbs: false,
+          },
+        ],
+      },
+      {
+        id: "transaction-history",
+        title: "Transaction History",
+        type: "item",
+        url: "/transaction-history",
+        icon: icons.IconCash,
+      },
+      {
+        id: "purchase",
+        title: "Purchase History",
+        type: "item",
+        url: "/purchase-history",
+        icon: icons.IconFileText,
+      },
+      {
+        id: "farmers",
+        title: "Farmers",
+        type: "collapse",
+        icon: icons.IconUsers,
+        breadcrumbs: false,
+        children: [
+          {
+            id: "all-farmers",
+            title: "Farmers",
+            type: "item",
+            url: "/users",
+            breadcrumbs: false,
+          },
+        ],
+      },
     ];
-  } else if (userId.Type === "") {
   }
 }
 

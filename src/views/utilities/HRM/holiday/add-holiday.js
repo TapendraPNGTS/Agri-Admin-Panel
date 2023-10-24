@@ -5,12 +5,7 @@ import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
 import Spinner from "react-bootstrap/Spinner";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  Button,
-  Grid,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Button, Grid, Stack, TextField } from "@mui/material";
 import formatDate from "../../Date-Formet/date-formet";
 import { toast } from "react-hot-toast";
 import HolidayApi from "../../../../api/holiday.api";
@@ -24,24 +19,23 @@ function App() {
 
   React.useEffect(() => {}, []);
 
-   async function handleSubmit(event) {
-     setIsLoading(true);
-     event.preventDefault();
-     const addServiceRequestResponse = await holidayApi.addHoliday({
-       occasion: name,
-       date: selectedDate,
-     });
-     if (
-       addServiceRequestResponse &&
-       addServiceRequestResponse?.data?.code === 200
-     ) {
-       toast.success(`Added successsfully`);
-       navigate("/holidays", { replace: true });
-     } else {
-       return toast.error(`Something went wrong!`);
-     }
-   }
-
+  async function handleSubmit(event) {
+    setIsLoading(true);
+    event.preventDefault();
+    const addServiceRequestResponse = await holidayApi.addHoliday({
+      occasion: name,
+      date: selectedDate,
+    });
+    if (
+      addServiceRequestResponse &&
+      addServiceRequestResponse?.data?.code === 200
+    ) {
+      toast.success(`Added successsfully`);
+      navigate("/holidays", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
+  }
 
   const handleDateChange = (date) => {
     {
@@ -57,6 +51,7 @@ function App() {
             <Stack>
               <InputLabel required>Date</InputLabel>
               <TextField
+                required
                 fullWidth
                 id="date"
                 name="date"
@@ -71,6 +66,7 @@ function App() {
             <Stack>
               <InputLabel required>Occasion</InputLabel>
               <TextField
+                required
                 fullWidth
                 id="occasion"
                 name="occasion"

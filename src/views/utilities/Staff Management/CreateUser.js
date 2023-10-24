@@ -136,10 +136,10 @@ function App() {
                 onChange={(e) => setRole(e.target.value)}
               >
                 {rows.map((row, index) => (
-                  <MenuItem value={row.roleId} key={index}>
-                    {row.name}
+                  <MenuItem value={row.RoleID} key={index}>
+                    {row.Name}
                   </MenuItem>
-                 ))}
+                ))}
               </Select>
             </Stack>
           </Grid>
@@ -158,7 +158,7 @@ function App() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
               />
-              <p style={{color:'red'}}>{emailMessage}</p>
+              <p style={{ color: "red" }}>{emailMessage}</p>
             </Stack>
           </Grid>
 
@@ -179,7 +179,7 @@ function App() {
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter Phone Number"
               />
-              <p style={{color:'red'}}>{message}</p>
+              <p style={{ color: "red" }}>{message}</p>
             </Stack>
           </Grid>
 
@@ -197,7 +197,7 @@ function App() {
             </Stack>
           </Grid>
         </Grid>
-        <br/>
+        <br />
         <Button variant="contained" type="submit">
           Add User
         </Button>

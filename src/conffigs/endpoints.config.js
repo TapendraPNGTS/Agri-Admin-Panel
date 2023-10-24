@@ -29,6 +29,22 @@ const ApiRoutes = {
       Method: HttpMethod.Post,
     },
   },
+  CheckOut: {
+    Data: {
+      Endpoint: "/addAllCart",
+      Method: HttpMethod.Post,
+    },
+  },
+  Cod: {
+    Cod: {
+      Endpoint: "/frenchiseProductCOD",
+      Method: HttpMethod.Post,
+    },
+    PhonePay: {
+      Endpoint: "/payment",
+      Method: HttpMethod.Post,
+    },
+  },
   Banner: {
     All: {
       Endpoint: "/getAllBanner",
@@ -205,7 +221,7 @@ const ApiRoutes = {
       Method: HttpMethod.Post,
     },
     FrenciseAccept: {
-      Endpoint: "/getAllFrenciseAccept",
+      Endpoint: "/getAllFrencisePending",
       Method: HttpMethod.Post,
     },
     FrenciseById: {

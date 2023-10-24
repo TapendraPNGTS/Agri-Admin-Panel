@@ -35,6 +35,8 @@ import frenciseVillageReducer from "../redux/redux-slice/franchiseVillage.slice"
 import roleReducer from "../redux/redux-slice/role.slice";
 import staffReducer from "../redux/redux-slice/staff.slice";
 import commissionReducer from "../redux/redux-slice/commission.slice";
+import checkoutReducer from "../redux/redux-slice/checkOut.slice";
+import codReducer from "../redux/redux-slice/cod.slice";
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -78,6 +80,8 @@ const reducer = combineReducers({
   role: roleReducer,
   staff: staffReducer,
   commission: commissionReducer,
+  checkOut: checkoutReducer,
+  cod: codReducer,
 });
 
 export default reducer;

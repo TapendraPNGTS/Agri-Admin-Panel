@@ -44,7 +44,7 @@ export default function Users() {
 
   const getAllFrenciseAccept = useCallback(async () => {
     try {
-      const Frencise = await frenciseApi.getAllFrenciseAccept({});
+      const Frencise = await frenciseApi.getAllFrencisePending({});
       if (!Frencise || !Frencise.data.data) {
         return toast.error("no latest banners available");
       } else {

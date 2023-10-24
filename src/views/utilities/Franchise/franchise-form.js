@@ -230,7 +230,7 @@ function App() {
 
   return (
     <MainCard title="Franchise Form">
-      <form action="#" onSubmit={handleSubmit}>
+      <form>
         <Grid item>
           <Typography variant="h3">Company & User Detail</Typography>
         </Grid>
@@ -690,7 +690,7 @@ function App() {
             <CircularProgress />
           ) : (
             <>
-              <Button variant="contained" type="submit">
+              <Button variant="contained" onClick={handleSubmit}>
                 Submit Request
               </Button>
             </>

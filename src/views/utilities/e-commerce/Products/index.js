@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 // material-ui
 import { styled, useTheme } from "@mui/material/styles";
 import {
@@ -38,6 +38,10 @@ import SearchIcon from "@mui/icons-material/Search";
 
 import { appDrawerWidth, gridSpacing } from "store/constant";
 import { getProducts, filterProducts } from "store/slices/product";
+
+import { toast } from "react-hot-toast";
+import ProductListApi from "../../../../api/product.api";
+import { updateAllProduct } from "../../../../redux/redux-slice/product.slice";
 
 // product list container
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -91,33 +95,27 @@ const ProductsList = () => {
   const [products, setProducts] = useState([]);
   const productState = useSelector((state) => state.product);
 
-  function frenchiseProduct() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}frenchiseProduct`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setProducts(result.data);
-      })
-      .catch((error) => console.log("error", error));
-  }
+  const productApi = new ProductListApi();
+  const rows = useSelector((state) => state.product.Product);
+
+  const getAllProduct = useCallback(async () => {
+    try {
+      const product = await productApi.getAllProduct({});
+      if (!product || !product.data.data) {
+        return toast.error("no latest banners available");
+      } else {
+        dispatch(updateAllProduct(product.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   useEffect(() => {
-    frenchiseProduct();
+    getAllProduct();
   }, []);
 
   useEffect(() => {
@@ -267,8 +265,8 @@ const ProductsList = () => {
   const sortLabel = SortOptions.filter((items) => items.value === filter.sort);
 
   let productResult = <></>;
-  if (products && products.length > 0) {
-    productResult = products.map((product, index) => (
+  if (rows && rows.length > 0) {
+    productResult = rows.map((product, index) => (
       <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
         <ProductCard
           id={product.ProductID}

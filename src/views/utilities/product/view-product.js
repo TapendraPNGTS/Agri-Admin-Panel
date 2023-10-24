@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { Grid, Stack, TextField } from "@mui/material";
 import { toast } from "react-hot-toast";
 import ProductApi from "../../../api/product.api";
+import parse from "html-react-parser";
 
 function App() {
   const params = useParams();
@@ -20,6 +21,8 @@ function App() {
   const [franchisePrice, setFranchisePrice] = useState("");
   const [description, setDescription] = useState("");
   const productApi = new ProductApi();
+
+  console.log((description))
 
   const getProductById = useCallback(async () => {
     try {
@@ -160,7 +163,7 @@ function App() {
               inputProps={{ maxLength: 250 }}
               rows={3}
               disabled
-              value={description}
+              value={parse(description)}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Add Description"
             />
@@ -172,15 +175,8 @@ function App() {
         <Grid item xs={4} md={4}>
           <InputLabel required>Cover Image</InputLabel>
           <Stack>
-            <a
-              href={categoryImage}
-              target="_blank"
-            >
-              <img
-                src={categoryImage}
-                width={200}
-                height={200}
-              />
+            <a href={categoryImage} target="_blank">
+              <img src={categoryImage} width={200} height={200} />
             </a>
           </Stack>
         </Grid>
@@ -191,11 +187,7 @@ function App() {
                 Image
               </InputLabel>
               <Stack>
-                <img
-                  src={`${process.env.REACT_APP_IMAGE_URL}${img}`}
-                  width={200}
-                  height={200}
-                />
+                <img src={img} width={200} height={200} />
               </Stack>
             </Grid>
           );

@@ -149,14 +149,14 @@ const AddDistrict = Loadable(
 );
 
 // Manage area routes
-const PinCode = Loadable(
-  lazy(() => import("views/utilities/manage-area/state/pin-code"))
+const Block = Loadable(
+  lazy(() => import("views/utilities/manage-area/block/block"))
 );
-const EditPinCode = Loadable(
-  lazy(() => import("views/utilities/manage-area/pin-code/edit-pin-code"))
+const EditBlock = Loadable(
+  lazy(() => import("views/utilities/manage-area/block/edit-block"))
 );
-const AddPinCode = Loadable(
-  lazy(() => import("views/utilities/manage-area/pin-code/add-pin-code"))
+const AddBlock = Loadable(
+  lazy(() => import("views/utilities/manage-area/block/add-block"))
 );
 
 // commission routes
@@ -557,16 +557,16 @@ const MainRoutes = {
         },
         // zip code
         {
-          path: "pin-code",
-          element: <PinCode />,
+          path: "block",
+          element: <Block />,
         },
         {
-          path: "edit-pin-code/:id",
-          element: <EditPinCode />,
+          path: "edit-block/:id",
+          element: <EditBlock />,
         },
         {
-          path: "add-pin-code",
-          element: <AddPinCode />,
+          path: "addblock",
+          element: <AddBlock />,
         },
       ],
     },

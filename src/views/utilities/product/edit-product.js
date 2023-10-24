@@ -12,7 +12,7 @@ import {
   TextField,
   CircularProgress,
 } from "@mui/material";
-
+import parse from "html-react-parser";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { toast } from "react-hot-toast";
@@ -271,7 +271,7 @@ function App() {
               />
             </Stack>
           </Grid>
-          <Grid item xs={6} md={6}>
+          {/* <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>Variant</InputLabel>
               <TextField
@@ -299,7 +299,7 @@ function App() {
                 ))}
               </div>
             </Stack>
-          </Grid>
+          </Grid> */}
           <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>Product Quantity</InputLabel>
@@ -513,6 +513,7 @@ function App() {
               </a>
             </Stack>
           </Grid>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <Grid item xs={4} md={4}>
             <InputLabel required>Images</InputLabel>
             {proImage.map((image, index) => {

@@ -88,7 +88,7 @@ export default function Users() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Users</Typography>
+              <Typography variant="h3">Farmers</Typography>
             </Grid>
             {/* <Grid item>
               <Button

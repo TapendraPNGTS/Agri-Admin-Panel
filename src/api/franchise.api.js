@@ -45,7 +45,7 @@ class Frencise extends HttpClient {
       data: null,
     });
   };
-  getAllFrenciseAccept = async () => {
+  getAllFrencisePending = async () => {
     return this.instance({
       method: this.AllFrenciseAcceptConfig.Method,
       url: this.AllFrenciseAcceptConfig.Endpoint,

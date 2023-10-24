@@ -74,24 +74,24 @@ export default function DataTable() {
     getAllBanner();
   }, []);
 
-  // const handleDelete = async (bannerId) => {
-  //   try {
-  //     const deleteBannerResponse = await bannerApi.deleteBanner({
-  //       adminId: userId.StaffID,
-  //       bannerId,
-  //     });
-  //     if (deleteBannerResponse && deleteBannerResponse?.data?.code === 200) {
-  //       getAllBanner();
-  //       return toast.success("Deleted Successfully");
-  //     } else {
-  //       return toast.error(deleteBannerResponse.data?.message);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error("Something went wrong");
-  //     throw error;
-  //   }
-  // };
+  const handleDelete = async (bannerId) => {
+    try {
+      const deleteBannerResponse = await bannerApi.deleteBanner({
+        adminId: userId.StaffID,
+        bannerId,
+      });
+      if (deleteBannerResponse && deleteBannerResponse?.data?.code === 200) {
+        getAllBanner();
+        return toast.success("Deleted Successfully");
+      } else {
+        return toast.error(deleteBannerResponse.data?.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  };
 
   return (
     <>
@@ -218,7 +218,7 @@ export default function DataTable() {
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  // onClick={handleDelete(`${row.BannerID}`)}
+                                  onClick={()=>handleDelete(`${row.BannerID}`)}
                                 >
                                   <IconButton
                                     color="primary"

@@ -61,11 +61,11 @@ const tabsOption = [
         icon: <ShoppingCartTwoToneIcon />,
         caption: 'Product Added'
     },
-    {
-        label: 'Billing Address',
-        icon: <ApartmentIcon />,
-        caption: 'Billing Information'
-    },
+    // {
+    //     label: 'Billing Address',
+    //     icon: <ApartmentIcon />,
+    //     caption: 'Billing Information'
+    // },
     {
         label: 'Payment',
         icon: <CreditCardTwoToneIcon />,
@@ -251,7 +251,7 @@ const Checkout = () => {
                         )}
                         {!isCart && <CartEmpty />}
                     </TabPanel>
-                    <TabPanel value={value} index={1}>
+                    {/* <TabPanel value={value} index={1}>
                         <BillingAddress
                             checkout={cart.checkout}
                             onBack={onBack}
@@ -260,8 +260,8 @@ const Checkout = () => {
                             addAddress={addBillingAddress}
                             editAddress={editBillingAddress}
                         />
-                    </TabPanel>
-                    <TabPanel value={value} index={2}>
+                    </TabPanel> */}
+                    <TabPanel value={value} index={1}>
                         <Payment checkout={cart.checkout} onBack={onBack} onNext={onNext} handleShippingCharge={handleShippingCharge} />
                     </TabPanel>
                 </Grid>

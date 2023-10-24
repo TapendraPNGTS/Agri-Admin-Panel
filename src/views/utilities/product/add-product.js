@@ -244,7 +244,7 @@ function App() {
               </Select>
             </Stack>
           </Grid>
-          <Grid item xs={6} md={6}>
+          {/* <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>Variant</InputLabel>
               <TextField
@@ -272,7 +272,7 @@ function App() {
                 ))}
               </div>
             </Stack>
-          </Grid>
+          </Grid> */}
           <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>Choose Category</InputLabel>

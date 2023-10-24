@@ -5,20 +5,21 @@ import { Link } from 'react-router-dom';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import {
-    Button,
-    ButtonGroup,
-    Grid,
-    IconButton,
-    Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography,
-    useMediaQuery
-} from '@mui/material';
+  Button,
+  ButtonGroup,
+  Grid,
+  IconButton,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  useMediaQuery,
+  CircularProgress,
+} from "@mui/material";
 
 // third-party
 import { sum } from 'lodash';
@@ -36,6 +37,10 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import CheckOutApi from "../../../../api/checkOut.api";
 
 const prodImage = require.context('assets/images/e-commerce', true);
 
@@ -87,132 +92,199 @@ const Cart = ({ checkout, onNext, removeProduct, updateQuantity }) => {
     const matchDownMD = useMediaQuery(theme.breakpoints.down('lg'));
     const totalQuantity = sum(checkout.products.map((item) => item.quantity));
     const [rows, setRows] = useState(checkout.products);
+    const [isLoading , setIsLoading] = useState(false);
+
+    const navigate = useNavigate();
+    const checkoutApi = new CheckOutApi();
 
     useEffect(() => {
-        setRows(checkout.products);
+      setRows(checkout.products);
     }, [checkout.products]);
+    // console.log(rows);
+
+    async function handleSubmit(event) {
+      setIsLoading(true);
+      var cart = [];
+      await Promise.all(
+        rows.map((item) => {
+          cart.push({
+            ProductID: item.id,
+            Name: item.name,
+            CoverImage: item.image,
+            Price: parseFloat(item.offerPrice),
+            Quantity: item.quantity,
+            TotalPrice: item.offerPrice * item.quantity,
+          });
+        })
+      );
+      // console.log(cart);
+      event.preventDefault();
+      const getCheckOutRequestResponse = await checkoutApi.getCheckOut({
+        cart: cart,
+      });
+      if (
+        getCheckOutRequestResponse &&
+        getCheckOutRequestResponse?.data?.code === 200
+      ) {
+        localStorage.setItem("cartKey", getCheckOutRequestResponse.data.cartId);
+        toast.success(`Order Placed Successfully!`);
+        onNext();
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    }
+
+
 
     return (
-        <Grid container spacing={gridSpacing}>
-            <Grid item xs={12}>
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    <Typography variant="subtitle1">Cart Item</Typography>
-                    <Typography variant="caption" sx={{ fontSize: '0.875rem' }}>
-                        ({totalQuantity})
-                    </Typography>
-                </Stack>
-            </Grid>
-            <Grid item xs={12}>
-                <TableContainer>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead
-                            sx={{
-                                borderTop: '1px solid',
-                                color: theme.palette.mode === 'dark' ? theme.palette.dark.light + 15 : 'grey.200'
-                            }}
-                        >
-                            <TableRow>
-                                <TableCell>Product</TableCell>
-                                <TableCell align="right">Price</TableCell>
-                                <TableCell align="center">Quantity</TableCell>
-                                <TableCell align="right">Total</TableCell>
-                                <TableCell align="right" />
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.map((row, index) => {
-                                const colorsData = row.color ? getColor(row.color) : false;
-                                return (
-                                    <TableRow key={index} sx={{ '&:last-of-type td, &:last-of-type th': { border: 0 } }}>
-                                        <TableCell component="th" scope="row">
-                                            <Grid container alignItems="center" spacing={2}>
-                                                <Grid item>
-                                                    <Avatar
-                                                        size="md"
-                                                        variant="rounded"
-                                                        src={`${process.env.REACT_APP_IMAGE_URL}${row.image}`}
-                                                    />
-                                                </Grid>
-                                                <Grid item>
-                                                    <Stack spacing={0}>
-                                                        <Typography variant="subtitle1">{row.name}</Typography>
-                                                        {/* <Stack direction="row" alignItems="center" spacing={1}>
-                                                            <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
-                                                                Size:{' '}
-                                                                <Typography variant="caption" component="span">
-                                                                    {row.size}
-                                                                </Typography>
-                                                            </Typography>
-                                                            <Typography variant="caption" sx={{ fontSize: '1rem' }}>
-                                                                |
-                                                            </Typography>
-
-                                                            <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
-                                                                Color:{' '}
-                                                                <Typography variant="caption" component="span">
-                                                                    {colorsData ? colorsData[0].label : 'Multicolor'}
-                                                                </Typography>
-                                                            </Typography>
-                                                        </Stack> */}
-                                                    </Stack>
-                                                </Grid>
-                                            </Grid>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Stack>
-                                                {row.offerPrice && (
-                                                    <Typography variant="subtitle1">₹{(row.offerPrice)}</Typography>
-                                                )}
-                                                {row.salePrice && (
-                                                    <Typography variant="caption" sx={{ textDecoration: 'line-through' }}>
-                                                        ₹{(row.salePrice)}
-                                                    </Typography>
-                                                )}
-                                            </Stack>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Increment quantity={row.quantity} itemId={row.itemId} updateQuantity={updateQuantity} />
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            {row.offerPrice && row.quantity && (
-                                                <Typography variant="subtitle1">
-                                                    ₹{(row.offerPrice * row.quantity)}
-                                                </Typography>
-                                            )}
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <IconButton onClick={() => removeProduct(row.itemId)} size="large">
-                                                <DeleteTwoToneIcon sx={{ color: 'grey.500' }} />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Grid>
-            <Grid item xs={12}>
-                <OrderSummary checkout={checkout} />
-            </Grid>
-            <Grid item xs={12}>
-                <Grid direction={matchDownMD ? 'column-reverse' : 'row'} container spacing={3} alignItems={matchDownMD ? '' : 'center'}>
-                    <Grid item xs={12} md={7} lg={8}>
-                        <Button component={Link} to="/e-commerce/products" variant="text" startIcon={<KeyboardBackspaceIcon />}>
-                            Continue Shopping
-                        </Button>
-                    </Grid>
-                    <Grid item xs={12} md={5} lg={4}>
-                        <Stack spacing={gridSpacing}>
-                            <CartDiscount />
-                            <Button variant="contained" fullWidth onClick={onNext}>
-                                Check Out
-                            </Button>
-                        </Stack>
-                    </Grid>
-                </Grid>
-            </Grid>
+      <Grid container spacing={gridSpacing}>
+        <Grid item xs={12}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Typography variant="subtitle1">Cart Item</Typography>
+            <Typography variant="caption" sx={{ fontSize: "0.875rem" }}>
+              ({totalQuantity})
+            </Typography>
+          </Stack>
         </Grid>
+        <Grid item xs={12}>
+          <TableContainer>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead
+                sx={{
+                  borderTop: "1px solid",
+                  color:
+                    theme.palette.mode === "dark"
+                      ? theme.palette.dark.light + 15
+                      : "grey.200",
+                }}
+              >
+                <TableRow>
+                  <TableCell>Product</TableCell>
+                  <TableCell align="right">Price</TableCell>
+                  <TableCell align="center">Quantity</TableCell>
+                  <TableCell align="right">Total</TableCell>
+                  <TableCell align="right" />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => {
+                  const colorsData = row.color ? getColor(row.color) : false;
+                  return (
+                    <TableRow
+                      key={index}
+                      sx={{
+                        "&:last-of-type td, &:last-of-type th": { border: 0 },
+                      }}
+                    >
+                      <TableCell component="th" scope="row">
+                        <Grid container alignItems="center" spacing={2}>
+                          <Grid item>
+                            <Avatar
+                              size="md"
+                              variant="rounded"
+                              src={row.image}
+                            />
+                          </Grid>
+                          <Grid item>
+                            <Stack spacing={0}>
+                              <Typography variant="subtitle1">
+                                {row.name}
+                              </Typography>
+                            </Stack>
+                          </Grid>
+                        </Grid>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Stack>
+                          {row.offerPrice && (
+                            <Typography variant="subtitle1">
+                              ₹{row.offerPrice}
+                            </Typography>
+                          )}
+                          {row.salePrice && (
+                            <Typography
+                              variant="caption"
+                              sx={{ textDecoration: "line-through" }}
+                            >
+                              ₹{row.salePrice}
+                            </Typography>
+                          )}
+                        </Stack>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Increment
+                          quantity={row.quantity}
+                          itemId={row.itemId}
+                          updateQuantity={updateQuantity}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        {row.offerPrice && row.quantity && (
+                          <Typography variant="subtitle1">
+                            ₹{row.offerPrice * row.quantity}
+                          </Typography>
+                        )}
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          onClick={() => removeProduct(row.itemId)}
+                          size="large"
+                        >
+                          <DeleteTwoToneIcon sx={{ color: "grey.500" }} />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid item xs={12}>
+          <OrderSummary checkout={checkout} />
+        </Grid>
+        <Grid item xs={12}>
+          <Grid
+            direction={matchDownMD ? "column-reverse" : "row"}
+            container
+            spacing={3}
+            alignItems={matchDownMD ? "" : "center"}
+          >
+            <Grid item xs={12} md={7} lg={8}>
+              <Button
+                component={Link}
+                to="/e-commerce/products"
+                variant="text"
+                startIcon={<KeyboardBackspaceIcon />}
+              >
+                Continue Shopping
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={5} lg={4}>
+              <Stack spacing={gridSpacing}>
+                <CartDiscount />
+                {isLoading ? (
+                  <>
+                    <center>
+                      <CircularProgress />
+                    </center>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      onClick={handleSubmit}
+                    >
+                      Check Out
+                    </Button>
+                  </>
+                )}
+              </Stack>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
     );
 };
 

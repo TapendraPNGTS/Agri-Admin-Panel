@@ -68,7 +68,9 @@ export default function DataTable() {
 
   const handleDelete = async (CommissionID) => {
     try {
-      const deleteCommissionResponse = await commissiomApi.DeleteCommissiom({ CommissionID });
+      const deleteCommissionResponse = await commissiomApi.deleteCommissiom({
+        commissionId: CommissionID,
+      });
       if (deleteCommissionResponse && deleteCommissionResponse?.data?.code === 200) {
         getAllCommissiom();
         return toast.success("Deleted Successfully");
@@ -213,7 +215,7 @@ export default function DataTable() {
                                 <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={handleDelete(`${row.CommissionID}`)}
+                                  onClick={()=>handleDelete(`${row.CommissionID}`)}
                                 >
                                   <IconButton
                                     color="primary"

@@ -308,6 +308,26 @@ const Dashboard = () => {
           percentage="25%"
         />
       </Grid>
+      <Grid item lg={4} md={6} sm={6} xs={12}>
+        <TotalLineChartCard
+          chartData={chartData.TotalLineCardChart3}
+          isLoading={isLoading}
+          // value={cateData}
+          title="Tour Fund"
+          bgColor={theme.palette.success.dark}
+          percentage="25%"
+        />
+      </Grid>
+      <Grid item lg={4} md={6} sm={6} xs={12}>
+        <TotalLineChartCard
+          chartData={chartData.TotalLineCardChart3}
+          isLoading={isLoading}
+          // value={cateData}
+          title="Travel Fund"
+          bgColor={theme.palette.success.dark}
+          percentage="25%"
+        />
+      </Grid>
     </Grid>
   );
 };
