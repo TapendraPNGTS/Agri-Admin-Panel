@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
@@ -17,7 +17,7 @@ import "react-quill/dist/quill.snow.css";
 import ProductApi from "../../../api/product.api";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import CategoryApi from "../../../api/category.api";//
+import CategoryApi from "../../../api/category.api"; //
 import { updateAllCategory } from "../../../redux/redux-slice/category.slice";
 import SubCategoryApi from "../../../api/sub-category.api";
 import { updateAllSubCategory } from "../../../redux/redux-slice/sub-category.slice";
@@ -25,27 +25,28 @@ import { updateAllSubCategory } from "../../../redux/redux-slice/sub-category.sl
 function App() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const ref = useRef();
   const productApi = new ProductApi();
   const [file, setFile] = useState([]);
   const [fileName, setFileName] = useState([]);
   const [file1, setFile1] = useState([]);
   const [fileName1, setFileName1] = useState();
   const [name, setName] = React.useState("");
-  const [price, setPrice] = React.useState("");
+  const [price, setPrice] = React.useState();
   const [quantity, setQuantity] = React.useState("");
   const [active, setActive] = React.useState(true);
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [franchisePrice, setFranchisePrice] = useState("");
+  const [franchisePrice, setFranchisePrice] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [bestSeller, setBestSeller] = React.useState(false);
   const [newArrival, setNewArrival] = React.useState(false);
   const [bestDeal, setBestDeal] = React.useState(false);
-  const [discount, setDiscount] = React.useState(false);
-  const [discountPrice, setDiscountPrice] = React.useState(0);
   const [features, setFeatures] = useState();
   const [mainVarient, setMainVerient] = React.useState("");
-  const [ salePrice, setSalePrice] = React.useState('');
+  const [salePrice, setSalePrice] = React.useState();
+  const [message, setMessage] = React.useState("");
+   const [frMessage, setFrMessage] = React.useState("");
 
   function handleChange(event) {
     setFile(event.target.files[0]);
@@ -69,17 +70,14 @@ function App() {
     event.preventDefault();
     var formdata = new FormData();
     formdata.append("name", name);
-    formdata.append("description",description);
-    formdata.append("feature",features);
+    formdata.append("description", description);
+    formdata.append("feature", features);
     formdata.append("price", price);
     formdata.append("categoryId", category);
     formdata.append("subCategoryId", mainVarient);
     formdata.append("quantity", quantity);
     formdata.append("active", active);
     // Append each item in the variant array to the FormData object
-    tags.forEach((item, index) => {
-      formdata.append(`variant[${index}]`, item);
-    });
     // formdata.append("variant", variant);
     formdata.append("img", file);
     for (const key of Object.keys(file1)) {
@@ -126,36 +124,39 @@ function App() {
   const subCategoryApi = new SubCategoryApi();
   const rowses = useSelector((state) => state.subCategory.SubCategory);
 
-    async function handleSetSubCategory(event) {
-      event.preventDefault();
-      const subCategories = await subCategoryApi.getSubCategoryByCategoryId({
-        categoryId: category,
-      });
-      if (subCategories && subCategories?.data?.code === 200) {
-        return dispatch(updateAllSubCategory(subCategories.data.data));
+  async function handleSetSubCategory(event) {
+    event.preventDefault();
+    const subCategories = await subCategoryApi.getSubCategoryByCategoryId({
+      categoryId: category,
+    });
+    if (subCategories && subCategories?.data?.code === 200) {
+      return dispatch(updateAllSubCategory(subCategories.data.data));
+    } else {
+      return;
+    }
+  }
+
+  const checkMarketPrice = () => {
+    if (salePrice < price ) {
+      setMessage("");
+    } else {
+      setMessage(
+        <span style={{ color: "red" }}>Sales Price Not Greater Than Price</span>
+      );
+    }
+  };
+
+    const checkFranchisePrice = () => {
+      if (franchisePrice < price) {
+        setFrMessage("");
       } else {
-        return;
+        setFrMessage(
+          <span style={{ color: "red" }}>
+            Franchise Price Not Greater Than Price
+          </span>
+        );
       }
-    }
-
-  const [tags, setTags] = useState([]);
-  const [input, setInput] = useState("");
-
-  const handleInputChange = (event) => {
-    setInput(event.target.value);
-  };
-
-  const handleInputKeyDown = (event) => {
-    if ((event.key === "Enter" && input)|| event.key === " ") {
-      setTags([...tags, input.trim()]);
-      setInput("");
-    }
-
-  };
-
-  const handleTagClick = (index) => {
-    setTags(tags.filter((tag, i) => i !== index));
-  };
+    };
 
   return (
     <MainCard title="Add Product">
@@ -189,7 +190,7 @@ function App() {
                 }}
                 type="number"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={(e) => setPrice(parseFloat(e.target.value))}
                 placeholder="Enter product price"
               />
             </Stack>
@@ -199,18 +200,20 @@ function App() {
               <InputLabel required>Market Price</InputLabel>
               <TextField
                 fullWidth
-                id="price"
-                name="price"
+                id="sale"
+                name="sale"
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
-                    .slice(0, 6);
+                    .slice(0, 4);
                 }}
                 type="number"
                 value={salePrice}
-                onChange={(e) => setSalePrice(e.target.value)}
-                placeholder="Enter product price"
+                onChange={(e) => setSalePrice(parseFloat(e.target.value))}
+                onBlur={checkMarketPrice}
+                placeholder="Enter Market price"
               />
+              {message}
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -227,9 +230,11 @@ function App() {
                 }}
                 type="number"
                 value={franchisePrice}
-                onChange={(e) => setFranchisePrice(e.target.value)}
-                placeholder="Enter product price"
+                onChange={(e) => setFranchisePrice(parseFloat(e.target.value))}
+                onBlur={checkFranchisePrice}
+                placeholder="Enter Franchise price"
               />
+              {frMessage}
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
