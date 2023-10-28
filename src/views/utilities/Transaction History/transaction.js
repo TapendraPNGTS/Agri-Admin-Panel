@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -6,12 +6,15 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import TextField from "@mui/material/TextField";
 import { Grid } from "@mui/material";
 import Card from "@mui/material/Card";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
 import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
+import { formatDate } from "utils/common.utils";
 import {
   IconButton,
   Stack,
@@ -19,18 +22,59 @@ import {
   Typography,
 } from "@mui/material";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import TransactionAPi from "../../../api/transaction.api";
+import { useEffect, useCallback } from "react";
 
 export default function PurchaseHistory() {
 
-const[all,setAll]= useState('all')
+  const [search, setSearch] = useState("");
+
+  const [all, setAll] = useState('all')
+  const [transaction, setTransaction] = useState([])
+  const transactionApi = new TransactionAPi();
+
+  function handleClick(index) {
+    // setAll(index);
+    // getTransaction();
+  }
 
 
-function handleClick(index){
-    setAll(index);    
-}
+  const getTransaction = useCallback(async (allvalue) => {
+    try {
+      const block = await transactionApi.getAllUserTransaction({
+        type: allvalue
+      });
+      if (!block || !block.data.data) {
+        return toast.error("no latest user available");
+      } else {
+        setTransaction(block.data.data)
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  })
+
+
+  useEffect(() => {
+    getTransaction(all);
+  }, []);
+
+
 
   return (
     <>
+    <TextField
+        id="outlined-search"
+        label="Search field"
+        type="search"
+        fullWidth
+        onChange={(e) => {
+          setSearch(e.target.value);
+        }}
+      />
       <MainCard
         title={
           <Grid
@@ -43,7 +87,10 @@ function handleClick(index){
               <Typography
                 variant="h5"
                 style={all === "all" ? { color: "blue" } : { color: "" }}
-                onClick={() => handleClick("all")}
+                onClick={(e) => {
+                  setAll("all");
+                  getTransaction("all");
+                 }}
               >
                 All
               </Typography>
@@ -51,8 +98,11 @@ function handleClick(index){
             <Grid item style={{ cursor: "pointer" }}>
               <Typography
                 variant="h5"
-                style={all === "Completed" ? { color: "blue" } : { color: "" }}
-                onClick={() => handleClick("Completed")}
+                style={all === "completed" ? { color: "blue" } : { color: "" }}
+                onClick={(e) => {
+                   setAll("completed");
+                   getTransaction("complete");
+                  }}
               >
                 Completed
               </Typography>
@@ -60,8 +110,11 @@ function handleClick(index){
             <Grid item style={{ cursor: "pointer" }}>
               <Typography
                 variant="h5"
-                style={all === "Pending" ? { color: "blue" } : { color: "" }}
-                onClick={() => handleClick(2)}
+                style={all === "pending" ? { color: "blue" } : { color: "" }}
+                onClick={(e) => 
+                {setAll("pending");
+                getTransaction("pending");}
+              }
               >
                 Pending
               </Typography>
@@ -69,8 +122,9 @@ function handleClick(index){
             <Grid item style={{ cursor: "pointer" }}>
               <Typography
                 variant="h5"
-                style={all === "COD" ? { color: "blue" } : { color: "" }}
-                onClick={() => handleClick(3)}
+                style={all === "cod" ? { color: "blue" } : { color: "" }}
+                onClick={(e) => {setAll("cod");
+                getTransaction("cod");}}
               >
                 COD
               </Typography>
@@ -81,7 +135,8 @@ function handleClick(index){
                 style={
                   all === "Payment Gateway" ? { color: "blue" } : { color: "" }
                 }
-                onClick={() => handleClick(4)}
+                onClick={(e) => {setAll("Payment Gateway");
+                getTransaction("Payment Gateway");}}
               >
                 Payment Gateway
               </Typography>
@@ -89,13 +144,13 @@ function handleClick(index){
             <br />
             <hr />
             <Grid item>
-              <Typography
+              {/* <Typography
                 variant="h3"
                 style={all === 5 ? { color: "blue" } : { color: "" }}
                 onClick={() => handleClick(5)}
               >
                 Transaction History
-              </Typography>
+              </Typography> */}
             </Grid>
           </Grid>
         }
@@ -112,6 +167,7 @@ function handleClick(index){
                     <TableCell>Name</TableCell>
                     <TableCell>Date</TableCell>
                     <TableCell>Invoice Id</TableCell>
+                    <TableCell>Transaction Id</TableCell>
                     <TableCell>Amount</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell align="center" sx={{ pr: 3 }}>
@@ -127,173 +183,80 @@ function handleClick(index){
                       )
                       .map((row, index) => {
                         return ( */}
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    // key={row.code}
-                  >
-                    {all === 0 ? (
+
+                  {transaction
+                  .filter((row) =>
+                  search === ""
+                    ? row
+                    :  row.invoiceId.toLowerCase().includes(
+                      search.toLowerCase()
+                    ) || row.transactionId.toLowerCase().includes(
+                      search.toLowerCase()
+                    )
+                ).map((row, index) => {
+                    return (
                       <>
-                        <TableCell align="start">
-                          &nbsp;&nbsp;1.
-                          {/* {index + 1} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          Abhishek Patel
-                          {/* {row.UserID.Name} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          20-10-2023
-                          {/* {row.Amount} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          12215455454848484
-                          {/* {row.TransacationId} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          4015/-
-                          {/* {format(
-                                new Date(row.PaymentDate),
-                                "E, MMM d yyyy"
-                              )} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          Complete {/* {row.Status} */}
-                        </TableCell>
-                        <TableCell align="center" sx={{ pr: 3 }}>
-                          <Stack
-                            direction="row"
-                            justifyContent="center"
-                            alignItems="center"
-                          >
-                            <Tooltip placement="top" title="view">
-                              <Link
-                              // to={`/view-purchase-history/${row.PaymentID}`}
-                              //   onClick={()=>handleHistory(row.PaymentID)}
-                              >
-                                <IconButton
-                                  color="primary"
-                                  aria-label="view"
-                                  size="large"
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                        // key={row.code}
+                        >
+                          <TableCell align="center">
+
+                            {index + 1}
+                          </TableCell>
+                          <TableCell align="start">
+                            {row.type}
+                          </TableCell>
+                          <TableCell align="start">
+                            {formatDate(row.createdAt)}
+                          </TableCell>
+                          <TableCell align="start">
+                            {row.invoiceId}
+                          </TableCell>
+                          <TableCell align="start">
+                            {row.transactionId}
+                          </TableCell>
+                          <TableCell align="start">
+                         <b> ₹ {row.totalPrice} /-</b>
+
+                          </TableCell>
+                          <TableCell align="start" 
+                           style={row.status === "UnPaid" ? { color: "red" } : { color: "#38a652" }}>
+                            <b>{row.status}</b>
+                          </TableCell>
+                          <TableCell align="center" sx={{ pr: 3 }}>
+                            <Stack
+                              direction="row"
+                              justifyContent="center"
+                              alignItems="center"
+                            >
+                              <Tooltip placement="top" title="view">
+                                <Link
+                                // to={`/view-purchase-history/${row.PaymentID}`}
+                                //   onClick={()=>handleHistory(row.PaymentID)}
                                 >
-                                  <RemoveRedEyeIcon
-                                    sx={{ fontSize: "1.1rem" }}
-                                  />
-                                </IconButton>
-                              </Link>
-                            </Tooltip>
-                          </Stack>
-                        </TableCell>
+                                  <IconButton
+                                    color="primary"
+                                    aria-label="view"
+                                    size="large"
+                                  >
+                                    <RemoveRedEyeIcon
+                                      sx={{ fontSize: "1.1rem" }}
+                                    />
+                                  </IconButton>
+                                </Link>
+                              </Tooltip>
+                            </Stack>
+                          </TableCell>
+                        </TableRow>
                       </>
-                    ) : all === 1 ? (
-                      <>
-                        <TableCell align="start">
-                          &nbsp;&nbsp;1.
-                          {/* {index + 1} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          Aman Patel
-                          {/* {row.UserID.Name} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          20-10-2023
-                          {/* {row.Amount} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          12215455454848484
-                          {/* {row.TransacationId} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          4015/-
-                          {/* {format(
-                                new Date(row.PaymentDate),
-                                "E, MMM d yyyy"
-                              )} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          Complete {/* {row.Status} */}
-                        </TableCell>
-                        <TableCell align="center" sx={{ pr: 3 }}>
-                          <Stack
-                            direction="row"
-                            justifyContent="center"
-                            alignItems="center"
-                          >
-                            <Tooltip placement="top" title="view">
-                              <Link
-                              // to={`/view-purchase-history/${row.PaymentID}`}
-                              //   onClick={()=>handleHistory(row.PaymentID)}
-                              >
-                                <IconButton
-                                  color="primary"
-                                  aria-label="view"
-                                  size="large"
-                                >
-                                  <RemoveRedEyeIcon
-                                    sx={{ fontSize: "1.1rem" }}
-                                  />
-                                </IconButton>
-                              </Link>
-                            </Tooltip>
-                          </Stack>
-                        </TableCell>
-                      </>
-                    ) : (
-                      <>
-                        <TableCell align="start">
-                          &nbsp;&nbsp;1.
-                          {/* {index + 1} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          Ratnesh Patel
-                          {/* {row.UserID.Name} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          20-10-2023
-                          {/* {row.Amount} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          12215455454848484
-                          {/* {row.TransacationId} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          4015/-
-                          {/* {format(
-                                new Date(row.PaymentDate),
-                                "E, MMM d yyyy"
-                              )} */}
-                        </TableCell>
-                        <TableCell align="start">
-                          Complete {/* {row.Status} */}
-                        </TableCell>
-                        <TableCell align="center" sx={{ pr: 3 }}>
-                          <Stack
-                            direction="row"
-                            justifyContent="center"
-                            alignItems="center"
-                          >
-                            <Tooltip placement="top" title="view">
-                              <Link
-                              // to={`/view-purchase-history/${row.PaymentID}`}
-                              //   onClick={()=>handleHistory(row.PaymentID)}
-                              >
-                                <IconButton
-                                  color="primary"
-                                  aria-label="view"
-                                  size="large"
-                                >
-                                  <RemoveRedEyeIcon
-                                    sx={{ fontSize: "1.1rem" }}
-                                  />
-                                </IconButton>
-                              </Link>
-                            </Tooltip>
-                          </Stack>
-                        </TableCell>
-                      </>
-                    )}
-                  </TableRow>
+                    )
+                  })
+
+                  }
+
                   {/* );
                       })} */}
                 </TableBody>

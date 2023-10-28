@@ -42,12 +42,12 @@ class Transaction extends HttpClient {
       data: null,
     });
   };
-  getAllUserTransaction = async () => {
+  getAllUserTransaction = async (reqBody) => {
     return this.instance({
       method: this.AllUserTransactionConfig.Method,
       url: this.AllUserTransactionConfig.Endpoint,
       headers: {},
-      data: null,
+      data: reqBody,
     });
   };
 

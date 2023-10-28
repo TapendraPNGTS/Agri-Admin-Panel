@@ -2,7 +2,9 @@ import { useState } from "react";
 // import { useSelector } from 'react-redux';
 import { useNavigate, Link } from "react-router-dom";
 
-import { toast } from "react-hot-toast";
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 // material-ui
 import { useTheme } from "@mui/material/styles";
 import {
@@ -64,7 +66,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
+  const notify = () => toast("Wow so easy !");
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -94,11 +96,20 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
                 dispatch(updateToken(loginResponse.data.data.token));
                 dispatch(updateUser(JSON.stringify(loginResponse.data.data.userId)));
                 dispatch(updatePermission(loginResponse.data.data.permission.RoleID.IsPermission));
-                toast.success(`Login successsfully`);
+                toast.success("Login successsfully..", {
+                  position: toast.POSITION.TOP_CENTER
+                });
                 window.location.replace("/dashboard", { replace: true });
-              } else if (loginResponse && loginResponse?.data?.code === 201) {
-                return toast.error(`Something went wrong!`);
+              } else if (loginResponse?.data?.code === 201 && loginResponse?.data?.status == "incorrectPassword") {
+                return  toast.error("Incorrect Passsword..", {
+                  position: toast.POSITION.TOP_CENTER
+                });;
+              }else{
+                return  toast.error("Something went wrong..", {
+                  position: toast.POSITION.TOP_CENTER
+                });;
               }
+            
               setStatus({ success: true });
               setSubmitting(false);
             }
@@ -112,6 +123,8 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
           }
         }}
       >
+       
+     
         {({
           errors,
           handleBlur,
@@ -155,6 +168,7 @@ const FirebaseLogin = ({ loginProp, ...others }) => {
               error={Boolean(touched.password && errors.password)}
               sx={{ ...theme.typography.customInput }}
             >
+                 <ToastContainer />
               <InputLabel htmlFor="outlined-adornment-password-login">
                 Password
               </InputLabel>

@@ -318,7 +318,7 @@ if (userId) {
       },
       {
         id: "order",
-        title: "Order",
+        title: "Order History",
         type: "collapse",
         icon: icons.IconUsers,
         breadcrumbs: false,

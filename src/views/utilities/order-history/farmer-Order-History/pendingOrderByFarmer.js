@@ -7,6 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import TextField from "@mui/material/TextField";
 import { Grid } from "@mui/material";
 import Card from "@mui/material/Card";
 import { gridSpacing } from "store/constant";
@@ -23,7 +24,7 @@ import {
 
 import EditIcon from "@mui/icons-material/Edit";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback , useState} from "react";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
@@ -36,6 +37,8 @@ import { updateAllOrderHistory } from "../../../../redux/redux-slice/orderHistor
 export default function PurchaseHistory() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
+  const [search, setSearch] = useState("");
+
   const params = useParams();
 
   const handleChangePage = (event, newPage) => {
@@ -73,6 +76,15 @@ export default function PurchaseHistory() {
 
   return (
     <>
+      <TextField
+        id="outlined-search"
+        label="Search field"
+        type="search"
+        fullWidth
+        onChange={(e) => {
+          setSearch(e.target.value);
+        }}
+      />
       <MainCard
         title={
           <Grid
@@ -82,7 +94,7 @@ export default function PurchaseHistory() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Pending Order</Typography>
+              <Typography variant="h3">Pending Order / COD</Typography>
             </Grid>
           </Grid>
         }
@@ -96,10 +108,11 @@ export default function PurchaseHistory() {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ pl: 3 }}>S No.</TableCell>
-                      <TableCell>Order Date</TableCell>
-                      <TableCell>Name</TableCell>
+                      <TableCell>Invoice ID</TableCell>
+                      <TableCell>Farmer Name</TableCell>
                       <TableCell>Contact</TableCell>
                       <TableCell>Price</TableCell>
+                      <TableCell>Order Date</TableCell>
                       <TableCell>Payment Type</TableCell>
                       <TableCell>Status</TableCell>
                       <TableCell align="center" sx={{ pr: 3 }}>
@@ -109,6 +122,17 @@ export default function PurchaseHistory() {
                   </TableHead>
                   <TableBody>
                     {rows
+                      .filter((row) =>
+                        search === ""
+                          ? row
+                          : row.userId.Contact.toLowerCase().includes(
+                            search.toLowerCase()
+                          ) || row.userId.Name.toLowerCase().includes(
+                            search.toLowerCase()
+                          ) || row.invoiceId.toLowerCase().includes(
+                            search.toLowerCase()
+                          )
+                      )
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
@@ -122,8 +146,9 @@ export default function PurchaseHistory() {
                             key={row.code}
                           >
                             <TableCell align="start">{index + 1}</TableCell>
+
                             <TableCell align="start">
-                              {format(new Date(row.createdAt), "E, MMM d yyyy")}
+                              {row.invoiceId}
                             </TableCell>
                             <TableCell align="start">
                               {row.userId.Name}
@@ -132,7 +157,10 @@ export default function PurchaseHistory() {
                               {row.userId.Contact}
                             </TableCell>
                             <TableCell align="start">
-                              {row.totalPrice}
+                              ₹ {row.totalPrice} /-
+                            </TableCell>
+                            <TableCell align="start">
+                              {format(new Date(row.createdAt), "E, MMM d yyyy")}
                             </TableCell>
                             <TableCell align="start">
                               {row.paymentType}

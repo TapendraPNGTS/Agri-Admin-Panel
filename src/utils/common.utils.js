@@ -1,0 +1,1 @@
+export const formatDate = (date) => { return new Date(date).toLocaleString("en-in", { day: "numeric", month: "short", year: "numeric", }); }
