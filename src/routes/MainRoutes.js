@@ -169,6 +169,7 @@ const AddCluster = Loadable(
   lazy(() => import("views/utilities/manage-area/cluster/add-cluster"))
 );
 
+
 // commission routes
 const Commissiom = Loadable(
   lazy(() => import("views/utilities/commission/commission"))
@@ -218,6 +219,18 @@ const AddFranchiseState = Loadable(
     import("views/utilities/incharge/franchiseState/add-franchiseState")
   )
 );
+const PendingFranchiseState = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseState/pendingFranchiseState")
+  )
+);
+const PendingFranchiseDistrict = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseDistrict/pendingFranchiseDistrict")
+  )
+);
+
+
 const EditFranchiseState = Loadable(
   lazy(() =>
     import("views/utilities/incharge/franchiseState/edit-franchiseState")
@@ -251,6 +264,11 @@ const EditFranchiseBlock = Loadable(
     import("views/utilities/incharge/franchiseBlock/edit-franchiseBlock")
   )
 );
+const PendingFranchiseBlock = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseBlock/pendingFranchiseBlock")
+  )
+);
 // cluster routes
 const FranchiseCluster = Loadable(
   lazy(() => import("views/utilities/incharge/franchiseCluster/franchiseCluster"))
@@ -261,6 +279,11 @@ const AddFranchiseCluster = Loadable(
 const EditFranchiseCluster = Loadable(
   lazy(() =>
     import("views/utilities/incharge/franchiseCluster/edit-franchiseCluster")
+  )
+);
+const PendingFranchiseCluster = Loadable(
+  lazy(() =>
+    import("views/utilities/incharge/franchiseCluster/pendingFranchiseCluster") //
   )
 );
 
@@ -283,18 +306,40 @@ const Ledger = Loadable(
   lazy(() => import("views/utilities/Transaction History/transaction"))
 );
 
-// order history
+// order history by farmer
 
-const OrderHistory = Loadable(
-  lazy(() => import("views/utilities/order-history/orderHistory"))
+const PendingOrderHistory = Loadable(
+  lazy(() => import("views/utilities/order-history/farmer-Order-History/pendingOrderByFarmer"))
 )
 
 const CompleteOrder = Loadable(
-  lazy(() => import("views/utilities/order-history/completeOrder"))
+  lazy(() =>
+    import(
+      "views/utilities/order-history/farmer-Order-History/completeOrderByFarmer"
+    )
+  )
 );
 
 const ViewOrder = Loadable(
-  lazy(() => import("views/utilities/order-history/viewPendingOrder"))
+  lazy(() => import("views/utilities/order-history/farmer-Order-History/viewPendingOrder"))
+);
+
+// order history by Franchise
+
+const FPendingOrderHistory = Loadable(
+  lazy(() => import("views/utilities/order-history/franchise-Order-History/pendingOrderHistoryByFranchise"))
+)
+
+const FCompleteOrder = Loadable(
+  lazy(() =>
+    import(
+      "views/utilities/order-history/franchise-Order-History/completeOrderFranchise"
+    )
+  )
+);
+
+const FViewOrder = Loadable(
+  lazy(() => import("views/utilities/order-history/farmer-Order-History/viewPendingOrder"))
 );
 
 // sample page routing
@@ -313,16 +358,29 @@ const MainRoutes = {
       element: <Ledger />,
     },
     {
-      path: "/pending-order",
-      element: <OrderHistory />,
+      path: "/pending-order-by-farmer",
+      element: <PendingOrderHistory />,
     },
     {
-      path: "/complete-order",
+      path: "/complete-order-by-farmer",
       element: <CompleteOrder />,
     },
     {
       path: "/view-order",
       element: <ViewOrder />,
+    },
+
+    {
+      path: "/pending-order-by-franchise",
+      element: <FPendingOrderHistory />,
+    },
+    {
+      path: "/complete-order-by-franchise",
+      element: <FCompleteOrder />,
+    },
+    {
+      path: "/view-order-franchise",
+      element: <FViewOrder />,
     },
 
     {
@@ -485,12 +543,20 @@ const MainRoutes = {
           element: <AddFranchiseState />,
         },
         {
+          path: "pending-request-state-incharge",
+          element: <PendingFranchiseState />,
+        },
+        {
           path: "edit-franchise-state/:id",
           element: <EditFranchiseState />,
         },
         {
           path: "franchise-district",
           element: <FranchiseDistrict />,
+        },
+        {
+          path: "/pending-request-district-incharge",
+          element: <PendingFranchiseDistrict />,
         },
         {
           path: "add-franchise-district",
@@ -509,6 +575,10 @@ const MainRoutes = {
           element: <AddFranchiseBlock />,
         },
         {
+          path: "/pending-request-block-incharge",
+          element: <PendingFranchiseBlock />,
+        },
+        {
           path: "edit-franchise-block/:id",
           element: <EditFranchiseBlock />,
         },
@@ -519,6 +589,10 @@ const MainRoutes = {
         {
           path: "add-franchise-cluster",
           element: <AddFranchiseCluster />,
+        },
+        {
+          path: "/pending-request-Cluster-incharge",
+          element: <PendingFranchiseCluster />,
         },
         {
           path: "edit-franchise-cluster/:id",

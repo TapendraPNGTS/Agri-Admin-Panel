@@ -29,9 +29,45 @@ const ApiRoutes = {
       Method: HttpMethod.Post,
     },
   },
+  Transaction: {
+    AllFrTransaction: {
+      Endpoint: "/getAllFranchiseTransaction",
+      Method: HttpMethod.Post,
+    },
+    AllUserTransaction: {
+      Endpoint: "/getAllUserTransaction",
+      Method: HttpMethod.Post,
+    },
+    FranchiseTransaction: {
+      Endpoint: "/getFranchiseTransaction ",
+      Method: HttpMethod.Post,
+    },
+    UserTransaction: {
+      Endpoint: "/getUserTransaction ",
+      Method: HttpMethod.Post,
+    },
+  },
   CheckOut: {
     Data: {
       Endpoint: "/addAllCart",
+      Method: HttpMethod.Post,
+    },
+  },
+  Order: {
+    AllFranchiseComplete: {
+      Endpoint: "/getAllFranchiseOnline",
+      Method: HttpMethod.Post,
+    },
+    AllFranchisePending: {
+      Endpoint: "/getAllFranchiseCOD",
+      Method: HttpMethod.Post,
+    },
+    AllUserComplete: {
+      Endpoint: "/getAllUserOnline",
+      Method: HttpMethod.Post,
+    },
+    AllUserPending: {
+      Endpoint: "/getAllUserCOD",
       Method: HttpMethod.Post,
     },
   },
@@ -181,6 +217,7 @@ const ApiRoutes = {
       Method: HttpMethod.Post,
     },
   },
+
   Product: {
     All: {
       Endpoint: "/getAllProduct",
@@ -424,6 +461,14 @@ const ApiRoutes = {
       Endpoint: "/deleteStateFranchise",
       Method: HttpMethod.Post,
     },
+    PendingStateFranchise: {
+      Endpoint: "/getAllPendingStateFranchise",
+      Method: HttpMethod.Post,
+    },
+    frenciseStateAccept: {
+      Endpoint: "/frenciseStateAccept",
+      Method: HttpMethod.Post,
+    },
   },
   FranchiseDistrict: {
     AllFranchiseDistrict: {
@@ -444,6 +489,14 @@ const ApiRoutes = {
     },
     DeleteFranchiseDistrict: {
       Endpoint: "/deleteDistrictFranchise",
+      Method: HttpMethod.Post,
+    },
+    PendingDistrictFranchise: {
+      Endpoint: "/getAllPendingDistrictFranchise",
+      Method: HttpMethod.Post,
+    },
+    frenciseDistrictAccept: {
+      Endpoint: "/frenciseDistrictAccept",
       Method: HttpMethod.Post,
     },
   },
@@ -468,6 +521,10 @@ const ApiRoutes = {
       Endpoint: "/deleteBlockFranchise",
       Method: HttpMethod.Post,
     },
+    PendingBlockFranchise: {
+      Endpoint: "/getAllPendingBlockFranchise",
+      Method: HttpMethod.Post,
+    },
   },
   FranchiseCluster: {
     AllFranchiseCluster: {
@@ -488,6 +545,14 @@ const ApiRoutes = {
     },
     DeleteFranchiseCluster: {
       Endpoint: "/deleteClusterFranchise",
+      Method: HttpMethod.Post,
+    },
+    PendingClusterFranchise: {
+      Endpoint: "/getAllPendingClusterFranchise",
+      Method: HttpMethod.Post,
+    },
+    frenciseClusterAccept: {
+      Endpoint: "/frenciseClusterAccept",
       Method: HttpMethod.Post,
     },
   },

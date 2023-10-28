@@ -1,8 +1,8 @@
 import { useState } from "react";
 // import { useSelector } from 'react-redux';
 import { useNavigate, Link } from "react-router-dom";
-import { toast } from "react-toastify";
 
+import { toast } from "react-hot-toast";
 // material-ui
 import { useTheme } from "@mui/material/styles";
 import {

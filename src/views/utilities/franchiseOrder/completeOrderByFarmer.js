@@ -11,8 +11,6 @@ import { Grid } from "@mui/material";
 import Card from "@mui/material/Card";
 import { gridSpacing } from "store/constant";
 import MainCard from "ui-component/cards/MainCard";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import {
   IconButton,
@@ -22,28 +20,17 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { useState, useEffect } from "react";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { useState, useEffect, useCallback } from "react";
 import DownloadIcon from "@mui/icons-material/Download";
-import { useParams } from "react-router-dom";
-import { format } from "date-fns";
+
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import OrderHistoryApi from "../../../../api/orderHistory.api";
+import { updateAllOrderHistory } from "../../../../redux/redux-slice/orderHistory.slice";
 
 export default function PurchaseHistory() {
   const [page, setPage] = React.useState(0);
-  const [email, setEmail] = React.useState("");
-  const [active, setActive] = React.useState("");
-  const [file, setFile] = useState();
-  const [editcategoryname, setEditCategoryName] = React.useState("");
-  const [editcategoryid, setEditCategoryId] = React.useState("");
-  const [editActive, setEditActive] = React.useState("");
-  const [editopen, setEditOpen] = React.useState(false);
-  const handleEditClose = () => setEditOpen(false);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [rows, setRows] = useState("");
-  const params = useParams();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -54,17 +41,29 @@ export default function PurchaseHistory() {
     setPage(0);
   };
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 600,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
+   const dispatch = useDispatch();
+   const orderHistoryApi = new OrderHistoryApi();
+   const rows = useSelector((state) => state.orderHistory.OrderHistory);
+
+   const getAllFranchisComplete = useCallback(async () => {
+     try {
+       const orderHistory = await orderHistoryApi.getAllUserOrderComplete({});
+       if (!orderHistory || !orderHistory.data.data) {
+         return toast.error("no latest order history available");
+       } else {
+         dispatch(updateAllOrderHistory(orderHistory.data.data));
+         return;
+       }
+     } catch (error) {
+       console.error(error);
+       toast.error("Something went wrong");
+       throw error;
+     }
+   });
+
+   useEffect(() => {
+     getAllFranchisComplete();
+   }, []);
 
   return (
     <>
@@ -77,7 +76,7 @@ export default function PurchaseHistory() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Order History</Typography>
+              <Typography variant="h3">Complete Order</Typography>
             </Grid>
           </Grid>
         }

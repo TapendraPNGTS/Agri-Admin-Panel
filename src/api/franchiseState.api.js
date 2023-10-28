@@ -34,6 +34,9 @@ class State extends HttpClient {
   AddFranchiseStateConfig = ApiRoutes.FranchiseState.AddFranchiseState;
   EditFranchiseStateConfig = ApiRoutes.FranchiseState.EditFranchiseState;
   DeleteFranchiseStateConfig = ApiRoutes.FranchiseState.DeleteFranchiseState;
+  PendingStateFranchiseConfig = ApiRoutes.FranchiseState.PendingStateFranchise;
+  frenciseStateAcceptConfig = ApiRoutes.FranchiseState.frenciseStateAccept;
+  frenciseClusterAcceptConfig = ApiRoutes.FranchiseState.frenciseClusterAccept;
 
   getAllStateFranchise = async (data) => {
     return this.instance({
@@ -51,6 +54,14 @@ class State extends HttpClient {
       data: data,
     });
   };
+  getAllPendingStateFranchise = async (data) => {
+    return this.instance({
+      method: this.PendingStateFranchiseConfig.Method,
+      url: this.PendingStateFranchiseConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
   addStateFranchise = async (data) => {
     return this.instance({
       method: this.AddFranchiseStateConfig.Method,
@@ -63,6 +74,22 @@ class State extends HttpClient {
     return this.instance({
       method: this.EditFranchiseStateConfig.Method,
       url: this.EditFranchiseStateConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  frenciseStateAccept = async (data) => {
+    return this.instance({
+      method: this.frenciseStateAcceptConfig.Method,
+      url: this.frenciseStateAcceptConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  frenciseClusterAccept = async (data) => {
+    return this.instance({
+      method: this.frenciseClusterAcceptConfig.Method,
+      url: this.frenciseClusterAcceptConfig.Endpoint,
       headers: {},
       data: data,
     });

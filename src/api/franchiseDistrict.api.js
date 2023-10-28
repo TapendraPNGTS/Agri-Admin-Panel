@@ -30,10 +30,18 @@ class District extends HttpClient {
   };
 
   AllFranchiseDistrictConfig = ApiRoutes.FranchiseDistrict.AllFranchiseDistrict;
-  FranchiseDistrictByIdConfig = ApiRoutes.FranchiseDistrict.FranchiseDistrictById;
+  FranchiseDistrictByIdConfig =
+    ApiRoutes.FranchiseDistrict.FranchiseDistrictById;
   AddFranchiseDistrictConfig = ApiRoutes.FranchiseDistrict.AddFranchiseDistrict;
-  EditFranchiseDistrictConfig = ApiRoutes.FranchiseDistrict.EditFranchiseDistrict;
-  DeleteFranchiseDistrictConfig = ApiRoutes.FranchiseDistrict.DeleteFranchiseDistrict;
+  EditFranchiseDistrictConfig =
+    ApiRoutes.FranchiseDistrict.EditFranchiseDistrict;
+  DeleteFranchiseDistrictConfig =
+    ApiRoutes.FranchiseDistrict.DeleteFranchiseDistrict;
+
+  PendingDistrictFranchiseConfig =
+    ApiRoutes.FranchiseDistrict.PendingDistrictFranchise;
+  frenciseDistrictAcceptConfig =
+    ApiRoutes.FranchiseDistrict.frenciseDistrictAccept;
 
   getAllDistrictFranchise = async (data) => {
     return this.instance({
@@ -43,10 +51,26 @@ class District extends HttpClient {
       data: data,
     });
   };
+  frenciseDistrictAccept = async (data) => {
+    return this.instance({
+      method: this.frenciseDistrictAcceptConfig.Method,
+      url: this.frenciseDistrictAcceptConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
   getDistrictFranchiseById = async (data) => {
     return this.instance({
       method: this.FranchiseDistrictByIdConfig.Method,
       url: this.FranchiseDistrictByIdConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  getAllPendingDistrictFranchise = async (data) => {
+    return this.instance({
+      method: this.PendingDistrictFranchiseConfig.Method,
+      url: this.PendingDistrictFranchiseConfig.Endpoint,
       headers: {},
       data: data,
     });

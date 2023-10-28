@@ -77,7 +77,7 @@ export default function PurchaseHistory() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Order History</Typography>
+              <Typography variant="h3">Pending Order</Typography>
             </Grid>
           </Grid>
         }

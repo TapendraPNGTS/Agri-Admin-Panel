@@ -28,8 +28,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import FranchiseVillageApi from "../../../../api/franchiseVillage.api";
-import { updateAllFranchiseVillage } from "../../../../redux/redux-slice/franchiseVillage.slice";
+import FranchiseStateApi from "../../../../api/franchiseCluster.api";
+import { updateAllFranchiseCluster } from "../../../../redux/redux-slice/franchiseCluster.slice";
 
 export default function DataTable() {
   const navigate = useNavigate();
@@ -38,16 +38,16 @@ export default function DataTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const dispatch = useDispatch();
-  const VillageApi = new FranchiseVillageApi();
-  const rows = useSelector((state) => state.franchiseVillage.FranchiseVillage);
+  const clusterApi = new FranchiseStateApi();
+  const rows = useSelector((state) => state.franchiseCluster.FranchiseCluster);
 
-  const getAllDistrict = useCallback(async () => {
+  const getAllState = useCallback(async () => {
     try {
-      const state = await VillageApi.getAllVillageFranchise({});
+      const state = await clusterApi.getAllClusterFranchise({});
       if (!state || !state.data.data) {
         return toast.error("no latest state available");
       } else {
-        dispatch(updateAllFranchiseVillage(state.data.data));
+        dispatch(updateAllFranchiseCluster(state.data.data));
         return;
       }
     } catch (error) {
@@ -58,7 +58,7 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    getAllDistrict();
+    getAllState();
   }, []);
 
   useEffect(() => {}, [rows]);
@@ -108,18 +108,7 @@ export default function DataTable() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Village Incharge</Typography>
-            </Grid>
-            <Grid item>
-              <Button
-                variant="outlined"
-                onClick={(e) => {
-                  navigate("/add-franchise-village");
-                }}
-                startIcon={<AddIcon />}
-              >
-                Add Village Incharge
-              </Button>
+              <Typography variant="h3">Pending Request</Typography>
             </Grid>
           </Grid>
         }
@@ -144,10 +133,11 @@ export default function DataTable() {
                       <TableCell>Name</TableCell>
                       <TableCell>Email</TableCell>
                       <TableCell>Contact</TableCell>
+                      <TableCell>State</TableCell>
                       <TableCell>Status</TableCell>
-                      {/* <TableCell align="center" sx={{ pr: 3 }}>
+                      <TableCell align="center" sx={{ pr: 3 }}>
                         Actions
-                      </TableCell> */}
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -184,8 +174,11 @@ export default function DataTable() {
                             <TableCell sx={{ pl: 3 }} align="start">
                               {row.Contact}
                             </TableCell>
+                            <TableCell sx={{ pl: 3 }} align="start">
+                              {row.StateID.Name}
+                            </TableCell>
                             <TableCell align="start">
-                              {row.IsActive ? (
+                              {row.Status === "Complete" ? (
                                 <Chip
                                   label="Active"
                                   color="success"
@@ -193,13 +186,13 @@ export default function DataTable() {
                                 />
                               ) : (
                                 <Chip
-                                  label="Inactive"
+                                  label="Pending"
                                   color="warning"
                                   size="small"
                                 />
                               )}
                             </TableCell>
-                            {/* <TableCell align="center" sx={{ pr: 3 }}>
+                            <TableCell align="center" sx={{ pr: 3 }}>
                               <Stack
                                 direction="row"
                                 justifyContent="center"
@@ -210,7 +203,7 @@ export default function DataTable() {
                                   title="Edit"
                                   onClick={(e) => {
                                     navigate(
-                                      `/edit-franchise-village/${row.VillageID}`
+                                      `/edit-franchise-cluster/${row.ClusterID}`
                                     );
                                   }}
                                   data-target={`#`}
@@ -224,10 +217,10 @@ export default function DataTable() {
                                   </IconButton>
                                 </Tooltip>
 
-                                <Tooltip
+                                {/* <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={DeleteCategory(`${row.VillageID}`)}
+                                  onClick={DeleteCategory(`${row.StateID}`)}
                                 >
                                   <IconButton
                                     color="primary"
@@ -236,9 +229,9 @@ export default function DataTable() {
                                   >
                                     <DeleteIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
-                                </Tooltip>
+                                </Tooltip> */}
                               </Stack>
-                            </TableCell> */}
+                            </TableCell>
                           </TableRow>
                         );
                       })}

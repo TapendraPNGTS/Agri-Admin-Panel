@@ -24,7 +24,7 @@ import DistrictApi from "../../../../api/district.api";
 import { updateAllDistrict } from "../../../../redux/redux-slice/district.slice";
 
 function App() {
-  const DistrictApi = new FranchiseDistrictApi();
+  const franchiseDistrictApi = new FranchiseDistrictApi();
   const params = useParams();
   const navigate = useNavigate();
   const [name, setName] = React.useState("");
@@ -34,19 +34,25 @@ function App() {
   const [active, setActive] = React.useState(true);
   const [state, setState] = React.useState("");
   const [city, setCity] = React.useState("");
-  const [userState, setUserState] = React.useState("");
   const [address, setAddress] = React.useState("");
-
+  const [stateIncharge, setStateIncharge] = useState("");
+  const [accept, setAccept] = useState("Accept");
+  const [discription, setDiscription] = useState("");
+  
   //   bank ariable
   const [bankName, setBankName] = useState("");
   const [acNumber, setAcNumber] = useState("");
   const [ifscCode, setIfscCode] = useState("");
   const [branchName, setBranchName] = useState("");
 
+  const handleAccept = (e) => {
+    setAccept(e.target.value);
+  };
+
   const getCategoryById = useCallback(async () => {
     try {
       const getStateFranchiseByIdResponse =
-        await DistrictApi.getDistrictFranchiseById({
+        await franchiseDistrictApi.getDistrictFranchiseById({
           districtId: params.id,
         });
       if (
@@ -56,6 +62,10 @@ function App() {
         setName(getStateFranchiseByIdResponse.data.data.Name);
         setEmail(getStateFranchiseByIdResponse.data.data.Email);
         setContact(getStateFranchiseByIdResponse.data.data.Contact);
+        setState(getStateFranchiseByIdResponse.data.data.StateID.StateID);
+        setCity(getStateFranchiseByIdResponse.data.data.CityID.DistrictID);
+        setAddress(getStateFranchiseByIdResponse.data.data.Address);
+        setStateIncharge(getStateFranchiseByIdResponse.data.data.Name);
       } else {
         return toast.error(`Something went wrong!`);
       }
@@ -73,23 +83,12 @@ function App() {
   async function handleSubmit(event) {
     setIsLoading(true);
     event.preventDefault();
-    const bank = {
-      bankName: bankName,
-      accountNumber: acNumber,
-      branchName: branchName,
-      ifscCode: ifscCode,
-    };
-    const addServiceRequestResponse = await DistrictApi.editDistrictFranchise({
-      districtId: params.id,
-      stateFId: state,
-      name: name,
-      contact: contact,
-      isActive: active,
-      bank: bank,
-      stateId: userState,
-      cityId: city,
-      address: address,
-    });
+    const addServiceRequestResponse =
+      await franchiseDistrictApi.frenciseDistrictAccept({
+        frenchiseId: params.id,
+        status: accept,
+        description: discription,
+      });
     if (
       addServiceRequestResponse &&
       addServiceRequestResponse?.data?.code === 200
@@ -245,16 +244,16 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>State</InputLabel>
+              <InputLabel required>State Incharge</InputLabel>
               <Select
-                id="state"
-                name="state"
-                value={state}
-                onChange={(e) => setState(e.target.value)}
+                id="stateF"
+                name="stateF"
+                value={stateIncharge}
+                onChange={(e) => setStateIncharge(e.target.value)}
               >
-                {rows.map((state) => {
+                {rows.map((stateF) => {
                   return (
-                    <MenuItem value={state.StateID}>{state.Name}</MenuItem>
+                    <MenuItem value={stateF.StateFID}>{stateF.Name}</MenuItem>
                   );
                 })}
               </Select>
@@ -305,7 +304,7 @@ function App() {
               >
                 {allDistrict.map((state, index) => {
                   return (
-                    <MenuItem value={state.districtId} key={index}>
+                    <MenuItem value={state.DistrictID} key={index}>
                       {state.Name}
                     </MenuItem>
                   );
@@ -369,7 +368,7 @@ function App() {
                 onChange={(e) => setIfscCode(e.target.value)}
                 placeholder="Enter IFSC Code"
               />
-              <p style={{ color: "red" }}>{ifscMessage}</p>
+              {/* <p style={{ color: "red" }}>{ifscMessage}</p> */}
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -386,6 +385,40 @@ function App() {
               />
             </Stack>
           </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Accept Or Reject</InputLabel>
+              <Select
+                id="accept"
+                name="accept"
+                value={accept}
+                onChange={(e) => handleAccept(e)}
+              >
+                <MenuItem value="Accept">Accept</MenuItem>
+                <MenuItem value="Reject">Reject</MenuItem>
+              </Select>
+            </Stack>
+          </Grid>
+          {accept === "Reject" ? (
+            <>
+              <Grid item xs={12} md={12}>
+                <Stack>
+                  <InputLabel required>Reason For Reject</InputLabel>
+                  <TextField
+                    fullWidth
+                    id="discription"
+                    name="discription"
+                    inputProps={{ maxLength: 30 }}
+                    value={discription}
+                    onChange={(e) => setDiscription(e.target.value)}
+                    placeholder="Reason for rejection"
+                  />
+                </Stack>
+              </Grid>
+            </>
+          ) : (
+            <></>
+          )}
         </Grid>
         <br />
         <br />

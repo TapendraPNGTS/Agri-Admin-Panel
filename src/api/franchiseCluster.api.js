@@ -35,6 +35,10 @@ class Cluster extends HttpClient {
   EditFranchiseClusterConfig = ApiRoutes.FranchiseCluster.EditFranchiseCluster;
   DeleteFranchiseClusterConfig =
     ApiRoutes.FranchiseCluster.DeleteFranchiseCluster;
+  PendingClusterFranchiseConfig =
+    ApiRoutes.FranchiseCluster.PendingClusterFranchise;
+  frenciseClusterAcceptConfig =
+    ApiRoutes.FranchiseCluster.frenciseClusterAccept;
 
   getAllClusterFranchise = async (data) => {
     return this.instance({
@@ -44,10 +48,26 @@ class Cluster extends HttpClient {
       data: data,
     });
   };
+  frenciseClusterAccept = async (data) => {
+    return this.instance({
+      method: this.frenciseClusterAcceptConfig.Method,
+      url: this.frenciseClusterAcceptConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
   getClusterFranchiseById = async (data) => {
     return this.instance({
       method: this.FranchiseClusterByIdConfig.Method,
       url: this.FranchiseClusterByIdConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  getAllPendingClusterFranchise = async (data) => {
+    return this.instance({
+      method: this.PendingClusterFranchiseConfig.Method,
+      url: this.PendingClusterFranchiseConfig.Endpoint,
       headers: {},
       data: data,
     });

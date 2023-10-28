@@ -16,13 +16,16 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import UserApi from "../../../api/user.api";
+import { updateAllUser } from "../../../redux/redux-slice/user.slice";
 // ===============================|| COLOR BOX ||=============================== //
 // ===============================|| UI COLOR ||=============================== //
 
 export default function Users() {
   const [page, setPage] = React.useState(0);
-  const [rows, setRows] = React.useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [search, setSearch] = useState("");
   const handleChangePage = (event, newPage) => {
@@ -34,38 +37,30 @@ export default function Users() {
     setPage(0);
   };
 
-  function getalldata() {
-    var myHeaders = new Headers();
-    myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-    myHeaders.append(
-      "Authorization",
-      "Bearer " + localStorage.getItem("token")
-    );
-    myHeaders.append("Content-Type", "application/json");
+    const dispatch = useDispatch();
+    const userApi = new UserApi();
+    const rows = useSelector((state) => state.user.User);
 
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
+    const getAllUser = useCallback(async () => {
+      try {
+        const block = await userApi.getAllUser({});
+        if (!block || !block.data.data) {
+          return toast.error("no latest user available");
+        } else {
+          dispatch(updateAllUser(block.data.data));
+          return;
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Something went wrong");
+        throw error;
+      }
     });
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
+    useEffect(() => {
+      getAllUser();
+    }, []);
 
-    fetch(`${process.env.REACT_APP_API_URL}getAllUser`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          setRows(result.data);
-        }
-      })
-      .catch((error) => {});
-  }
-  useEffect(() => {
-    getalldata();
-  }, []);
 
   return (
     <>

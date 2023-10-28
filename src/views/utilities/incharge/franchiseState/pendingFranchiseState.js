@@ -25,29 +25,37 @@ import {
   Chip,
 } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import FranchiseVillageApi from "../../../../api/franchiseVillage.api";
-import { updateAllFranchiseVillage } from "../../../../redux/redux-slice/franchiseVillage.slice";
+import FranchiseStateApi from "../../../../api/franchiseState.api";
+import { updateAllFranchiseState } from "../../../../redux/redux-slice/franchiseState.slice";
 
 export default function DataTable() {
+  const params = useParams();
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [search, setSearch] = useState("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const dispatch = useDispatch();
-  const VillageApi = new FranchiseVillageApi();
-  const rows = useSelector((state) => state.franchiseVillage.FranchiseVillage);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [contact, setContact] = useState("");
+  const [state, setState] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
 
-  const getAllDistrict = useCallback(async () => {
+  const dispatch = useDispatch();
+  const stateApi = new FranchiseStateApi();
+  const rows = useSelector((state) => state.franchiseState.FranchiseState);
+
+  const getAllState = useCallback(async () => {
     try {
-      const state = await VillageApi.getAllVillageFranchise({});
+      const state = await stateApi.getAllPendingStateFranchise({});
       if (!state || !state.data.data) {
         return toast.error("no latest state available");
       } else {
-        dispatch(updateAllFranchiseVillage(state.data.data));
+        dispatch(updateAllFranchiseState(state.data.data));
         return;
       }
     } catch (error) {
@@ -57,8 +65,34 @@ export default function DataTable() {
     }
   });
 
+  const getCategoryById = useCallback(async () => {
+    try {
+      const getStateFranchiseByIdResponse =
+        await stateApi.getStateFranchiseById({
+          stateFId: params.id,
+        });
+      if (
+        getStateFranchiseByIdResponse &&
+        getStateFranchiseByIdResponse?.data?.code === 200
+      ) {
+        setName(getStateFranchiseByIdResponse.data.data.Name);
+        setEmail(getStateFranchiseByIdResponse.data.data.Email);
+        setContact(getStateFranchiseByIdResponse.data.data.Contact);
+        setState(getStateFranchiseByIdResponse.data.data.StateID.StateID);
+        setCity(getStateFranchiseByIdResponse.data.data.CityID.DistrictID);
+        setAddress(getStateFranchiseByIdResponse.data.data.Address);
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
   useEffect(() => {
-    getAllDistrict();
+    getAllState();
   }, []);
 
   useEffect(() => {}, [rows]);
@@ -108,18 +142,7 @@ export default function DataTable() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Village Incharge</Typography>
-            </Grid>
-            <Grid item>
-              <Button
-                variant="outlined"
-                onClick={(e) => {
-                  navigate("/add-franchise-village");
-                }}
-                startIcon={<AddIcon />}
-              >
-                Add Village Incharge
-              </Button>
+              <Typography variant="h3">Pending Request</Typography>
             </Grid>
           </Grid>
         }
@@ -144,10 +167,11 @@ export default function DataTable() {
                       <TableCell>Name</TableCell>
                       <TableCell>Email</TableCell>
                       <TableCell>Contact</TableCell>
+                      <TableCell>State</TableCell>
                       <TableCell>Status</TableCell>
-                      {/* <TableCell align="center" sx={{ pr: 3 }}>
+                      <TableCell align="center" sx={{ pr: 3 }}>
                         Actions
-                      </TableCell> */}
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -184,8 +208,11 @@ export default function DataTable() {
                             <TableCell sx={{ pl: 3 }} align="start">
                               {row.Contact}
                             </TableCell>
+                            <TableCell sx={{ pl: 3 }} align="start">
+                              {row.StateID.Name}
+                            </TableCell>
                             <TableCell align="start">
-                              {row.IsActive ? (
+                              {row.Status === "Complete" ? (
                                 <Chip
                                   label="Active"
                                   color="success"
@@ -193,13 +220,13 @@ export default function DataTable() {
                                 />
                               ) : (
                                 <Chip
-                                  label="Inactive"
+                                  label="Pending"
                                   color="warning"
                                   size="small"
                                 />
                               )}
                             </TableCell>
-                            {/* <TableCell align="center" sx={{ pr: 3 }}>
+                            <TableCell align="center" sx={{ pr: 3 }}>
                               <Stack
                                 direction="row"
                                 justifyContent="center"
@@ -210,7 +237,7 @@ export default function DataTable() {
                                   title="Edit"
                                   onClick={(e) => {
                                     navigate(
-                                      `/edit-franchise-village/${row.VillageID}`
+                                      `/edit-franchise-state/${row.StateFID}`
                                     );
                                   }}
                                   data-target={`#`}
@@ -224,10 +251,10 @@ export default function DataTable() {
                                   </IconButton>
                                 </Tooltip>
 
-                                <Tooltip
+                                {/* <Tooltip
                                   placement="top"
                                   title="delete"
-                                  onClick={DeleteCategory(`${row.VillageID}`)}
+                                  onClick={DeleteCategory(`${row.StateID}`)}
                                 >
                                   <IconButton
                                     color="primary"
@@ -236,9 +263,9 @@ export default function DataTable() {
                                   >
                                     <DeleteIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
-                                </Tooltip>
+                                </Tooltip> */}
                               </Stack>
-                            </TableCell> */}
+                            </TableCell>
                           </TableRow>
                         );
                       })}

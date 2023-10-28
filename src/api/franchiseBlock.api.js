@@ -34,6 +34,7 @@ class Block extends HttpClient {
   AddFranchiseBlockConfig = ApiRoutes.FranchiseBlock.AddFranchiseBlock;
   EditFranchiseBlockConfig = ApiRoutes.FranchiseBlock.EditFranchiseBlock;
   DeleteFranchiseBlockConfig = ApiRoutes.FranchiseBlock.DeleteFranchiseBlock;
+  PendingBlockFranchiseConfig = ApiRoutes.FranchiseBlock.PendingBlockFranchise;
 
   getAllBlockFranchise = async (data) => {
     return this.instance({
@@ -47,6 +48,14 @@ class Block extends HttpClient {
     return this.instance({
       method: this.FranchiseBlockByIdConfig.Method,
       url: this.FranchiseBlockByIdConfig.Endpoint,
+      headers: {},
+      data: data,
+    });
+  };
+  getAllPendingBlockFranchise = async (data) => {
+    return this.instance({
+      method: this.PendingBlockFranchiseConfig.Method,
+      url: this.PendingBlockFranchiseConfig.Endpoint,
       headers: {},
       data: data,
     });

@@ -40,6 +40,9 @@ function App() {
   const [ifscCode, setIfscCode] = useState("");
   const [branchName, setBranchName] = useState("");
 
+  const [accept, setAccept] = useState("Accept");
+  const [discription, setDiscription] = useState('');
+
   const getCategoryById = useCallback(async () => {
     try {
       const getStateFranchiseByIdResponse =
@@ -53,6 +56,9 @@ function App() {
         setName(getStateFranchiseByIdResponse.data.data.Name);
         setEmail(getStateFranchiseByIdResponse.data.data.Email);
         setContact(getStateFranchiseByIdResponse.data.data.Contact);
+        setState(getStateFranchiseByIdResponse.data.data.StateID.StateID);
+        setCity(getStateFranchiseByIdResponse.data.data.CityID.DistrictID);
+        setAddress(getStateFranchiseByIdResponse.data.data.Address);
       } else {
         return toast.error(`Something went wrong!`);
       }
@@ -70,22 +76,12 @@ function App() {
   async function handleSubmit(event) {
     setIsLoading(true);
     event.preventDefault();
-    const bank = {
-      bankName: bankName,
-      accountNumber: acNumber,
-      branchName: branchName,
-      ifscCode: ifscCode,
-    };
-    const addServiceRequestResponse = await stateApi.editStateFranchise({
-      stateFId: params.id,
-      name: name,
-      contact: contact,
-      isActive: active,
-      bank: bank,
-      stateId: state,
-      cityId: city,
-      address: address,
-    });
+    const addServiceRequestResponse =
+      await FranchisestateApi.frenciseStateAccept({
+        frenchiseId: params.id,
+        status: accept,
+        description: discription,
+      });
     if (
       addServiceRequestResponse &&
       addServiceRequestResponse?.data?.code === 200
@@ -149,6 +145,10 @@ function App() {
     setIsIfscValid(isIfscValid);
     setIfscMessage(isIfscValid ? <></> : "Ifsc not valid!");
   };
+
+  const handleAccept = (e) =>{
+      setAccept(e.target.value);
+  }
 
   return (
     <MainCard title="Edit State Incharge">
@@ -240,15 +240,15 @@ function App() {
             <Stack>
               <InputLabel required>District</InputLabel>
               <Select
-                id="state"
-                name="state"
+                id="city"
+                name="city"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
               >
-                {allDistrict.map((state, index) => {
+                {allDistrict.map((dist, index) => {
                   return (
-                    <MenuItem value={state.districtId} key={index}>
-                      {state.Name}
+                    <MenuItem value={dist.DistrictID} key={index}>
+                      {dist.Name}
                     </MenuItem>
                   );
                 })}
@@ -325,7 +325,7 @@ function App() {
                 onChange={(e) => setIfscCode(e.target.value)}
                 placeholder="Enter IFSC Code"
               />
-              <p style={{ color: "red" }}>{ifscMessage}</p>
+              {/* <p style={{ color: "red" }}>{ifscMessage}</p> */}
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -342,6 +342,40 @@ function App() {
               />
             </Stack>
           </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Accept Or Reject</InputLabel>
+              <Select
+                id="accept"
+                name="accept"
+                value={accept}
+                onChange={(e) => handleAccept(e)}
+              >
+                <MenuItem value="Accept">Accept</MenuItem>
+                <MenuItem value="Reject">Reject</MenuItem>
+              </Select>
+            </Stack>
+          </Grid>
+          {accept === 'Reject' ? (
+            <>
+              <Grid item xs={12} md={12}>
+                <Stack>
+                  <InputLabel required>Reason For Reject</InputLabel>
+                  <TextField
+                    fullWidth
+                    id="discription"
+                    name="discription"
+                    inputProps={{ maxLength: 30 }}
+                    value={discription}
+                    onChange={(e) => setDiscription(e.target.value)}
+                    placeholder="Reason for rejection"
+                  />
+                </Stack>
+              </Grid>
+            </>
+          ) : (
+            <></>
+          )}
         </Grid>
         <br />
         <br />

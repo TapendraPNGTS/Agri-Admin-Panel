@@ -38,6 +38,7 @@ import staffReducer from "../redux/redux-slice/staff.slice";
 import commissionReducer from "../redux/redux-slice/commission.slice";
 import checkoutReducer from "../redux/redux-slice/checkOut.slice";
 import codReducer from "../redux/redux-slice/cod.slice";
+import orderReducer from '../redux/redux-slice/orderHistory.slice'
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
@@ -84,6 +85,7 @@ const reducer = combineReducers({
   commission: commissionReducer,
   checkOut: checkoutReducer,
   cod: codReducer,
+  orderHistory: orderReducer,
 });
 
 export default reducer;

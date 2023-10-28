@@ -3,7 +3,7 @@ import MainCard from "ui-component/cards/MainCard";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";  
-import { Grid, Stack, TextField } from "@mui/material";
+import { Grid, Stack, TextField , Switch } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import RoleApi from "../../../../api/role.api";
@@ -62,7 +62,11 @@ function App() {
                 <div className="switcher">
                   <label htmlFor="toggle-1">
                     <small>Create&nbsp;&nbsp;</small>
-                    <input type="checkbox" id="toggle-1" checked={row.Create} />
+                    <Switch
+                      type="checkbox"
+                      id="toggle-1"
+                      checked={row.Create}
+                    />
                     <span>
                       <small></small>
                     </span>
@@ -73,7 +77,7 @@ function App() {
                 <div className="switcher">
                   <label htmlFor="toggle-7">
                     <small>Read&nbsp;&nbsp;</small>
-                    <input type="checkbox" id="toggle-7" checked={row.Read} />
+                    <Switch type="checkbox" id="toggle-7" checked={row.Read} />
                     <span>
                       <small></small>
                     </span>
@@ -84,7 +88,7 @@ function App() {
                 <div className="switcher">
                   <label htmlFor="toggle-8">
                     <small>Update&nbsp;&nbsp;</small>
-                    <input
+                    <Switch
                       type="checkbox"
                       id="toggle-8"
                       checked={row.Update}
@@ -102,7 +106,7 @@ function App() {
                       <small></small>
                     </span>
                     <small>Delete&nbsp;&nbsp;</small>
-                    <input
+                    <Switch
                       type="checkbox"
                       id="toggle-9"
                       checked={row.Delete}

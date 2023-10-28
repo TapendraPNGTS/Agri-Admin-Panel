@@ -40,8 +40,6 @@ function App() {
   const [bestSeller, setBestSeller] = React.useState(false);
   const [newArrival, setNewArrival] = React.useState(false);
   const [bestDeal, setBestDeal] = React.useState(false);
-  const [discount, setDiscount] = React.useState(false);
-  const [discountPrice, setDiscountPrice] = React.useState(0);
   const [description, setDescription] = useState("");
   const [fileName, setFileName] = useState([]);
   const [fileName1, setFileName1] = useState();
@@ -49,6 +47,15 @@ function App() {
   const [proImage, setProImage] = React.useState([]);
   const [features, setFeatures] = useState();
   const [mainVarient, setMainVerient] = React.useState("");
+
+  const [salePrice, setSalePrice] = React.useState();
+  const [message, setMessage] = React.useState("");
+  const [frMessage, setFrMessage] = React.useState("");
+
+  const [stateComission, setStateComission] = React.useState("");
+  const [districtComission, setDistrictComission] = React.useState("");
+  const [blockComission, setBlockComission] = React.useState("");
+  const [clusterComission, setClusterComission] = React.useState("");
 
   function handleChange(event) {
     setFile(event.target.files[0]);
@@ -81,16 +88,22 @@ function App() {
         setActive(getProductByIdResponse.data.data.IsActive);
         setPrice(getProductByIdResponse.data.data.Price);
         setQuantity(getProductByIdResponse.data.data.Quantity);
-        setDiscount(getProductByIdResponse.data.data.Discount);
+        setSalePrice(getProductByIdResponse.data.data.DiscountPrice);
         setFranchisePrice(getProductByIdResponse.data.data.FrenchisePrice);
         setCoverImage(getProductByIdResponse.data.data.CoverImage);
         setProImage(getProductByIdResponse.data.data.Images);
-        setBestSeller(getProductByIdResponse.data.data.isBestSeller);
+        setBestSeller(getProductByIdResponse.data.data.IsBestSeller);
         setBestDeal(getProductByIdResponse.data.data.IsBestDeal);
         setNewArrival(getProductByIdResponse.data.data.IsNewArrival);
-        setDiscountPrice(getProductByIdResponse.data.data.DiscountPrice);
+        // setDiscountPrice(getProductByIdResponse.data.data.DiscountPrice);
         setDescription(getProductByIdResponse.data.data.Description);
-        setFeatures(getProductByIdResponse.data.data.feature);
+        setFeatures(getProductByIdResponse.data.data.Feature);
+        setStateComission(getProductByIdResponse.data.data.StateCommission);
+        setDistrictComission(
+          getProductByIdResponse.data.data.DistrictCommission
+        );
+        setBlockComission(getProductByIdResponse.data.data.BlockCommission);
+        setClusterComission(getProductByIdResponse.data.data.ClusterCommission);
         setTags(getProductByIdResponse.data.data.Variants);
       } else {
         return toast.error(`Something went wrong!`);
@@ -114,14 +127,18 @@ function App() {
     formdata.append("productId", params.id);
     formdata.append("name", title);
     formdata.append("active", active);
+    formdata.append("stateCommission", stateComission);
+    formdata.append("districtCommission", districtComission);
+    formdata.append("blockCommission", blockComission);
+    formdata.append("clusterCommission", clusterComission);
     formdata.append("price", price);
     formdata.append("quantity", quantity);
     formdata.append("feature", features);
     formdata.append("description", description);
     formdata.append("categoryId", categoryId);
-      tags.forEach((item, index) => {
-        formdata.append(`variant[${index}]`, item);
-      });
+    tags.forEach((item, index) => {
+      formdata.append(`variant[${index}]`, []);
+    });
     formdata.append("subCategoryId", mainVarient);
     formdata.append("img", file);
 
@@ -129,8 +146,8 @@ function App() {
       formdata.append("images", file1[key]);
     }
     formdata.append("frenchisePrice", franchisePrice);
-    formdata.append("discount", discount);
-    formdata.append("discountPrice", discountPrice);
+    // formdata.append("discount", discount);
+    formdata.append("discountPrice", salePrice);
     formdata.append("isNew", newArrival);
     formdata.append("isBestSeller", bestSeller);
     formdata.append("isBestDeal", bestDeal);
@@ -166,22 +183,21 @@ function App() {
     getAllCategory();
   }, []);
 
-    const subCategoryApi = new SubCategoryApi();
-    const rowses = useSelector((state) => state.subCategory.SubCategory);
+  const subCategoryApi = new SubCategoryApi();
+  const rowses = useSelector((state) => state.subCategory.SubCategory);
 
-    async function handleSetSubCategory(event) {
-      event.preventDefault();
-      const subCategories = await subCategoryApi.getSubCategoryByCategoryId({
-        categoryId: categoryId,
-      });
-      if (subCategories && subCategories?.data?.code === 200) {
-        return dispatch(updateAllSubCategory(subCategories.data.data));
-      } else {
-        return;
-      }
+  async function handleSetSubCategory(event) {
+    event.preventDefault();
+    const subCategories = await subCategoryApi.getSubCategoryByCategoryId({
+      categoryId: categoryId,
+    });
+    if (subCategories && subCategories?.data?.code === 200) {
+      return dispatch(updateAllSubCategory(subCategories.data.data));
+    } else {
+      return;
     }
+  }
 
-    
   const [tags, setTags] = useState([]);
   const [input, setInput] = useState("");
 
@@ -198,6 +214,30 @@ function App() {
 
   const handleTagClick = (index) => {
     setTags(tags.filter((tag, i) => i !== index));
+  };
+
+  const checkMarketPrice = () => {
+    if (salePrice < price) {
+      setMessage("");
+    } else {
+      setMessage(
+        <span style={{ color: "red" }}>
+          Selling price doesn't greater than (Market Retail Price)MRP
+        </span>
+      );
+    }
+  };
+
+  const checkFranchisePrice = () => {
+    if (franchisePrice < price) {
+      setFrMessage("");
+    } else {
+      setFrMessage(
+        <span style={{ color: "red" }}>
+          Franchise price doesn't greater than (Market Retail Price)MRP
+        </span>
+      );
+    }
   };
 
   return (
@@ -235,7 +275,7 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>Product Price</InputLabel>
+              <InputLabel required>Market Retail Price (MRP)</InputLabel>
               <TextField
                 fullWidth
                 id="price"
@@ -254,6 +294,27 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
+              <InputLabel required>Selling Price</InputLabel>
+              <TextField
+                fullWidth
+                id="sale"
+                name="sale"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 6);
+                }}
+                type="number"
+                value={salePrice}
+                onChange={(e) => setSalePrice(parseFloat(e.target.value))}
+                onBlur={checkMarketPrice}
+                placeholder="Enter Market price"
+              />
+              {message}
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
               <InputLabel required>Franchise Price</InputLabel>
               <TextField
                 fullWidth
@@ -266,9 +327,11 @@ function App() {
                 }}
                 type="number"
                 value={franchisePrice}
-                onChange={(e) => setFranchisePrice(e.target.value)}
-                placeholder="Enter product price"
+                onChange={(e) => setFranchisePrice(parseFloat(e.target.value))}
+                onBlur={checkFranchisePrice}
+                placeholder="Enter Franchise price"
               />
+              {frMessage}
             </Stack>
           </Grid>
           {/* <Grid item xs={6} md={6}>
@@ -320,6 +383,74 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
+              <InputLabel required>State Comission</InputLabel>
+              <TextField
+                fullWidth
+                id="state-commission"
+                name="state-commission"
+                onInput={(e) => {
+                  e.target.value = (0, e.target.value).toString().slice(0, 4);
+                }}
+                value={stateComission}
+                onChange={(e) => setStateComission(e.target.value)}
+                placeholder="Enter State Comission"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>District Comission</InputLabel>
+              <TextField
+                fullWidth
+                id="district-commission"
+                name="district-commission"
+                onInput={(e) => {
+                  e.target.value = (0, e.target.value).toString().slice(0, 6);
+                }}
+                value={districtComission}
+                onChange={(e) =>
+                  setDistrictComission(parseFloat(e.target.value))
+                }
+                placeholder="Enter District Comission"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Block Comission</InputLabel>
+              <TextField
+                fullWidth
+                id="block-commission"
+                name="block-commission"
+                onInput={(e) => {
+                  e.target.value = (0, e.target.value).toString().slice(0, 6);
+                }}
+                value={blockComission}
+                onChange={(e) => setBlockComission(parseFloat(e.target.value))}
+                placeholder="Enter BLock Comission"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Cluster Comission</InputLabel>
+              <TextField
+                fullWidth
+                id="cluster-commission"
+                name="cluster-commission"
+                onInput={(e) => {
+                  e.target.value = (0, e.target.value).toString().slice(0, 6);
+                }}
+                value={clusterComission}
+                onChange={(e) =>
+                  setClusterComission(parseFloat(e.target.value))
+                }
+                placeholder="Enter cluster Comission"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
               <InputLabel required>Choose Category</InputLabel>
               <Select
                 id="active"
@@ -340,26 +471,31 @@ function App() {
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Stack>
-              <InputLabel required>Sub Category</InputLabel>
-              <Select
-                id="mainVarient"
-                name="mainVarient"
-                value={categoryId}
-                onChange={(e) => setMainVerient(e.target.value)}
-                renderValue={
-                  categoryId !== "" ? undefined : () => "--Select SubCategory--"
-                }
-              >
-                {rowses.map((row, i) => {
-                  return (
-                    <MenuItem key={i} value={row.SubCategoryID}>
-                      {row.Name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </Stack>
+            {rowses.length > 0 ? (
+              <Stack>
+                <InputLabel required>Sub Category</InputLabel>
+                <Select
+                  id="mainVarient"
+                  name="mainVarient"
+                  value={mainVarient}
+                  placeholder="Select Sub Category"
+                  onChange={(e) => setMainVerient(e.target.value)}
+                  // renderValue={
+                  //   category !== "" ? undefined : () => "--Select SubCategory--"
+                  // }
+                >
+                  {rowses.map((row, i) => {
+                    return (
+                      <MenuItem key={i} value={row.SubCategoryID}>
+                        {row.Name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </Stack>
+            ) : (
+              <> </>
+            )}
           </Grid>
           <Grid item xs={4} md={4}>
             <Stack>
@@ -427,7 +563,7 @@ function App() {
               />
             </Stack>
           </Grid>
-          <Grid item xs={6} md={6}>
+          {/* <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>Discount</InputLabel>
               <Select
@@ -464,7 +600,7 @@ function App() {
             </Grid>
           ) : (
             <></>
-          )}
+          )} */}
           <Grid item xs={12} md={6}>
             <Stack>
               <InputLabel>Cover Image</InputLabel>

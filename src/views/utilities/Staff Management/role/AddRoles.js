@@ -7,7 +7,7 @@ import TableRow from "@mui/material/TableRow";
 import { gridSpacing } from "store/constant";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Grid, MenuItem, Select, Stack } from "@mui/material";
+import { Button, Grid, MenuItem, Select, Stack, Switch } from "@mui/material";
 
 function App() {
   const navigate = useNavigate();
@@ -204,7 +204,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Create&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-1"
                     checked={isChecked}
@@ -225,7 +225,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Read&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-7"
                     checked={readManage}
@@ -246,7 +246,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Update&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-8"
                     checked={updateManage}
@@ -267,7 +267,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Delete&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-9"
                     checked={deleteManage}
@@ -291,7 +291,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Create&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-2"
                     checked={roleCreate}
@@ -312,7 +312,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Read&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-10"
                     checked={courseRead}
@@ -333,7 +333,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Update&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-11"
                     checked={courseUpdate}
@@ -354,7 +354,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Delete&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-12"
                     checked={courseDelete}
@@ -378,7 +378,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Create&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-3"
                     checked={userCreate}
@@ -399,7 +399,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Read&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-13"
                     checked={freecourseRead}
@@ -420,7 +420,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Update&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-14"
                     checked={freecourseUpdate}
@@ -441,7 +441,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Delete&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-15"
                     checked={freecourseDelete}
@@ -465,7 +465,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Create&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-4"
                     checked={leadCreate}
@@ -486,7 +486,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Read&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-16"
                     checked={reportRead}
@@ -507,7 +507,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Update&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-17"
                     checked={reportUpdate}
@@ -528,7 +528,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Delete&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-18"
                     checked={reportDelete}
@@ -552,7 +552,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Create&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-5"
                     checked={createUser}
@@ -573,7 +573,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Read&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-19"
                     checked={readUser}
@@ -594,7 +594,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Update&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-20"
                     checked={updateUser}
@@ -615,7 +615,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Delete&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-22"
                     checked={deleteUser}
@@ -639,7 +639,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Create&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-6"
                     checked={createOrder}
@@ -660,7 +660,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Read&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-23"
                     checked={readOrder}
@@ -681,7 +681,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Update&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-24"
                     checked={updateOrder}
@@ -702,7 +702,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Delete&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-25"
                     checked={deleteOrder}
@@ -726,7 +726,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Create&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-7"
                     checked={createPurchase}
@@ -747,7 +747,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Read&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-26"
                     checked={readPurchase}
@@ -768,7 +768,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Update&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-27"
                     checked={updatePurchase}
@@ -789,7 +789,7 @@ function App() {
                     <small></small>
                   </span>
                   <small>Delete&nbsp;&nbsp;</small>
-                  <input
+                  <Switch
                     type="checkbox"
                     id="toggle-28"
                     checked={deletePurchase}

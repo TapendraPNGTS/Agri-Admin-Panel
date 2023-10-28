@@ -108,7 +108,7 @@ export default function Users() {
                       <TableCell>Name</TableCell>
                       <TableCell>Email</TableCell>
                       <TableCell>Phone</TableCell>
-                      <TableCell>Address</TableCell>
+                      <TableCell>Cluster</TableCell>
                       <TableCell>City</TableCell>
                       <TableCell>State</TableCell>
                       <TableCell>Pin Code</TableCell>
@@ -150,7 +150,7 @@ export default function Users() {
                               {row.Contact ? row.Contact : "-"}
                             </TableCell>
                             <TableCell align="start">
-                              {row.Address ? row.Address : "-"}
+                              {row.ClusterID.Name ? row.ClusterID.Name : "-"}
                             </TableCell>
                             <TableCell align="start">
                               {row.CityID.Name ? row.CityID.Name : "-"}

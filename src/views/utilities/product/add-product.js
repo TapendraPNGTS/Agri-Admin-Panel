@@ -46,7 +46,12 @@ function App() {
   const [mainVarient, setMainVerient] = React.useState("");
   const [salePrice, setSalePrice] = React.useState();
   const [message, setMessage] = React.useState("");
-   const [frMessage, setFrMessage] = React.useState("");
+  const [frMessage, setFrMessage] = React.useState("");
+  // const [variant, setVariant] = React.useState([]);
+  const [stateComission, setStateComission] = React.useState('');
+  const [districtComission, setDistrictComission] = React.useState("");
+  const [blockComission, setBlockComission] = React.useState("");
+  const [clusterComission, setClusterComission] = React.useState("");
 
   function handleChange(event) {
     setFile(event.target.files[0]);
@@ -77,8 +82,12 @@ function App() {
     formdata.append("subCategoryId", mainVarient);
     formdata.append("quantity", quantity);
     formdata.append("active", active);
+    formdata.append("stateCommission", stateComission);
+    formdata.append("districtCommission", districtComission);
+    formdata.append("blockCommission", blockComission);
+    formdata.append("clusterCommission", clusterComission);
     // Append each item in the variant array to the FormData object
-    // formdata.append("variant", variant);
+    formdata.append("variant", []);
     formdata.append("img", file);
     for (const key of Object.keys(file1)) {
       formdata.append(`images`, file1[key]);
@@ -137,26 +146,26 @@ function App() {
   }
 
   const checkMarketPrice = () => {
-    if (salePrice < price ) {
+    if (salePrice < price) {
       setMessage("");
     } else {
       setMessage(
-        <span style={{ color: "red" }}>Sales Price Not Greater Than Price</span>
+        <span style={{ color: "red" }}>Selling price doesn't greater than (Market Retail Price)MRP</span>
       );
     }
   };
 
-    const checkFranchisePrice = () => {
-      if (franchisePrice < price) {
-        setFrMessage("");
-      } else {
-        setFrMessage(
-          <span style={{ color: "red" }}>
-            Franchise Price Not Greater Than Price
-          </span>
-        );
-      }
-    };
+  const checkFranchisePrice = () => {
+    if (franchisePrice < price) {
+      setFrMessage("");
+    } else {
+      setFrMessage(
+        <span style={{ color: "red" }}>
+          Franchise price doesn't greater than (Market Retail Price)MRP
+        </span>
+      );
+    }
+  };
 
   return (
     <MainCard title="Add Product">
@@ -178,7 +187,7 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>Product Price</InputLabel>
+              <InputLabel required>Market Retail Price (MRP)</InputLabel>
               <TextField
                 fullWidth
                 id="price"
@@ -197,7 +206,7 @@ function App() {
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>Market Price</InputLabel>
+              <InputLabel required>Selling Price</InputLabel>
               <TextField
                 fullWidth
                 id="sale"
@@ -205,7 +214,7 @@ function App() {
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
-                    .slice(0, 4);
+                    .slice(0, 6);
                 }}
                 type="number"
                 value={salePrice}
@@ -252,6 +261,78 @@ function App() {
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="Enter quantity"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>State Comission</InputLabel>
+              <TextField
+                fullWidth
+                id="state-commission"
+                name="state-commission"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 6);
+                }}
+                value={stateComission}
+                onChange={(e) => setStateComission(e.target.value)}
+                placeholder="Enter State Comission"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>District Comission</InputLabel>
+              <TextField
+                fullWidth
+                id="district-commission"
+                name="district-commission"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 6);
+                }}
+                value={districtComission}
+                onChange={(e) => setDistrictComission(e.target.value)}
+                placeholder="Enter District Comission"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Block Comission</InputLabel>
+              <TextField
+                fullWidth
+                id="block-commission"
+                name="block-commission"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 6);
+                }}
+                value={blockComission}
+                onChange={(e) => setBlockComission(e.target.value)}
+                placeholder="Enter BLock Comission"
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Cluster Comission</InputLabel>
+              <TextField
+                fullWidth
+                id="cluster-commission"
+                name="cluster-commission"
+                onInput={(e) => {
+                  e.target.value = Math.max(0, parseInt(e.target.value))
+                    .toString()
+                    .slice(0, 6);
+                }}
+                value={clusterComission}
+                onChange={(e) => setClusterComission(e.target.value)}
+                placeholder="Enter cluster Comission"
               />
             </Stack>
           </Grid>
@@ -319,26 +400,31 @@ function App() {
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
-            <Stack>
-              <InputLabel required>Sub Category</InputLabel>
-              <Select
-                id="mainVarient"
-                name="mainVarient"
-                value={mainVarient}
-                onChange={(e) => setMainVerient(e.target.value)}
-                renderValue={
-                  category !== "" ? undefined : () => "--Select SubCategory--"
-                }
-              >
-                {rowses.map((row, i) => {
-                  return (
-                    <MenuItem key={i} value={row.SubCategoryID}>
-                      {row.Name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </Stack>
+            {rowses.length > 0 ? (
+              <Stack>
+                <InputLabel required>Sub Category</InputLabel>
+                <Select
+                  id="mainVarient"
+                  name="mainVarient"
+                  value={mainVarient}
+                  placeholder="Select Sub Category"
+                  onChange={(e) => setMainVerient(e.target.value)}
+                  // renderValue={
+                  //   category !== "" ? undefined : () => "--Select SubCategory--"
+                  // }
+                >
+                  {rowses.map((row, i) => {
+                    return (
+                      <MenuItem key={i} value={row.SubCategoryID}>
+                        {row.Name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </Stack>
+            ) : (
+              <> </>
+            )}
           </Grid>
           <Grid item xs={12} md={12}>
             <Stack>

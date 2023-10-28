@@ -327,7 +327,7 @@ function App() {
                 onChange={(e) => setIfscCode(e.target.value)}
                 placeholder="Enter IFSC Code"
               />
-              <p style={{ color: "red" }}>{ifscMessage}</p>
+              {/* <p style={{ color: "red" }}>{ifscMessage}</p> */}
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>

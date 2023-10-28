@@ -146,9 +146,9 @@ export default function DataTable() {
                       <TableCell>Contact</TableCell>
                       <TableCell>State</TableCell>
                       <TableCell>Status</TableCell>
-                      <TableCell align="center" sx={{ pr: 3 }}>
+                      {/* <TableCell align="center" sx={{ pr: 3 }}>
                         Actions
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -203,7 +203,7 @@ export default function DataTable() {
                                 />
                               )}
                             </TableCell>
-                            <TableCell align="center" sx={{ pr: 3 }}>
+                            {/* <TableCell align="center" sx={{ pr: 3 }}>
                               <Stack
                                 direction="row"
                                 justifyContent="center"
@@ -214,7 +214,7 @@ export default function DataTable() {
                                   title="Edit"
                                   onClick={(e) => {
                                     navigate(
-                                      `/edit-franchise-state/${row.StateID}`
+                                      `/edit-franchise-state/${row.StateFID}`
                                     );
                                   }}
                                   data-target={`#`}
@@ -228,7 +228,7 @@ export default function DataTable() {
                                   </IconButton>
                                 </Tooltip>
 
-                                {/* <Tooltip
+                                <Tooltip
                                   placement="top"
                                   title="delete"
                                   onClick={DeleteCategory(`${row.StateID}`)}
@@ -240,9 +240,9 @@ export default function DataTable() {
                                   >
                                     <DeleteIcon sx={{ fontSize: "1.1rem" }} />
                                   </IconButton>
-                                </Tooltip> */}
+                                </Tooltip>
                               </Stack>
-                            </TableCell>
+                            </TableCell> */}
                           </TableRow>
                         );
                       })}
