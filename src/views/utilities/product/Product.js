@@ -159,6 +159,8 @@ export default function DataTable() {
                           ? row
                           : row.Name.toLowerCase().includes(
                               search.toLowerCase()
+                            ) || row.CategoryID.Name.toLowerCase().includes(
+                              search.toLowerCase()
                             )
                       )
 

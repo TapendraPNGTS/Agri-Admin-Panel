@@ -144,7 +144,9 @@ const StaffManagement = () => {
                       .filter((row) =>
                         search === ""
                           ? row
-                          : row.Title.toLowerCase().includes(
+                          : row.UserName.toLowerCase().includes(
+                              search.toLowerCase()
+                            ) || row.Type.toLowerCase().includes(
                               search.toLowerCase()
                             )
                       )
@@ -163,8 +165,8 @@ const StaffManagement = () => {
                             <TableCell sx={{ pl: 3 }} align="start">
                               {index + 1}
                             </TableCell>
-                            <TableCell>{row.RoleID.Name}</TableCell>
-                            <TableCell>{row.Name}</TableCell>
+                            <TableCell>{row.Type}</TableCell>
+                            <TableCell>{row.UserName}</TableCell>
                             <TableCell align="start">{row.Email}</TableCell>
                             <TableCell align="start">{row.Contact}</TableCell>
                             <TableCell align="start">{row.Type}</TableCell>

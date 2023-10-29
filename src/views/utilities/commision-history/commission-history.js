@@ -165,7 +165,8 @@ export default function CommissionHistory() {
                     <TableCell sx={{ pl: 3 }}>S No.</TableCell>
                     <TableCell>Product Name</TableCell>
                     <TableCell>Date</TableCell>
-                    <TableCell>Incharage</TableCell>
+                    <TableCell>Incharage </TableCell>
+                    <TableCell>Incharage Name </TableCell>
                     <TableCell>Commission Amount</TableCell>
                     <TableCell>Commission %</TableCell>
                     <TableCell>Amount</TableCell>
@@ -188,9 +189,15 @@ export default function CommissionHistory() {
                   .filter((row) =>
                   search === ""
                     ? row
-                    :  row.invoiceId.toLowerCase().includes(
+                    :  row.ProductID.Name.toLowerCase().includes(
                       search.toLowerCase()
-                    ) || row.transactionId.toLowerCase().includes(
+                    ) || row.CommissionPer.toString().toLowerCase().includes(
+                      search.toLowerCase()
+                    ) || row.CommissionPer.toString().includes(
+                      search
+                    ) || row.Type.toLowerCase().includes(
+                      search.toLowerCase()
+                    ) || row.FranchiseID.UserName.toLowerCase().includes(
                       search.toLowerCase()
                     )
                 ).map((row, index) => {
@@ -214,6 +221,9 @@ export default function CommissionHistory() {
                           </TableCell>
                           <TableCell align="start">
                             {row.Type}
+                          </TableCell>
+                          <TableCell align="start">
+                            {row.FranchiseID.UserName}
                           </TableCell>
                           <TableCell align="start">
                           <b> ₹ {row.Commission} /-</b>

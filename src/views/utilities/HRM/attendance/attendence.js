@@ -126,7 +126,7 @@ export default function Attenance() {
                       .filter((row) =>
                         search === ""
                           ? row
-                          : row.Title.toLowerCase().includes(
+                          : row.StaffID.UserName.toLowerCase().includes(
                               search.toLowerCase()
                             )
                       )

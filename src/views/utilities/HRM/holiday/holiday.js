@@ -197,7 +197,7 @@ export default function DataTable() {
                       .filter((row) =>
                         search === ""
                           ? row
-                          : row.Title.toLowerCase().includes(
+                          : row.Occasion.toLowerCase().includes(
                               search.toLowerCase()
                             )
                       )
