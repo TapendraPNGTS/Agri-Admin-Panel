@@ -7,6 +7,7 @@ import InputLabel from "ui-component/extended/Form/InputLabel";
 import { Grid, Stack, TextField } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { gridSpacing } from "store/constant";
+import { getTokenLocal } from "../../../utils/localStorage.util";
 
 function App() {
   const params = useParams();
@@ -19,7 +20,7 @@ function App() {
 
   var myHeaders = new Headers();
   myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
+  myHeaders.append("Authorization", "Bearer " +getTokenLocal());
   myHeaders.append("Content-Type", "application/json");
 
   function getAllStaffPermission() {
