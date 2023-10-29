@@ -1,25 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MainCard from "ui-component/cards/MainCard";
 import InputLabel from "ui-component/extended/Form/InputLabel";
 import { gridSpacing } from "store/constant";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import {
   Button,
   Grid,
   MenuItem,
   Select,
   Stack,
-  CircularProgress,
   TextField,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import FrenciseApi from "../../../api/franchise.api";
+import { updateAllFrencise } from "../../../redux/redux-slice/frenchise.slice";
+
+import StateApi from "../../../api/state.api";
+import { updateAllState } from "../../../redux/redux-slice/state.slice";
+import DistrictApi from "../../../api/district.api";
+import { updateAllDistrict } from "../../../redux/redux-slice/district.slice";
+import FranchiseClusterApi from "../../../api/franchiseCluster.api";
+import { updateAllFranchiseCluster } from "../../../redux/redux-slice/franchiseCluster.slice";
+
 function App() {
+  const dispatch = useDispatch();
+  const frenciseApi = new FrenciseApi();
+  const rows = useSelector((state) => state.frencise.Frencise);
+
   const params = useParams();
   const navigate = useNavigate();
-  const [active, setActive] = React.useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [firmName, setFirmName] = React.useState("");
   const [person, setPerson] = React.useState("");
   const [address, setAddress] = React.useState("");
@@ -30,6 +43,11 @@ function App() {
   const [state, setState] = React.useState("");
   const [pinCode, setPinCode] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [village, setVillage] = React.useState("");
+  const [tehsil, setTehsil] = React.useState("");
+  const [block, setBlock] = React.useState("");
+  const [allClusters, setAllCluster] = React.useState([]);
 
   //   bank ariable
   const [bankName, setBankName] = useState("");
@@ -50,99 +68,242 @@ function App() {
   const [fertiDate, setFertiDate] = useState("");
   const [fertiValidDate, setFertiValidDate] = useState("");
 
-  var myHeaders = new Headers();
-  myHeaders.append("authkey", process.env.REACT_APP_AUTH_KEY);
-  myHeaders.append("Authorization", "Bearer " + localStorage.getItem("token"));
-  myHeaders.append("Content-Type", "application/json");
+  const [accept, setAccept] = useState("Accept");
+  const [discription, setDiscription] = useState('');
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    setIsLoading(true);
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      frenchiseId: params.id,
-      status: active,
-    });
+  const getFrenciseById = useCallback(async () => {
+    try {
+      const getFrenciseResponse = await frenciseApi.getFrenciseById({
+        frenchiseId: params.id,
+      });
+      if (getFrenciseResponse && getFrenciseResponse?.data?.code === 200) {
+        setFirmName(getFrenciseResponse.data.data.FirmName);
+        setPerson(getFrenciseResponse.data.data.Name);
+        setEmail(getFrenciseResponse.data.data.Email);
+        setGstNo(getFrenciseResponse.data.data.GstNumber);
+        setFirmType(getFrenciseResponse.data.data.FirmType);
+        setNumber(getFrenciseResponse.data.data.Contact);
+        setAddress(getFrenciseResponse.data.data.Address);
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch(`${process.env.REACT_APP_API_URL}frenciseCheck`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.code === 200) {
-          navigate("/franchise-request");
-          toast.success("Updated Successfully", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        } else {
-          setIsLoading(false);
-        }
-      })
-      .catch((error) => {});
-  }
-
-  function getFrenciseById() {
-    var raw = JSON.stringify({
-      adminId: localStorage.getItem("userId"),
-      frenchiseId: params.id,
-    });
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    fetch(`${process.env.REACT_APP_API_URL}getFrenciseById`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setFirmName(result.data.FirmName);
-        setPerson(result.data.Name);
-        setEmail(result.data.Email);
-        setGstNo(result.data.GstNumber);
-        setFirmType(result.data.FirmType);
-        setNumber(result.data.Contact);
-        setAddress(result.data.Address);
-        setCity(result.data.City);
-        setState(result.data.State);
-        setPinCode(result.data.PinCode);
+        setCity(getFrenciseResponse.data.data.CityID.DistrictID);
+        setState(getFrenciseResponse.data.data.StateID.StateID);
+        fetchDistrict(state);
+        setPinCode(getFrenciseResponse.data.data.PinCode);
+        setBlock(getFrenciseResponse.data.data.ClusterID)
         // bank details
-        setBankName(result.data.Bank.BankName);
-        setAcNumber(result.data.Bank.AccountNumber);
-        setIfscCode(result.data.Bank.IFSCCode);
-        setBranchName(result.data.Bank.BranchName);
+        setBankName(getFrenciseResponse.data.data.Bank.BankName);
+        setAcNumber(getFrenciseResponse.data.data.Bank.AccountNumber);
+        setIfscCode(getFrenciseResponse.data.data.Bank.IFSCCode);
+        setBranchName(getFrenciseResponse.data.data.Bank.BranchName);
+
+
+      
         // pestricid details
-        setPstLicense(result.data.Presticide.LicenseNumber);
-        setPstDate(result.data.Presticide.StartDate);
-        setPstValidDate(result.data.Presticide.ValidUpto);
+        setPstLicense(getFrenciseResponse.data.data.Presticide.LicenseNumber);
+        setPstDate(getFrenciseResponse.data.data.Presticide.StartDate);
+        setPstValidDate(getFrenciseResponse.data.data.Presticide.ValidUpto);
         // Seed details
-        setSeedLicense(result.data.Seed.LicenseNumber);
-        setSeedDate(result.data.Seed.StartDate);
-        setSeedValidDate(result.data.Seed.ValidUpto);
+        console.log("sanfsdjfs",getFrenciseResponse.data.data)
+        setSeedLicense(getFrenciseResponse.data.data.Seed.LicenseNumber);
+        setSeedDate(getFrenciseResponse.data.data.Seed.StartDate);
+        setSeedValidDate(getFrenciseResponse.data.data.Seed.ValidUpto);
         // Fretilizer details
-        setFertiLicense(result.data.Fretilizer.LicenseNumber);
-        setFertiDate(result.data.Fretilizer.StartDate);
-        setFertiValidDate(result.data.Fretilizer.ValidUpto);
-      })
-      .catch((error) => console.log("error", error));
-  }
+        setFertiLicense(getFrenciseResponse.data.data.Fretilizer.LicenseNumber);
+        setFertiDate(getFrenciseResponse.data.data.Fretilizer.StartDate);
+        setFertiValidDate(getFrenciseResponse.data.data.Fretilizer.ValidUpto);
+      } else {
+        return toast.error(`Something went wrong!`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
   React.useEffect(() => {
+    getAllDistrict();
     getFrenciseById();
+  
   }, []);
 
+  const stateApi = new StateApi();
+  const allState = useSelector((state) => state.state.State);
+
+  const getAllState = useCallback(async () => {
+    try {
+      const state = await stateApi.getAllState({});
+      if (!state || !state.data.data) {
+        return toast.error("no latest state available");
+      } else {
+        dispatch(updateAllState(state.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
+
+  const checkFrenchise = useCallback(async () => {
+    try {
+      const state = await frenciseApi.checkFrenchise({
+        frenchiseId: params.id,
+        status :accept,
+        description : discription
+      });
+      if (!state || !state.data.data) {
+        return toast.error("no latest state available");
+      } else {
+       
+        return toast.success("Franchise Update Successfully.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+});
+
+  useEffect(() => {
+    getAllState();
+  }, []);
+
+  const districtApi = new DistrictApi();
+  const allDistrict = useSelector((state) => state.district.District);
+
+  async function handledistrict(event) {
+    event.preventDefault();
+    fetchDistrict(state)
+  }
+
+  const fetchDistrict = useCallback(async (stateID) => {
+    const district = await districtApi.getDistrictByStateId({
+        stateId: stateID,
+      });
+      if (district && district?.data?.code === 200) {
+        return dispatch(updateAllDistrict(district.data.data));
+      } else {
+        return;
+      }
+  })
+
+  const clusterApi = new FranchiseClusterApi();
+  const clusterrows = useSelector(
+    (state) => state.franchiseCluster.FranchiseCluster
+  );
+
+  const getAllDistrict = useCallback(async () => {
+    try {
+      const state = await clusterApi.getAllClusterFranchise({});
+      if (!state || !state.data.data) {
+        return toast.error("no latest state available");
+      } else {
+        dispatch(updateAllFranchiseCluster(state.data.data));
+        setAllCluster(state.data.data);
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
+
+  useEffect(() => {
+    getAllDistrict();
+  }, []);
+
+  // Validation
+  const [message, setMessage] = useState("");
+  const [isValid, setIsValid] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(false);
+  const [emailMessage, setEmailMessage] = useState("");
+  const [isGstValid, setIsGstValid] = useState(false);
+  const [gstMessage, setGstMessage] = useState("");
+  const [isIfscValid, setIsIfscValid] = useState(false);
+  const [ifscMessage, setIfscMessage] = useState("");
+
+  const phoneValidation = () => {
+    const regex = /^[6-9]\d{9}$/;
+    return !(!number || regex.test(number) === false);
+  };
+
+  const phoneValid = () => {
+    const isPhoneValid = phoneValidation();
+    setIsValid(isPhoneValid);
+    setMessage(isPhoneValid ? <></> : "Phone Number not valid!");
+  };
+  const emailValidation = () => {
+    const regexEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+.)+[A-Z]{2,4}$/i;
+    return !(!email || regexEmail.test(email) === false);
+  };
+
+  const emailValid = () => {
+    const isEmailValid = emailValidation();
+    setIsEmailValid(isEmailValid);
+    setEmailMessage(isEmailValid ? <></> : "Email not valid!");
+  };
+  const gstValidation = () => {
+    const regexGst =
+      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+    return !(!gstNo || regexGst.test(gstNo) === false);
+  };
+
+  const gstValid = () => {
+    const isGstValid = gstValidation();
+    setIsGstValid(isGstValid);
+    setGstMessage(isGstValid ? <></> : "Gst number not valid!");
+  };
+
+  const ifscValidation = () => {
+    const regexIfsc = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    return !(!ifscCode || regexIfsc.test(ifscCode) === false);
+  };
+
+  const ifscValid = () => {
+    const isIfscValid = ifscValidation();
+    setIsIfscValid(isIfscValid);
+    setIfscMessage(isIfscValid ? <></> : "Ifsc not valid!");
+  };
+
+  const handleAccept = (e) =>{
+    setAccept(e.target.value);
+}
+
+ async function handleSubmit(event) {
+
+    if(accept === "reject" && !discription){
+        return toast.error('Please enter description...');
+    }else{
+        setIsLoading(true);
+        event.preventDefault();
+       
+        const addFrenciseResponse = await frenciseApi.frenciseCheck({
+         frenchiseId: params.id,
+         status :accept,
+         description : discription
+       });
+        if (addFrenciseResponse && addFrenciseResponse?.data?.code === 200) {
+         setIsLoading(false);
+          toast.success(`Updated successsfully`);
+          navigate("/franchise-request");
+        } else {
+         setIsLoading(false);
+          return toast.error(`Something went wrong!`);
+        }
+    }
+   
+ }
+
   return (
-    <MainCard title="Accept Or Reject Franchise">
-      <form action="#" onSubmit={handleSubmit}>
+    <MainCard title="View Franchise Form">
+      <form
+        action="#"
+        onSubmit={handleSubmit}
+      >
         <Grid item>
           <Typography variant="h3">Company & User Detail</Typography>
         </Grid>
@@ -155,8 +316,8 @@ function App() {
               <TextField
                 fullWidth
                 id="state"
-                disabled
                 name="state"
+                disabled
                 inputProps={{ maxLength: 30 }}
                 value={firmName}
                 onChange={(e) => setFirmName(e.target.value)}
@@ -170,8 +331,8 @@ function App() {
               <TextField
                 fullWidth
                 id="state"
-                disabled
                 name="state"
+                disabled
                 inputProps={{ maxLength: 30 }}
                 value={person}
                 onChange={(e) => setPerson(e.target.value)}
@@ -184,9 +345,9 @@ function App() {
               <InputLabel required>Address</InputLabel>
               <TextField
                 fullWidth
-                disabled
                 id="address"
                 name="address"
+                disabled
                 inputProps={{ maxLength: 30 }}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -203,11 +364,13 @@ function App() {
                 name="state"
                 disabled
                 type="email"
+                onBlur={emailValid}
                 inputProps={{ maxLength: 40 }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email address"
               />
+              <p style={{ color: "red" }}>{emailMessage}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -216,9 +379,10 @@ function App() {
               <TextField
                 fullWidth
                 id="state"
-                disabled
                 name="state"
                 type="number"
+                disabled
+                onBlur={phoneValid}
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
@@ -228,6 +392,7 @@ function App() {
                 onChange={(e) => setNumber(e.target.value)}
                 placeholder="Enter Contact No."
               />
+              <p style={{ color: "red" }}>{message}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -235,10 +400,10 @@ function App() {
               <InputLabel required>Firm Type</InputLabel>
               <Select
                 id="active"
-                disabled
                 name="active"
                 value={firmType}
                 key={firmType}
+                disabled
                 onChange={(e) => setFirmType(e.target.value)}
               >
                 <MenuItem value="Prop">Prop</MenuItem>
@@ -256,47 +421,103 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
+                type="text"
                 disabled
-                type="number"
-                onInput={(e) => {
-                  e.target.value = Math.max(0, parseInt(e.target.value))
-                    .toString()
-                    .slice(0, 13);
-                }}
+                onBlur={gstValid}
                 value={gstNo}
                 onChange={(e) => setGstNo(e.target.value)}
                 placeholder="Enter GST No."
+              />
+              <p style={{ color: "red" }}>{gstMessage}</p>
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Village</InputLabel>
+              <TextField
+                fullWidth
+                id="address"
+                name="address"
+                disabled
+                inputProps={{ maxLength: 30 }}
+                value={village}
+                onChange={(e) => setVillage(e.target.value)}
+                placeholder="Enter Village"
               />
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
-              <InputLabel required>City</InputLabel>
+              <InputLabel required>Tehsil</InputLabel>
               <TextField
                 fullWidth
                 id="address"
-                disabled
                 name="address"
+                disabled
                 inputProps={{ maxLength: 30 }}
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Enter City"
+                value={tehsil}
+                onChange={(e) => setTehsil(e.target.value)}
+                placeholder="Enter Tehsil"
               />
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Cluster</InputLabel>
+              <Select
+                id="state"
+                name="state"
+                value={block}
+                disabled
+                onChange={(e) => setBlock(e.target.value)}
+              >
+                {allClusters.map((state) => {
+                  return (
+                    <MenuItem value={state.BlockID}>{state.Name}</MenuItem>
+                  );
+                })}
+              </Select>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>State</InputLabel>
-              <TextField
-                fullWidth
-                id="address"
-                disabled
-                name="address"
-                inputProps={{ maxLength: 30 }}
+              <Select
+                id="state"
+                name="state"
                 value={state}
+                disabled
                 onChange={(e) => setState(e.target.value)}
-                placeholder="Enter State"
-              />
+                onBlur={handledistrict}
+              >
+                {allState.map((state, index) => {
+                  return (
+                    <MenuItem value={state.StateID} key={index}>
+                      {state.Name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </Stack>
+          </Grid>
+          <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>District</InputLabel>
+              <Select
+                id="district"
+                name="district"
+                value={city}
+                disabled
+                onChange={(e) => setCity(e.target.value)}
+              >
+                {allDistrict.map((dist, index) => {
+                  return (
+                    <MenuItem value={dist.DistrictID} key={index}>
+                      {dist.Name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -305,9 +526,9 @@ function App() {
               <TextField
                 fullWidth
                 id="address"
-                disabled
                 name="address"
                 type="number"
+                disabled
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
@@ -333,11 +554,11 @@ function App() {
               <InputLabel required>Bank Name</InputLabel>
               <TextField
                 fullWidth
-                disabled
                 id="state"
                 name="state"
                 inputProps={{ maxLength: 30 }}
                 value={bankName}
+                disabled
                 onChange={(e) => setBankName(e.target.value)}
                 placeholder="Enter Bank Name"
               />
@@ -350,8 +571,8 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                disabled
                 type="number"
+                disabled
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
@@ -370,13 +591,15 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                disabled
                 type="text"
+                disabled
+                onBlur={ifscValid}
                 inputProps={{ maxLength: 15 }}
                 value={ifscCode}
                 onChange={(e) => setIfscCode(e.target.value)}
                 placeholder="Enter IFSC Code"
               />
+              <p style={{ color: "red" }}>{ifscMessage}</p>
             </Stack>
           </Grid>
           <Grid item xs={6} md={6}>
@@ -385,8 +608,8 @@ function App() {
               <TextField
                 fullWidth
                 id="state"
-                disabled
                 name="state"
+                disabled
                 inputProps={{ maxLength: 30 }}
                 value={branchName}
                 onChange={(e) => setBranchName(e.target.value)}
@@ -409,9 +632,9 @@ function App() {
               <TextField
                 fullWidth
                 id="state"
-                disabled
                 name="state"
                 type="number"
+                disabled
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
@@ -429,8 +652,8 @@ function App() {
               <TextField
                 fullWidth
                 id="state"
-                disabled
                 name="state"
+                disabled
                 type="date"
                 inputProps={{ maxLength: 30 }}
                 value={pstDate}
@@ -445,9 +668,9 @@ function App() {
               <TextField
                 fullWidth
                 id="state"
-                disabled
                 name="state"
                 type="date"
+                disabled
                 inputProps={{ maxLength: 30 }}
                 value={pstValidDate}
                 onChange={(e) => setPstValidDate(e.target.value)}
@@ -462,8 +685,8 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
+                type="text"
                 disabled
-                type="number"
                 onInput={(e) => {
                   e.target.value = Math.max(0, parseInt(e.target.value))
                     .toString()
@@ -482,8 +705,8 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                disabled
                 type="date"
+                disabled
                 inputProps={{ maxLength: 30 }}
                 value={seedDate}
                 onChange={(e) => setSeedDate(e.target.value)}
@@ -498,8 +721,8 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                disabled
                 type="date"
+                disabled
                 inputProps={{ maxLength: 30 }}
                 value={seedValidDate}
                 onChange={(e) => setSeedValidDate(e.target.value)}
@@ -534,8 +757,8 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
-                disabled
                 type="date"
+                disabled
                 inputProps={{ maxLength: 30 }}
                 value={fertiDate}
                 onChange={(e) => setFertiDate(e.target.value)}
@@ -560,35 +783,54 @@ function App() {
             </Stack>
           </Grid>
         </Grid>
-
         <br />
+        {/* <Grid item xs={6} md={6}>
+            <Stack>
+              <InputLabel required>Accept Or Reject</InputLabel>
+              <Select
+                id="accept"
+                name="accept"
+                
+                value={accept}
+                onChange={(e) => handleAccept(e)}
+              >
+                <MenuItem value="accept">Accept</MenuItem>
+                <MenuItem value="reject">Reject</MenuItem>
+              </Select>
+            </Stack>
+          </Grid>
+          {accept === 'Reject' ? (
+            <>
+              <Grid item xs={12} md={12}>
+                <Stack>
+                  <InputLabel required>Reason For Reject</InputLabel>
+                  <TextField
+                    fullWidth
+                    id="discription"
+                    name="discription"
+                    inputProps={{ maxLength: 30 }}
+                    value={discription}
+                    onChange={(e) => setDiscription(e.target.value)}
+                    placeholder="Reason for rejection"
+                  />
+                </Stack>
+              </Grid>
+            </>
+          ) : (
+            <></>
+          )}
         <br />
-
-        <Grid item xs={6} md={6}>
-          <Stack>
-            <InputLabel required>Active</InputLabel>
-            <Select
-              id="active"
-              name="active"
-              value={active}
-              onChange={(e) => setActive(e.target.value)}
-            >
-              <MenuItem value="Accept">Accept</MenuItem>
-              <MenuItem value="Reject">Reject</MenuItem>
-            </Select>
-          </Stack>
-        </Grid>
-        {/* </Grid> */}
-        <br></br>
         <center>
           {isLoading ? (
             <CircularProgress />
           ) : (
-            <Button variant="contained" type="submit">
-              Update User
-            </Button>
+            <>
+              <Button variant="contained" type="submit">
+                Update Status
+              </Button>
+            </>
           )}
-        </center>
+        </center> */}
       </form>
     </MainCard>
   );

@@ -46,7 +46,7 @@ export default function Users() {
     try {
       const Frencise = await frenciseApi.getAllFrencisePending({});
       if (!Frencise || !Frencise.data.data) {
-        return toast.error("no latest banners available");
+        return toast.error("Frenchise not found");
       } else {
         dispatch(updateAllFrencise(Frencise.data.data));
         return;
@@ -213,6 +213,19 @@ export default function Users() {
                                   <EditIcon sx={{ fontSize: "1.1rem" }} />
                                 </IconButton>
                               </Tooltip>
+
+                              <Link to={`/view-franchise/${row.FrenchiseID}`}>
+                                  <IconButton
+                                    color="primary"
+                                    title="View Frenchise"
+                                    aria-label="view"
+                                    size="large"
+                                  >
+                                    <VisibilityIcon
+                                      sx={{ fontSize: "1.1rem" }}
+                                    />
+                                  </IconButton>
+                                </Link>
                             </TableCell>
                           </TableRow>
                         );

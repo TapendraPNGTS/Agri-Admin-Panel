@@ -236,6 +236,11 @@ const EditFranchiseState = Loadable(
     import("views/utilities/incharge/franchiseState/edit-franchiseState")
   )
 );
+const ViewFranchiseDetail = Loadable(
+  lazy(() =>
+    import("views/utilities/Franchise/view-frenchise")
+  )
+);
 const FranchiseDistrict = Loadable(
   lazy(() =>
     import("views/utilities/incharge/franchiseDistrict/franchiseDistrict")
@@ -389,7 +394,7 @@ const MainRoutes = {
       path: "/view-order-franchise",
       element: <FViewOrder />,
     },
-
+    
     {
       path: "/e-commerce/products",
       element: <AppECommProducts />,
@@ -537,6 +542,11 @@ const MainRoutes = {
           path: "edit-franchise-request/:id",
           element: <EditFranchiseRequest />,
         },
+        {
+          path: "/view-franchise/:id",
+          element: <ViewFranchiseDetail  />,
+        },
+    
       ],
     },
     {

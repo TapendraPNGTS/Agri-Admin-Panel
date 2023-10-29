@@ -91,7 +91,7 @@ export default function Users() {
             spacing={gridSpacing}
           >
             <Grid item>
-              <Typography variant="h3">Franchise Request</Typography>
+              <Typography variant="h3">Franchises</Typography>
             </Grid>
           </Grid>
         }

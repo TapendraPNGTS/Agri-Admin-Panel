@@ -47,6 +47,7 @@ function App() {
   const [village, setVillage] = React.useState("");
   const [tehsil, setTehsil] = React.useState("");
   const [block, setBlock] = React.useState("");
+  const [allClusters, setAllCluster] = React.useState([]);
 
   //   bank ariable
   const [bankName, setBankName] = useState("");
@@ -67,6 +68,9 @@ function App() {
   const [fertiDate, setFertiDate] = useState("");
   const [fertiValidDate, setFertiValidDate] = useState("");
 
+  const [accept, setAccept] = useState("Accept");
+  const [discription, setDiscription] = useState('');
+
   const getFrenciseById = useCallback(async () => {
     try {
       const getFrenciseResponse = await frenciseApi.getFrenciseById({
@@ -80,9 +84,12 @@ function App() {
         setFirmType(getFrenciseResponse.data.data.FirmType);
         setNumber(getFrenciseResponse.data.data.Contact);
         setAddress(getFrenciseResponse.data.data.Address);
-        setCity(getFrenciseResponse.data.data.City);
-        setState(getFrenciseResponse.data.data.State);
+        setCity(getFrenciseResponse.data.data.CityID.DistrictID);
+        setState(getFrenciseResponse.data.data.StateID.StateID);
+        fetchDistrict(state);
         setPinCode(getFrenciseResponse.data.data.PinCode);
+        setBlock(getFrenciseResponse.data.data.ClusterID.ClusterID)
+       
         // bank details
         setBankName(getFrenciseResponse.data.data.Bank.BankName);
         setAcNumber(getFrenciseResponse.data.data.Bank.AccountNumber);
@@ -112,6 +119,7 @@ function App() {
 
   React.useEffect(() => {
     getFrenciseById();
+    getAllDistrict();
   }, []);
 
   const stateApi = new StateApi();
@@ -133,6 +141,27 @@ function App() {
     }
   });
 
+
+  const checkFrenchise = useCallback(async () => {
+    try {
+      const state = await frenciseApi.checkFrenchise({
+        frenchiseId: params.id,
+        status :accept,
+        description : discription
+      });
+      if (!state || !state.data.data) {
+        return toast.error("no latest state available");
+      } else {
+        dispatch(updateAllState(state.data.data));
+        return;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+});
+
   useEffect(() => {
     getAllState();
   }, []);
@@ -142,15 +171,20 @@ function App() {
 
   async function handledistrict(event) {
     event.preventDefault();
-    const district = await districtApi.getDistrictByStateId({
-      stateId: state,
-    });
-    if (district && district?.data?.code === 200) {
-      return dispatch(updateAllDistrict(district.data.data));
-    } else {
-      return;
-    }
+    fetchDistrict(state)
   }
+
+  const fetchDistrict = useCallback(async (stateID) => {
+    const district = await districtApi.getDistrictByStateId({
+        stateId: stateID,
+      });
+      if (district && district?.data?.code === 200) {
+        return dispatch(updateAllDistrict(district.data.data));
+      } else {
+        return;
+      }
+  })
+
 
   const clusterApi = new FranchiseClusterApi();
   const clusterrows = useSelector(
@@ -164,6 +198,7 @@ function App() {
         return toast.error("no latest state available");
       } else {
         dispatch(updateAllFranchiseCluster(state.data.data));
+        setAllCluster(state.data.data);
         return;
       }
     } catch (error) {
@@ -230,6 +265,10 @@ function App() {
     setIfscMessage(isIfscValid ? <></> : "Ifsc not valid!");
   };
 
+  const handleAccept = (e) =>{
+    setAccept(e.target.value);
+}
+
  async function handleSubmit(event) {
    setIsLoading(true);
    event.preventDefault();
@@ -255,6 +294,7 @@ function App() {
      ValidUpto: fertiValidDate,
    };
    const addFrenciseResponse = await frenciseApi.editFrencise({
+    frenchiseId: params.id,
      name: person,
      firmName: firmName,
      address: address,
@@ -274,9 +314,11 @@ function App() {
      fertilizer: fertilizer,
    });
    if (addFrenciseResponse && addFrenciseResponse?.data?.code === 200) {
+    setIsLoading(false);
      toast.success(`Added successsfully`);
      navigate("/franchise-request", { replace: true });
    } else {
+    setIsLoading(false);
      return toast.error(`Something went wrong!`);
    }
  }
@@ -300,6 +342,7 @@ function App() {
                 fullWidth
                 id="state"
                 name="state"
+                
                 inputProps={{ maxLength: 30 }}
                 value={firmName}
                 onChange={(e) => setFirmName(e.target.value)}
@@ -444,7 +487,7 @@ function App() {
                 value={block}
                 onChange={(e) => setBlock(e.target.value)}
               >
-                {rows.map((state) => {
+                {allClusters.map((state) => {
                   return (
                     <MenuItem value={state.BlockID}>{state.Name}</MenuItem>
                   );
@@ -658,6 +701,7 @@ function App() {
                 onChange={(e) => setSeedLicense(e.target.value)}
                 placeholder="Enter Seed License No."
               />
+              
             </Stack>
           </Grid>
           <Grid item xs={4} md={4}>
@@ -741,6 +785,7 @@ function App() {
           </Grid>
         </Grid>
         <br />
+        
         <br />
         <center>
           {isLoading ? (
