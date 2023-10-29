@@ -46,6 +46,10 @@ const ApiRoutes = {
       Endpoint: "/getUserTransaction ",
       Method: HttpMethod.Post,
     },
+    CommissionHistory: {
+      Endpoint: "/getAllInchargeCommission",
+      Method: HttpMethod.Post,
+    },
   },
   CheckOut: {
     Data: {

@@ -306,6 +306,9 @@ const Ledger = Loadable(
   lazy(() => import("views/utilities/Transaction History/transaction"))
 );
 
+const CommissionHistory = Loadable(
+  lazy(() => import("views/utilities/commision-history/commission-history"))
+);
 // order history by farmer
 
 const PendingOrderHistory = Loadable(
@@ -356,6 +359,10 @@ const MainRoutes = {
     {
       path: "/transaction-history",
       element: <Ledger />,
+    },
+    {
+      path: "/commission-history",
+      element: <CommissionHistory />,
     },
     {
       path: "/pending-order-by-farmer",

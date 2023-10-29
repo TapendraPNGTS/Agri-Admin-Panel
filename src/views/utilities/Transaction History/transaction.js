@@ -207,7 +207,7 @@ export default function PurchaseHistory() {
                             {index + 1}
                           </TableCell>
                           <TableCell align="start">
-                            {row.type}
+                            {row.userId.Name}
                           </TableCell>
                           <TableCell align="start">
                             {formatDate(row.createdAt)}

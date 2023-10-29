@@ -33,6 +33,7 @@ class Transaction extends HttpClient {
   AllUserTransactionConfig = ApiRoutes.Transaction.AllUserTransaction;
   FranchiseTransactionConfig = ApiRoutes.Transaction.FranchiseTransaction;
   UserTransactionConfig = ApiRoutes.Transaction.UserTransaction;
+  CommissionHistoryConfig = ApiRoutes.Transaction.CommissionHistory;
 
   getAllFranchiseTransaction = async () => {
     return this.instance({
@@ -46,6 +47,15 @@ class Transaction extends HttpClient {
     return this.instance({
       method: this.AllUserTransactionConfig.Method,
       url: this.AllUserTransactionConfig.Endpoint,
+      headers: {},
+      data: reqBody,
+    });
+  };
+
+  getAllCommissionHistory = async (reqBody) => {
+    return this.instance({
+      method: this.CommissionHistoryConfig.Method,
+      url: this.CommissionHistoryConfig.Endpoint,
       headers: {},
       data: reqBody,
     });

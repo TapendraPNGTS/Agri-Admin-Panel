@@ -142,7 +142,9 @@ export default function DataTable() {
                       <TableCell>Category</TableCell>
                       <TableCell>Image</TableCell>
                       <TableCell>Name</TableCell>
-                      <TableCell>Price</TableCell>
+                      <TableCell>MRP</TableCell>
+                      <TableCell>Selling Price</TableCell>
+                      <TableCell>Franchise Price</TableCell>
                       <TableCell>Quantity</TableCell>
                       <TableCell>Status </TableCell>
                       <TableCell align="center" sx={{ pr: 3 }}>
@@ -189,7 +191,9 @@ export default function DataTable() {
                               </a>
                             </TableCell>
                             <TableCell align="start">{row.Name}</TableCell>
-                            <TableCell align="start">{row.Price}</TableCell>
+                            <TableCell align="start"><b> ₹ {row.Price} /-</b></TableCell>
+                            <TableCell align="start"> <b> ₹ {row.DiscountPrice} /-</b></TableCell>
+                            <TableCell align="start"><b> ₹ {row.FrenchisePrice} /-</b></TableCell>
                             <TableCell align="start">{row.Quantity}</TableCell>
                             <TableCell align="start">
                               {row.IsActive ? (

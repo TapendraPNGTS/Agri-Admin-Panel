@@ -422,6 +422,13 @@ if (userId) {
         url: "/transaction-history",
         icon: icons.IconCash,
       },
+      {
+        id: "commission-history",
+        title: "Commission History",
+        type: "item",
+        url: "/commission-history",
+        icon: icons.IconCash,
+      },
       // {
       //   id: "commission",
       //   title: "Commission",
