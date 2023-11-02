@@ -27,80 +27,80 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [state, setState] = React.useState("");
 
-    const dispatch = useDispatch();
-    const stateApi = new StateApi();
-    const rows = useSelector((state) => state.state.State);
+  const dispatch = useDispatch();
+  const stateApi = new StateApi();
+  const rows = useSelector((state) => state.state.State);
 
-    const getAllState = useCallback(async () => {
-      try {
-        const state = await stateApi.getAllState({});
-        if (!state || !state.data.data) {
-          return toast.error("no latest state available");
-        } else {
-          dispatch(updateAllState(state.data.data));
-          return;
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error("Something went wrong");
-        throw error;
+  const getAllState = useCallback(async () => {
+    try {
+      const state = await stateApi.getAllState({});
+      if (!state || !state.data.data) {
+        return toast.error("no latest state available");
+      } else {
+        dispatch(updateAllState(state.data.data));
+        return;
       }
-    });
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
+    }
+  });
 
-    useEffect(() => {
-      getAllState();
-    }, []);
+  useEffect(() => {
+    getAllState();
+  }, []);
 
-    const getStateById = useCallback(async () => {
-      try {
-        const getStateByIddResponse = await districtApi.getDistrictById({
-          cityId: params.id,
-        });
-        if (
-          getStateByIddResponse &&
-          getStateByIddResponse?.data?.code === 200
-        ) {
-          setName(getStateByIddResponse.data.data.Name);
-          setState(getStateByIddResponse.data.data.StateID);
-        } else {
-          return toast.error(`Something went wrong!`);
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error("Something went wrong");
-        throw error;
-      }
-    });
-
-    useEffect(() => {
-      getStateById();
-    }, []);
-
-    async function handleSubmit(event) {
-      setIsLoading(true);
-      event.preventDefault();
-      const addServiceRequestResponse = await districtApi.updateDistrict({
-        stateId: state,
+  const getStateById = useCallback(async () => {
+    try {
+      const getStateByIddResponse = await districtApi.getDistrictById({
         cityId: params.id,
-        name: name,
       });
       if (
-        addServiceRequestResponse &&
-        addServiceRequestResponse?.data?.code === 200
+        getStateByIddResponse &&
+        getStateByIddResponse?.data?.code === 200
       ) {
-        toast.success(`Added successsfully`);
-        navigate("/franchise-state", { replace: true });
+        setName(getStateByIddResponse.data.data.Name);
+        setState(getStateByIddResponse.data.data.StateID);
       } else {
         return toast.error(`Something went wrong!`);
       }
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
+      throw error;
     }
+  });
+
+  useEffect(() => {
+    getStateById();
+  }, []);
+
+  async function handleSubmit(event) {
+    setIsLoading(true);
+    event.preventDefault();
+    const addServiceRequestResponse = await districtApi.updateAllDistrict({
+      stateId: state,
+      cityId: params.id,
+      name: name,
+    });
+    if (
+      addServiceRequestResponse &&
+      addServiceRequestResponse?.data?.code === 200
+    ) {
+      toast.success(`Added successsfully`);
+      navigate("/franchise-state", { replace: true });
+    } else {
+      return toast.error(`Something went wrong!`);
+    }
+  }
 
 
   return (
     <MainCard title="Edit District">
       <form action="#" onSubmit={handleSubmit}>
         <Grid container spacing={gridSpacing}>
-        <Grid item xs={6} md={6}>
+          <Grid item xs={6} md={6}>
             <Stack>
               <InputLabel required>Choose State</InputLabel>
               <Select

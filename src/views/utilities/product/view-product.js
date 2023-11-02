@@ -187,7 +187,9 @@ function App() {
                 Image
               </InputLabel>
               <Stack>
+              <a href={img} target="_blank">
                 <img src={img} width={200} height={200} />
+              </a>
               </Stack>
             </Grid>
           );

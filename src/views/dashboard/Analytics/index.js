@@ -61,6 +61,7 @@ const Analytics = () => {
                     </Grid>
                 </Grid>
             </Grid>
+            
             <Grid item xs={12} lg={4} md={6}>
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs={12}>
